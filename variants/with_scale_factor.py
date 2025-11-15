@@ -6,6 +6,9 @@ Adjusts K-factor based on match closeness (Bo3/Bo5)
 import numpy as np
 from typing import Dict, List, Optional
 from collections import defaultdict
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 import config
 
 
@@ -41,7 +44,7 @@ class ScaleFactorEloCalculator:
             
             # Bo3
             '2-0': 1.00,  # Stomp - full weight
-            '2-1': 0.85,  # Close - reduced weight
+            '2-1': 0.5,  # Close - reduced weight
             
             # Bo5
             '3-0': 1.00,  # Complete stomp

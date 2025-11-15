@@ -1,0 +1,300 @@
+"""
+Dynamic Regional Offset Calculator - FIXED VERSION
+Compatible with temporal validation framework
+"""
+
+import numpy as np
+import pandas as pd
+from typing import Dict, List, Tuple
+from collections import defaultdict
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from core.region_mapper import RegionMapper
+from variants.with_scale_factor import ScaleFactorEloCalculator
+import config
+
+
+class DynamicOffsetCalculator:
+    """
+    ELO Calculator with dynamic regional offsets
+    FIXED: Tighter priors, offset caps, validation-compatible
+    """
+    
+    def __init__(self, K: float = 24, scale_factors: Dict = None):
+        """Initialize with base calculator"""
+        # Base calculator
+        self.base_calc = ScaleFactorEloCalculator(
+            K=K,
+            scale_factors=scale_factors or {
+                '1-0': 1.00, '2-0': 1.00, '2-1': 0.50,
+                '3-0': 1.00, '3-1': 0.90, '3-2': 0.80,
+            }
+        )
+        
+        # Region mapper
+        self.region_mapper = RegionMapper()
+        
+        # Offsets
+        self.offsets = defaultdict(float)
+        self.confidence = defaultdict(float)
+        self.sample_counts = defaultdict(int)
+        
+        # History
+        self.history = []
+        
+        # FIXED: Tighter regularization
+        self.prior_mean = 0.0
+        self.prior_std = 15.0  # Was 30.0 - now tighter!
+        self.max_offset = 75.0  # Hard cap
+        self.min_samples_for_confidence = 10
+    
+    def get_elo(self, team: str) -> float:
+        """Get ELO (delegates to base calculator)"""
+        return self.base_calc.get_elo(team)
+    
+    def _get_region_pair_key(self, region1: str, region2: str) -> str:
+        """Consistent key for region pairs"""
+        return '<->'.join(sorted([region1, region2]))
+    
+    def _bayesian_update(self, region: str, observation: float,
+                        uncertainty: float, sample_count: int) -> Tuple[float, float]:
+        """
+        Bayesian update with FIXED regularization
+        """
+        current_offset = self.offsets[region]
+        current_confidence = self.confidence[region]
+        
+        # Prior variance (less confident = more pull to prior)
+        prior_variance = (self.prior_std ** 2) * (1 - current_confidence)
+        observation_variance = uncertainty ** 2
+        
+        # Posterior (weighted average)
+        total_variance = prior_variance + observation_variance
+        weight_obs = prior_variance / total_variance
+        weight_prior = observation_variance / total_variance
+        
+        new_offset = weight_prior * current_offset + weight_obs * observation
+        
+        # FIXED: Strong regularization for low samples
+        if sample_count < 20:
+            regularization = 1.0 - (sample_count / 20)
+            new_offset = new_offset * (1 - regularization * 0.5)
+        
+        # FIXED: Hard cap
+        new_offset = np.clip(new_offset, -self.max_offset, self.max_offset)
+        
+        # Update confidence
+        new_confidence = min(1.0, current_confidence + 0.005)  # Slower confidence growth
+        
+        return new_offset, new_confidence
+    
+    def update(self, match: Dict) -> Dict:
+        """
+        Process match and update offsets
+        FIXED: Compatible with validation framework
+        """
+        team1 = match['team1']
+        team2 = match['team2']
+        winner = match['winner']
+        
+        # Get regions (use parent for LTA)
+        region1 = self.region_mapper.get_region(team1, detailed=False)
+        region2 = self.region_mapper.get_region(team2, detailed=False)
+        
+        # Get ELOs
+        elo1 = self.get_elo(team1)
+        elo2 = self.get_elo(team2)
+        
+        # Update base ELO first
+        base_update = self.base_calc.update(match)
+        
+        # Check cross-region
+        is_cross_region = (region1 != region2 and 
+                          region1 != 'Unknown' and 
+                          region2 != 'Unknown')
+        
+        update_record = {
+            **base_update,
+            'region1': region1,
+            'region2': region2,
+            'is_cross_region': is_cross_region,
+            'offset1': self.offsets.get(region1, 0.0),
+            'offset2': self.offsets.get(region2, 0.0),
+        }
+        
+        if not is_cross_region:
+            self.history.append(update_record)
+            return update_record
+        
+        # Cross-region: Update offsets
+        pair_key = self._get_region_pair_key(region1, region2)
+        self.sample_counts[pair_key] += 1
+        sample_count = self.sample_counts[pair_key]
+        
+        # Calculate residual
+        offset1 = self.offsets.get(region1, 0.0)
+        offset2 = self.offsets.get(region2, 0.0)
+        adjusted_elo1 = elo1 + offset1
+        adjusted_elo2 = elo2 + offset2
+        
+        expected = 1 / (1 + 10 ** ((adjusted_elo2 - adjusted_elo1) / 400))
+        actual = 1.0 if winner == team1 else 0.0
+        residual = actual - expected
+        
+        # Offset evidence
+        offset_evidence = residual * 400 / np.log(10)
+        
+        # Uncertainty calculation
+        sample_uncertainty = 30.0 / np.sqrt(max(1, sample_count))
+        elo_diff = abs(elo1 - elo2)
+        elo_uncertainty = min(20.0, elo_diff / 20)
+        score_diff = abs(match.get('score1', 1) - match.get('score2', 0))
+        score_uncertainty = 15.0 / max(1, score_diff)
+        
+        total_uncertainty = np.sqrt(sample_uncertainty**2 + 
+                                    elo_uncertainty**2 + 
+                                    score_uncertainty**2)
+        
+        # Update offsets
+        winner_region = region1 if winner == team1 else region2
+        loser_region = region2 if winner == team1 else region1
+        
+        new_offset_winner, new_conf_winner = self._bayesian_update(
+            winner_region,
+            self.offsets[winner_region] + abs(offset_evidence),
+            total_uncertainty,
+            sample_count
+        )
+        
+        new_offset_loser, new_conf_loser = self._bayesian_update(
+            loser_region,
+            self.offsets[loser_region] - abs(offset_evidence),
+            total_uncertainty,
+            sample_count
+        )
+        
+        self.offsets[winner_region] = new_offset_winner
+        self.offsets[loser_region] = new_offset_loser
+        self.confidence[winner_region] = new_conf_winner
+        self.confidence[loser_region] = new_conf_loser
+        
+        # Normalize
+        self._normalize_offsets()
+        
+        update_record['offset1'] = self.offsets.get(region1, 0.0)
+        update_record['offset2'] = self.offsets.get(region2, 0.0)
+        
+        self.history.append(update_record)
+        return update_record
+    
+    def _normalize_offsets(self):
+        """Zero-sum normalization"""
+        regions = self.region_mapper.get_all_regions(include_sub=False)
+        total = sum(self.offsets.get(r, 0.0) for r in regions)
+        mean_offset = total / len(regions)
+        for region in regions:
+            self.offsets[region] -= mean_offset
+    
+    def predict(self, team1: str, team2: str) -> Dict:
+        """Predict with offsets"""
+        base_pred = self.base_calc.predict(team1, team2)
+        
+        region1 = self.region_mapper.get_region(team1, detailed=False)
+        region2 = self.region_mapper.get_region(team2, detailed=False)
+        
+        offset1 = self.offsets.get(region1, 0.0) if region1 != region2 else 0.0
+        offset2 = self.offsets.get(region2, 0.0) if region1 != region2 else 0.0
+        
+        adjusted_elo1 = base_pred['team1_elo'] + offset1
+        adjusted_elo2 = base_pred['team2_elo'] + offset2
+        
+        adjusted_prob1 = 1 / (1 + 10 ** ((adjusted_elo2 - adjusted_elo1) / 400))
+        adjusted_prob2 = 1 - adjusted_prob1
+        
+        predicted_winner = team1 if adjusted_prob1 > 0.5 else team2
+        
+        return {
+            **base_pred,
+            'offset1': offset1,
+            'offset2': offset2,
+            'adjusted_elo1': adjusted_elo1,
+            'adjusted_elo2': adjusted_elo2,
+            'team1_win_prob': adjusted_prob1,
+            'team2_win_prob': adjusted_prob2,
+            'predicted_winner': predicted_winner,
+            'confidence_value': max(adjusted_prob1, adjusted_prob2)
+        }
+    
+    def get_current_offsets(self) -> pd.DataFrame:
+        """Get offsets as DataFrame"""
+        regions = self.region_mapper.get_all_regions(include_sub=False)
+        
+        data = []
+        for region in sorted(regions):
+            data.append({
+                'Region': region,
+                'Offset': self.offsets.get(region, 0.0),
+                'Confidence': self.confidence.get(region, 0.0),
+                'Sample_Count': sum(self.sample_counts[k] 
+                                   for k in self.sample_counts 
+                                   if region in k)
+            })
+        
+        return pd.DataFrame(data)
+    
+    def get_accuracy(self) -> float:
+        """Calculate accuracy"""
+        if not self.history:
+            return 0.0
+        correct = sum(1 for h in self.history if h['correct'])
+        return correct / len(self.history)
+    
+    def get_statistics(self) -> Dict:
+        """Get statistics"""
+        if not self.history:
+            return {'total_matches': 0, 'accuracy': 0.0}
+        
+        deltas = [abs(h['delta1']) for h in self.history]
+        
+        return {
+            'total_matches': len(self.history),
+            'total_teams': len(self.base_calc.ratings),
+            'accuracy': self.get_accuracy(),
+            'mean_elo_change': np.mean(deltas),
+            'cross_region_matches': sum(1 for h in self.history if h['is_cross_region'])
+        }
+    
+    def reset(self):
+        """Reset calculator"""
+        self.base_calc.reset()
+        self.offsets.clear()
+        self.confidence.clear()
+        self.sample_counts.clear()
+        self.history.clear()
+
+
+if __name__ == "__main__":
+    from core.data_loader import MatchDataLoader
+    
+    print("="*60)
+    print("DYNAMIC OFFSET CALCULATOR - FIXED VERSION TEST")
+    print("="*60)
+    
+    loader = MatchDataLoader()
+    matches = loader.get_matches_as_dicts()
+    print(f"\n✓ Loaded {len(matches)} matches")
+    
+    calc = DynamicOffsetCalculator()
+    
+    for match in matches:
+        calc.update(match)
+    
+    print(f"\n📊 FINAL REGIONAL OFFSETS (FIXED):")
+    print(calc.get_current_offsets().to_string(index=False))
+    
+    stats = calc.get_statistics()
+    print(f"\n✓ Processed {stats['cross_region_matches']} cross-region matches")
+    print(f"✓ Overall accuracy: {stats['accuracy']:.2%}")
