@@ -92,8 +92,8 @@ class MatchDataLoader:
         Returns:
             Cleaned DataFrame
         """
-        # Parse dates
-        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+        # Parse dates (handle multiple formats)
+        df['Date'] = pd.to_datetime(df['Date'], format='mixed', dayfirst=True, errors='coerce')
         
         # Drop rows without date
         df = df.dropna(subset=['Date'])
