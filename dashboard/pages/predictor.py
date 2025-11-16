@@ -41,11 +41,15 @@ def calculate_current_elos():
                 team_elos[team2] = 1500
 
             # Determine tournament context
-            tournament = match.get('tournament', '')
-            if 'world' in tournament.lower():
-                context = 'worlds'
-            elif 'playoff' in tournament.lower() or 'final' in tournament.lower():
-                context = 'playoffs'
+            tournament = match.get('tournament', '') or ''
+            if tournament and isinstance(tournament, str):
+                tournament_lower = tournament.lower()
+                if 'world' in tournament_lower:
+                    context = 'worlds'
+                elif 'playoff' in tournament_lower or 'final' in tournament_lower:
+                    context = 'playoffs'
+                else:
+                    context = 'regular_season'
             else:
                 context = 'regular_season'
 

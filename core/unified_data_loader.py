@@ -70,6 +70,7 @@ class UnifiedDataLoader:
                 'team1': m['team1_name'],
                 'team2': m['team2_name'],
                 'score': f"{m['team1_score']}-{m['team2_score']}",
+                'winner': m.get('winner', ''),  # Add winner field
                 'elo_team1': 1500,  # Will be calculated
                 'elo_team2': 1500,  # Will be calculated
                 'tournament': m.get('tournament', ''),
@@ -109,6 +110,19 @@ class UnifiedDataLoader:
             df['stage'] = ''
         if 'patch' not in df.columns:
             df['patch'] = ''
+
+        # Add winner column if not present
+        if 'winner' not in df.columns and 'score' in df.columns:
+            def get_winner(row):
+                try:
+                    score_parts = str(row['score']).split('-')
+                    if len(score_parts) == 2:
+                        score1, score2 = int(score_parts[0]), int(score_parts[1])
+                        return row['team1'] if score1 > score2 else row['team2']
+                except:
+                    pass
+                return ''
+            df['winner'] = df.apply(get_winner, axis=1)
 
         df['source'] = 'google_sheets'
 
