@@ -174,10 +174,8 @@ def show():
     st.markdown("---")
     st.subheader("📊 Prediction Results")
 
-    elo = TournamentContextElo(k_factor=24)
-
-    # Calculate expected probabilities
-    prob_team1 = elo.expected_score(team1_elo, team2_elo)
+    # Calculate expected probabilities using standard ELO formula
+    prob_team1 = 1 / (1 + 10 ** ((team2_elo - team1_elo) / 400))
     prob_team2 = 1 - prob_team1
 
     # Display probabilities

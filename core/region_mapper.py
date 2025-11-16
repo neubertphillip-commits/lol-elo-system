@@ -33,9 +33,9 @@ class RegionMapper:
     
     def _use_fallback_mapping(self):
         """Hardcoded team→region mapping"""
-        lck_teams = ['T1', 'GENG', 'DK', 'KT', 'DRX', 'HLE', 'NS', 'DNF', 'BRO', 'KDF']
-        lpl_teams = ['WBG', 'BLG', 'JDG', 'TES', 'LNG', 'IG', 'FPX', 'RNG', 'EDG', 'OMG', 'WE', 'TT', 'AL', 'LGD', 'UP', 'NIP']
-        lec_teams = ['G2', 'FNC', 'MAD', 'VIT', 'TH', 'BDS', 'SK', 'KC', 'GX', 'MKOI']
+        lck_teams = ['T1', 'GENG', 'GEN', 'DK', 'KT', 'DRX', 'HLE', 'NS', 'DNF', 'BRO', 'KDF']
+        lpl_teams = ['WBG', 'BLG', 'JDG', 'TES', 'LNG', 'IG', 'FPX', 'RNG', 'EDG', 'OMG', 'WE', 'TT', 'AL', 'LGD', 'UP', 'NIP', 'BFX', 'BF']
+        lec_teams = ['G2', 'FNC', 'MAD', 'VIT', 'TH', 'BDS', 'SK', 'KC', 'GX', 'MKOI', 'NAVI', 'NV']
         lcp_teams = ['PSG', 'CFO', 'GAM', 'VKE','TSW','SHG','DFM','CHF']
         ltan_teams = ['C9', 'TL', 'FLY', '100T', 'DIG', 'SR', 'LYON', 'DSG']
         ltas_teams = [ 'RED', 'PNG', 'FUR', 'VKS', 'LLL', 'FX7M', 'ISG', 'LEV']
