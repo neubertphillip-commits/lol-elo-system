@@ -336,7 +336,10 @@ class LeaguepediaLoader:
                 if db_match_id:
                     imported_count += 1
 
-                    # Fetch player data if requested
+                    # WARNING: Player data import makes MANY API queries (1 per game)
+                    # This will cause rate limiting for large tournaments
+                    # For ELO calculations, you only need match results
+                    # Use --no-players flag to skip player data
                     if include_players:
                         for game in match_data['games']:
                             self._fetch_game_players(db_match_id, game['game_id'],
