@@ -23,7 +23,7 @@ def analyze_duplicates():
     loader = MatchDataLoader()
     df = loader.load_matches()
 
-    print(f"\n📊 Google Sheets: {len(df)} matches")
+    print(f"\n[STATS] Google Sheets: {len(df)} matches")
 
     # Check database
     db = DatabaseManager()
@@ -71,7 +71,7 @@ def analyze_duplicates():
                 matches_to_insert.append(match_data)
 
         except Exception as e:
-            print(f"  ⚠️ Error parsing row {idx}: {e}")
+            print(f"  [WARNING] Error parsing row {idx}: {e}")
 
     # Report
     print(f"\n" + "="*70)
@@ -79,7 +79,7 @@ def analyze_duplicates():
     print("="*70)
 
     print(f"\n✅ New matches to import: {len(matches_to_insert)}")
-    print(f"⊘ Detected duplicates: {len(duplicates)}")
+    print(f"[SKIP] Detected duplicates: {len(duplicates)}")
 
     if len(duplicates) > 0:
         print(f"\n📋 First 10 'duplicates':")
@@ -138,13 +138,13 @@ def analyze_duplicates():
     multi_matches = {k: v for k, v in same_day_matches.items() if len(v) > 1}
 
     if multi_matches:
-        print(f"\n⚠️ Found {len(multi_matches)} days with multiple matches between same teams:")
+        print(f"\n[WARNING] Found {len(multi_matches)} days with multiple matches between same teams:")
         for (date, teams), matches in list(multi_matches.items())[:5]:
             print(f"\n  {date}: {list(teams)[0]} vs {list(teams)[1]}")
             for m in matches:
                 print(f"    - Row {m['row']}: {m['score']} at {m['datetime'].time()}")
     else:
-        print(f"  ✓ No same-day duplicates found")
+        print(f"  [OK] No same-day duplicates found")
 
     db.close()
 
@@ -156,13 +156,13 @@ def analyze_duplicates():
     if len(duplicates) == 0:
         print("\n✅ No duplicates detected - safe to import!")
     elif len(duplicates) == len(df):
-        print("\n⚠️ ALL matches marked as duplicates!")
+        print("\n[WARNING] ALL matches marked as duplicates!")
         print("   Possible causes:")
         print("   1. Database already contains all Google Sheets data")
         print("   2. Data was imported previously")
         print("   Action: Check database stats above")
     else:
-        print(f"\n⚠️ {len(duplicates)}/{len(df)} matches marked as duplicates")
+        print(f"\n[WARNING] {len(duplicates)}/{len(df)} matches marked as duplicates")
         print(f"   {len(matches_to_insert)} new matches would be imported")
         print(f"\n   Review the duplicate list above to verify:")
         print(f"   - Are these truly duplicates?")

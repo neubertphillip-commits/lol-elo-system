@@ -229,49 +229,49 @@ def analyze_results(df: pd.DataFrame):
     
     # Best overall
     best = df.iloc[0]
-    print(f"🏆 BEST CONFIGURATION:")
+    print(f"[BEST] BEST CONFIGURATION:")
     print(f"   K-factor: {best['K']}")
     print(f"   Scale preset: {best['scale_preset']}")
     print(f"   Test Accuracy: {best['test_accuracy']:.4f} ({best['test_accuracy']*100:.2f}%)")
-    
+
     # Best K-factor (averaged across scale presets)
     best_k = df.groupby('K')['test_accuracy'].mean().idxmax()
     best_k_acc = df.groupby('K')['test_accuracy'].mean().max()
-    print(f"\n📊 BEST K-FACTOR (averaged): K={best_k} ({best_k_acc:.4f})")
-    
+    print(f"\n[STATS] BEST K-FACTOR (averaged): K={best_k} ({best_k_acc:.4f})")
+
     # Best scale preset (averaged across K-factors)
     best_scale = df.groupby('scale_preset')['test_accuracy'].mean().idxmax()
     best_scale_acc = df.groupby('scale_preset')['test_accuracy'].mean().max()
-    print(f"📊 BEST SCALE PRESET (averaged): {best_scale} ({best_scale_acc:.4f})")
+    print(f"[STATS] BEST SCALE PRESET (averaged): {best_scale} ({best_scale_acc:.4f})")
     
     # Impact of scale factors
     baseline_avg = df[df['scale_preset'] == 'none']['test_accuracy'].mean()
     with_scale_avg = df[df['scale_preset'] != 'none']['test_accuracy'].mean()
     scale_impact = with_scale_avg - baseline_avg
     
-    print(f"\n💡 SCALE FACTOR IMPACT:")
+    print(f"\n[IMPACT] SCALE FACTOR IMPACT:")
     print(f"   Baseline (no scale): {baseline_avg:.4f}")
     print(f"   With scale factors: {with_scale_avg:.4f}")
     print(f"   Improvement: {scale_impact:.4f} ({scale_impact*100:+.2f} pp)")
-    
+
     if scale_impact > 0.005:
-        print(f"   ✅ Scale factors help!")
+        print(f"   [OK] Scale factors help!")
     elif scale_impact < -0.005:
-        print(f"   ❌ Scale factors hurt performance")
+        print(f"   [ERROR] Scale factors hurt performance")
     else:
-        print(f"   ⚖️  Scale factors have minimal impact")
-    
+        print(f"   [INFO] Scale factors have minimal impact")
+
     # Overfitting check
     high_overfit = df[df['overfitting'] > 0.05]
     if len(high_overfit) > 0:
-        print(f"\n⚠️  WARNING: {len(high_overfit)} configurations show high overfitting (>5%)")
+        print(f"\n[WARNING] WARNING: {len(high_overfit)} configurations show high overfitting (>5%)")
         print(f"   Avoid: {high_overfit[['K', 'scale_preset', 'overfitting']].to_string(index=False)}")
 
 
 def save_results(df: pd.DataFrame, filename: str = "optimization_results.csv"):
     """Save results to CSV"""
     df.to_csv(filename, index=False)
-    print(f"\n💾 Results saved to: {filename}")
+    print(f"\n[SAVED] Results saved to: {filename}")
 
 
 # ============================================================================
@@ -283,7 +283,7 @@ def main():
     print("Loading matches...")
     loader = MatchDataLoader()
     matches = loader.get_matches_as_dicts()
-    print(f"✓ Loaded {len(matches)} matches\n")
+    print(f"[OK] Loaded {len(matches)} matches\n")
     
     # Choose search type
     print("Search options:")

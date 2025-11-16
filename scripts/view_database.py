@@ -18,7 +18,7 @@ def print_stats(db):
     print("DATABASE STATISTICS")
     print("="*70)
 
-    print(f"\n📊 Overview:")
+    print(f"\n[STATS] Overview:")
     print(f"  Total Matches: {stats['total_matches']}")
     print(f"  Total Teams: {stats['total_teams']}")
     print(f"  Total Players: {stats['total_players']}")
@@ -44,8 +44,8 @@ def print_recent_matches(db, limit=10):
 
     for m in matches:
         score = f"{m['team1_score']}-{m['team2_score']}"
-        winner_mark = "✓" if m['winner'] == m['team1_name'] else " "
-        loser_mark = "✓" if m['winner'] == m['team2_name'] else " "
+        winner_mark = "[OK]" if m['winner'] == m['team1_name'] else " "
+        loser_mark = "[OK]" if m['winner'] == m['team2_name'] else " "
 
         print(f"\n{m['date'][:10]} | {m['tournament'] or 'Unknown Tournament'}")
         print(f"  {winner_mark} {m['team1_name']:30s} {score:5s} {m['team2_name']:30s} {loser_mark}")
@@ -141,7 +141,7 @@ def search_team(db, team_name):
     for team in teams:
         team_id, name, region, elo = team
 
-        print(f"\n📊 {name}")
+        print(f"\n[STATS] {name}")
         print(f"   Region: {region or 'N/A'}")
         print(f"   Current ELO: {elo:.0f}")
 
@@ -290,7 +290,7 @@ def interactive_menu():
             if player_name:
                 search_player(db, player_name)
         elif choice == '8':
-            print("\n⚠️  Warning: Use with caution!")
+            print("\n[WARNING]  Warning: Use with caution!")
             query = input("Enter SQL query: ").strip()
             if query:
                 try:
