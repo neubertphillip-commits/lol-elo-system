@@ -35,7 +35,7 @@ class UnifiedDataLoader:
             db_stats = self.db.get_stats()
             self.has_database = db_stats['total_matches'] > 0
         except Exception as e:
-            print(f"⚠️  Database not available: {e}")
+            print(f"[WARNING] Database not available: {e}")
             self.has_database = False
 
     def load_matches(self, source: str = 'auto') -> pd.DataFrame:
@@ -51,7 +51,7 @@ class UnifiedDataLoader:
         if source == 'auto':
             source = 'database' if (self.has_database and self.prefer_database) else 'google_sheets'
 
-        print(f"📥 Loading data from: {source}")
+        print(f"Loading data from: {source}")
 
         if source == 'database' and self.has_database:
             return self._load_from_database()
@@ -83,7 +83,7 @@ class UnifiedDataLoader:
         # Sort chronologically
         df = df.sort_values('date').reset_index(drop=True)
 
-        print(f"  ✓ Loaded {len(df)} matches from database")
+        print(f"  [OK] Loaded {len(df)} matches from database")
         return df
 
     def _load_from_google_sheets(self) -> pd.DataFrame:
@@ -112,7 +112,7 @@ class UnifiedDataLoader:
 
         df['source'] = 'google_sheets'
 
-        print(f"  ✓ Loaded {len(df)} matches from Google Sheets")
+        print(f"  [OK] Loaded {len(df)} matches from Google Sheets")
         return df
 
     def get_matches_as_dicts(self, source: str = 'auto') -> List[Dict]:
@@ -240,7 +240,7 @@ if __name__ == "__main__":
     with UnifiedDataLoader() as loader:
         # Show source info
         info = loader.get_source_info()
-        print(f"\n📊 Data Source Info:")
+        print(f"\nData Source Info:")
         print(f"  Has Database: {info['has_database']}")
         print(f"  Prefers Database: {info['prefer_database']}")
 
@@ -255,10 +255,10 @@ if __name__ == "__main__":
                     print(f"    {key}: {value}")
 
         # Load matches
-        print(f"\n📥 Loading matches (auto)...")
+        print(f"\nLoading matches (auto)...")
         df = loader.load_matches(source='auto')
 
-        print(f"\n✓ Loaded {len(df)} matches")
+        print(f"\n[OK] Loaded {len(df)} matches")
         print(f"  Teams: {len(loader.get_unique_teams())}")
 
         if len(df) > 0:

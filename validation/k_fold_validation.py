@@ -167,23 +167,23 @@ def run_k_fold_validation(k: int = 5, variant_class=DynamicOffsetElo) -> Dict:
     print("="*70)
 
     # Load data
-    print("\n📥 Loading data...")
+    print("\n[LOADING] Loading data...")
     with UnifiedDataLoader() as loader:
         df = loader.load_matches(source='auto')
 
-    print(f"✓ Loaded {len(df)} matches")
+    print(f"[OK] Loaded {len(df)} matches")
     print(f"  Date range: {df['date'].min()} to {df['date'].max()}")
 
     # Create folds
-    print(f"\n📊 Creating {k} temporal folds...")
+    print(f"\n[DATA] Creating {k} temporal folds...")
     folds = temporal_k_fold_split(df, k=k)
-    print(f"✓ Created {len(folds)} folds")
+    print(f"[OK] Created {len(folds)} folds")
 
     # Evaluate each fold
     results = []
 
     for i, (train_df, test_df) in enumerate(folds, 1):
-        print(f"\n🔄 Fold {i}/{len(folds)}")
+        print(f"\n[PROCESSING] Fold {i}/{len(folds)}")
         print(f"  Train: {len(train_df)} matches ({train_df['date'].min()} to {train_df['date'].max()})")
         print(f"  Test:  {len(test_df)} matches ({test_df['date'].min()} to {test_df['date'].max()})")
 
@@ -201,7 +201,7 @@ def run_k_fold_validation(k: int = 5, variant_class=DynamicOffsetElo) -> Dict:
     print("RESULTS")
     print("="*70)
 
-    print(f"\n📊 Per-Fold Accuracies:")
+    print(f"\n[DATA] Per-Fold Accuracies:")
     for i, acc in enumerate(accuracies, 1):
         print(f"  Fold {i}: {acc:.2f}%")
 
@@ -220,7 +220,7 @@ def run_k_fold_validation(k: int = 5, variant_class=DynamicOffsetElo) -> Dict:
         print(f"  ✅ Robust (std < 5%)")
         print(f"     Minor variations across time periods")
     elif std_acc < 10.0:
-        print(f"  ⚠️  Moderate variation (std < 10%)")
+        print(f"  [WARNING]  Moderate variation (std < 10%)")
         print(f"     Performance depends on time period")
     else:
         print(f"  ❌ High variation (std > 10%)")
@@ -263,4 +263,4 @@ if __name__ == "__main__":
         }
         json.dump(json_results, f, indent=2)
 
-    print(f"\n💾 Results saved to: {output_file}")
+    print(f"\n[SAVED] Results saved to: {output_file}")
