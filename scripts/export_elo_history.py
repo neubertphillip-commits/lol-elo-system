@@ -75,15 +75,19 @@ def export_elo_history(variant='dynamic_offset', k_factor=24, use_scale_factors=
             team2_elo_before = elo.get_rating(team2)
 
             # Calculate expected win probability
-            prob_team1_wins = elo.expected_score(team1_elo_before, team2_elo_before)
+            prob_team1_wins = 1 / (1 + 10 ** ((team2_elo_before - team1_elo_before) / 400))
             prob_team2_wins = 1 - prob_team1_wins
 
             # Update ratings
-            delta1, delta2 = elo.update_ratings(team1, team2, score1, score2)
+            elo.update_ratings(team1, team2, score1, score2)
 
             # Get ELO AFTER match
             team1_elo_after = elo.get_rating(team1)
             team2_elo_after = elo.get_rating(team2)
+
+            # Calculate deltas
+            delta1 = team1_elo_after - team1_elo_before
+            delta2 = team2_elo_after - team2_elo_before
 
             # Determine winner
             if score1 > score2:

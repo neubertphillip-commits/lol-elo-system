@@ -124,8 +124,14 @@ class DynamicOffsetCalculator:
             'offset1': self.offsets.get(region1, 0.0),
             'offset2': self.offsets.get(region2, 0.0),
         }
-        
+
+        # For non-cross-regional matches, still store current offsets for ALL regions
+        # This prevents gaps in the history
         if not is_cross_region:
+            all_regions = self.region_mapper.get_all_regions(include_sub=False)
+            for region in all_regions:
+                update_record[f'offset_{region}'] = self.offsets.get(region, 0.0)
+
             self.history.append(update_record)
             return update_record
         
@@ -162,18 +168,18 @@ class DynamicOffsetCalculator:
         winner_region = region1 if winner == team1 else region2
         loser_region = region2 if winner == team1 else region1
 
-        # FIXED: Pass only the evidence, not current + evidence
-        # The Bayesian update combines prior (current offset) with observation (evidence)
+        # Bayesian update: observation is the NEW absolute value we observe
+        # The Bayesian formula will weight current vs new observation
         new_offset_winner, new_conf_winner = self._bayesian_update(
             winner_region,
-            abs(offset_evidence),  # FIXED: was self.offsets[winner_region] + abs(offset_evidence)
+            self.offsets[winner_region] + abs(offset_evidence),  # New observed value
             total_uncertainty,
             sample_count
         )
 
         new_offset_loser, new_conf_loser = self._bayesian_update(
             loser_region,
-            -abs(offset_evidence),  # FIXED: was self.offsets[loser_region] - abs(offset_evidence)
+            self.offsets[loser_region] - abs(offset_evidence),  # New observed value
             total_uncertainty,
             sample_count
         )
@@ -182,13 +188,20 @@ class DynamicOffsetCalculator:
         self.offsets[loser_region] = new_offset_loser
         self.confidence[winner_region] = new_conf_winner
         self.confidence[loser_region] = new_conf_loser
-        
+
         # Normalize
         self._normalize_offsets()
-        
+
+        # FIXED: Store ALL region offsets after normalization
+        # This ensures we can track how normalization affected all regions
+        all_regions = self.region_mapper.get_all_regions(include_sub=False)
+        for region in all_regions:
+            update_record[f'offset_{region}'] = self.offsets.get(region, 0.0)
+
+        # Keep original offset1/offset2 for backward compatibility
         update_record['offset1'] = self.offsets.get(region1, 0.0)
         update_record['offset2'] = self.offsets.get(region2, 0.0)
-        
+
         self.history.append(update_record)
         return update_record
     
