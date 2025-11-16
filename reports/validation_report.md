@@ -1,6 +1,6 @@
 # LOL ELO SYSTEM - VALIDATION REPORT
 
-**Generated:** 2025-11-16 12:51:56
+**Generated:** 2025-11-16 12:54:19
 
 **Data Source:** Google Sheets
 
@@ -36,8 +36,8 @@
 ### Overall Accuracy:
 
 - **Accuracy:** 69.59%
-- **95% CI:** [66.82%, 72.37%]
-- **Margin of Error:** ±2.77%
+- **95% CI:** [66.82%, 72.09%]
+- **Margin of Error:** ±2.63%
 - **Samples:** 1082
 
 
@@ -48,9 +48,9 @@
 |---------------|-----------|----------|-------------|-------------|
 | K24 + Scale | 69.22% | 70.46% | -1.24% | +0.62% |
 | K24 + Scale + Offsets | 69.22% | 70.46% | -1.24% | +0.62% |
+| K24 + Scale + Offsets + Context | 69.22% | 70.46% | -1.24% | +0.62% |
 | Baseline | 67.11% | 69.85% | -2.74% | +0.00% |
 | Optimized K | 67.11% | 69.54% | -2.43% | -0.31% |
-| K24 + Scale + Offsets + Context | 42.40% | 48.00% | -5.60% | -21.85% |
 
 
 ### Incremental Improvements:
@@ -61,7 +61,7 @@
 
 - **K24 + Scale → K24 + Scale + Offsets:** +0.00% (70.46% → 70.46%)
 
-- **K24 + Scale + Offsets → K24 + Scale + Offsets + Context:** -22.46% (70.46% → 48.00%)
+- **K24 + Scale + Offsets → K24 + Scale + Offsets + Context:** +0.00% (70.46% → 70.46%)
 
 
 ## 4. Error Pattern Analysis
