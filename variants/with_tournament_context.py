@@ -5,10 +5,13 @@ Higher stakes tournaments = higher K-factor = bigger rating changes
 """
 
 from typing import Dict, Optional
-from variants.with_dynamic_offsets import DynamicOffsetElo
+from variants.with_dynamic_offsets import DynamicOffsetCalculator
+
+# Use DynamicOffsetCalculator as base (backwards compatible with old name)
+DynamicOffsetElo = DynamicOffsetCalculator
 
 
-class TournamentContextElo(DynamicOffsetElo):
+class TournamentContextElo(DynamicOffsetCalculator):
     """
     ELO system with tournament-context-aware K-factors
 
@@ -133,6 +136,55 @@ class TournamentContextElo(DynamicOffsetElo):
             return "Standard (Regular Season)"
         else:
             return "Low (Lower Tier)"
+
+    def expected_score(self, elo1: float, elo2: float) -> float:
+        """
+        Calculate expected win probability for team 1
+
+        Args:
+            elo1: ELO rating of team 1
+            elo2: ELO rating of team 2
+
+        Returns:
+            Win probability for team 1 (0.0 to 1.0)
+        """
+        return 1 / (1 + 10 ** ((elo2 - elo1) / 400))
+
+    def update_ratings_with_context(self, elo1: float, elo2: float,
+                                     score1: float, score2: float,
+                                     context: str = 'regular_season') -> tuple:
+        """
+        Update ratings with tournament context (simplified API)
+
+        Args:
+            elo1: Current ELO of team 1
+            elo2: Current ELO of team 2
+            score1: 1 if team1 won, 0 if lost
+            score2: 1 if team2 won, 0 if lost
+            context: Tournament context (worlds, playoffs, regular_season, msi)
+
+        Returns:
+            Tuple of (new_elo1, new_elo2)
+        """
+        # Map context to K-factor
+        tournament_k_factors = {
+            'worlds': 32,
+            'msi': 30,
+            'playoffs': 28,
+            'regular_season': 24,
+        }
+
+        k = tournament_k_factors.get(context, self.baseline_k)
+
+        # Calculate expected scores
+        E1 = self.expected_score(elo1, elo2)
+        E2 = 1 - E1
+
+        # Update ratings
+        new_elo1 = elo1 + k * (score1 - E1)
+        new_elo2 = elo2 + k * (score2 - E2)
+
+        return new_elo1, new_elo2
 
 
 if __name__ == "__main__":

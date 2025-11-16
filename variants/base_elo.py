@@ -350,3 +350,7 @@ if __name__ == "__main__":
     print(f"  K-factor: {stats['k_factor']}")
     
     print("\n" + "="*60)
+
+
+# Alias for backwards compatibility
+BaseElo = BaseEloCalculator

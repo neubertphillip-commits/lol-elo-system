@@ -386,3 +386,7 @@ if __name__ == "__main__":
         print(f"  {sf:.2f}: {count} matches ({percentage:.1f}%)")
     
     print("\n" + "="*60)
+
+
+# Alias for backwards compatibility
+ScaleFactorElo = ScaleFactorEloCalculator

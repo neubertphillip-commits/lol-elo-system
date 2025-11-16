@@ -298,3 +298,7 @@ if __name__ == "__main__":
     stats = calc.get_statistics()
     print(f"\n✓ Processed {stats['cross_region_matches']} cross-region matches")
     print(f"✓ Overall accuracy: {stats['accuracy']:.2%}")
+
+
+# Alias for backwards compatibility
+DynamicOffsetElo = DynamicOffsetCalculator
