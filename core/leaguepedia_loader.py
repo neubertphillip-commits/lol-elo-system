@@ -72,7 +72,7 @@ class LeaguepediaLoader:
     }
 
     API_ENDPOINT = "https://lol.fandom.com/api.php"
-    RATE_LIMIT_DELAY = 10.0  # seconds between requests (increased to avoid rate limiting)
+    RATE_LIMIT_DELAY = 2.0  # seconds between requests (reduced after successful testing)
     MAX_RETRIES = 3  # number of retries for rate-limited requests
 
     def __init__(self, db: DatabaseManager = None, bot_username: str = None, bot_password: str = None):
