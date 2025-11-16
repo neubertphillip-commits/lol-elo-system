@@ -84,10 +84,11 @@ def show():
                     team_elos[team2] = {'elo': 1500, 'matches': 0, 'wins': 0, 'losses': 0}
 
                 # Determine tournament context
-                tournament = match.get('tournament', '')
-                if 'world' in tournament.lower():
+                tournament = match.get('tournament') or ''
+                tournament_lower = tournament.lower() if tournament else ''
+                if 'world' in tournament_lower:
                     context = 'worlds'
-                elif 'playoff' in tournament.lower() or 'final' in tournament.lower():
+                elif 'playoff' in tournament_lower or 'final' in tournament_lower:
                     context = 'playoffs'
                 else:
                     context = 'regular_season'
@@ -321,10 +322,11 @@ def show():
                     team_elos[team2] = 1500
 
                 # Determine tournament context
-                tournament = match.get('tournament', '')
-                if 'world' in tournament.lower():
+                tournament = match.get('tournament') or ''
+                tournament_lower = tournament.lower() if tournament else ''
+                if 'world' in tournament_lower:
                     context = 'worlds'
-                elif 'playoff' in tournament.lower() or 'final' in tournament.lower():
+                elif 'playoff' in tournament_lower or 'final' in tournament_lower:
                     context = 'playoffs'
                 else:
                     context = 'regular_season'
