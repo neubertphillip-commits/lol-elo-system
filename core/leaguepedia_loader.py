@@ -72,7 +72,8 @@ class LeaguepediaLoader:
     }
 
     API_ENDPOINT = "https://lol.fandom.com/api.php"
-    RATE_LIMIT_DELAY = 5.0  # seconds between requests (to avoid rate limiting)
+    RATE_LIMIT_DELAY = 10.0  # seconds between requests (increased to avoid rate limiting)
+    MAX_RETRIES = 3  # number of retries for rate-limited requests
 
     def __init__(self, db: DatabaseManager = None):
         """
@@ -120,48 +121,66 @@ class LeaguepediaLoader:
         if order_by:
             params['order_by'] = order_by
 
-        try:
-            if debug:
-                print(f"    DEBUG: Query params: {params}")
+        # Retry logic for rate limiting
+        for attempt in range(self.MAX_RETRIES):
+            try:
+                if debug:
+                    print(f"    DEBUG: Query params: {params}")
 
-            response = self.session.get(self.API_ENDPOINT, params=params, timeout=30)
-            response.raise_for_status()
+                response = self.session.get(self.API_ENDPOINT, params=params, timeout=30)
+                response.raise_for_status()
 
-            data = response.json()
+                data = response.json()
 
-            if debug:
-                print(f"    DEBUG: Response status: {response.status_code}")
-                print(f"    DEBUG: Response keys: {data.keys()}")
+                if debug:
+                    print(f"    DEBUG: Response status: {response.status_code}")
+                    print(f"    DEBUG: Response keys: {data.keys()}")
+                    if 'error' in data:
+                        print(f"    DEBUG ERROR: {data['error']}")
+                    if 'cargoquery' in data:
+                        print(f"    DEBUG: Found {len(data['cargoquery'])} results")
+
+                # Check for API errors (e.g., rate limiting)
                 if 'error' in data:
-                    print(f"    DEBUG ERROR: {data['error']}")
-                if 'cargoquery' in data:
-                    print(f"    DEBUG: Found {len(data['cargoquery'])} results")
+                    error_code = data['error'].get('code', '')
+                    error_info = data['error'].get('info', '')
 
-            # Check for API errors (e.g., rate limiting)
-            if 'error' in data:
-                error_code = data['error'].get('code', '')
-                error_info = data['error'].get('info', '')
-                print(f"    [ERROR] API Error: {error_code} - {error_info}")
-                if error_code == 'ratelimited':
-                    print(f"    [WARNING] Rate limited - waiting longer before next request")
-                    time.sleep(10)  # Extra wait for rate limit
+                    if error_code == 'ratelimited':
+                        if attempt < self.MAX_RETRIES - 1:
+                            # Exponential backoff: wait longer on each retry
+                            wait_time = self.RATE_LIMIT_DELAY * (2 ** attempt)
+                            print(f"    [WARNING] Rate limited - waiting {wait_time}s before retry {attempt + 1}/{self.MAX_RETRIES}")
+                            time.sleep(wait_time)
+                            continue  # Retry
+                        else:
+                            print(f"    [ERROR] Rate limited after {self.MAX_RETRIES} retries - giving up")
+                            return []
+                    else:
+                        print(f"    [ERROR] API Error: {error_code} - {error_info}")
+                        return []
+
+                if 'cargoquery' in data:
+                    results = [item['title'] for item in data['cargoquery']]
+                    if not results and debug:
+                        print(f"    DEBUG: Query returned 0 results (not an error, just no matching data)")
+                    return results
+
                 return []
 
-            if 'cargoquery' in data:
-                results = [item['title'] for item in data['cargoquery']]
-                if not results and debug:
-                    print(f"    DEBUG: Query returned 0 results (not an error, just no matching data)")
-                return results
+            except requests.exceptions.RequestException as e:
+                if attempt < self.MAX_RETRIES - 1:
+                    wait_time = self.RATE_LIMIT_DELAY * (2 ** attempt)
+                    print(f"    [WARNING] Request failed: {e} - retrying in {wait_time}s")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    print(f"    [ERROR] API request failed after {self.MAX_RETRIES} retries: {e}")
+                    return []
 
-            return []
-
-        except requests.exceptions.RequestException as e:
-            print(f"    [ERROR] API request failed: {e}")
-            return []
-
-        finally:
-            # Rate limiting
-            time.sleep(self.RATE_LIMIT_DELAY)
+            finally:
+                # Rate limiting - always wait between requests
+                if attempt == self.MAX_RETRIES - 1 or 'data' in locals():
+                    time.sleep(self.RATE_LIMIT_DELAY)
 
     def _build_tournament_name(self, league: str, year: int, split: str) -> str:
         """
@@ -170,7 +189,7 @@ class LeaguepediaLoader:
         Args:
             league: League name (LEC, LPL, etc.)
             year: Calendar year
-            split: Split (Spring, Summer)
+            split: Split (Spring, Summer, Main Event)
 
         Returns:
             Tournament name for Leaguepedia
@@ -188,9 +207,13 @@ class LeaguepediaLoader:
         elif league == 'LCS' and year < 2018:
             primary_name = 'NA LCS'
 
-        # Leaguepedia uses "Split Season" format with SPACES (not underscores)
-        # Confirmed: "LEC/2024 Season/Summer Season" works
-        return f"{primary_name}/{year} Season/{split} Season"
+        # International tournaments (MSI, Worlds) don't use "Season" suffix for split
+        # Regional leagues use: "LEC/2024 Season/Summer Season"
+        # International use: "Mid-Season Invitational/2024 Season/Main Event"
+        if league in ['MSI', 'WORLDS']:
+            return f"{primary_name}/{year} Season/{split}"
+        else:
+            return f"{primary_name}/{year} Season/{split} Season"
 
     def get_tournament_matches(self, tournament_name: str,
                                include_players: bool = True,
@@ -569,7 +592,8 @@ class LeaguepediaLoader:
         total_imported += imported
 
         # Import playoffs if requested
-        if include_playoffs:
+        # International tournaments (MSI, Worlds) don't have separate playoffs
+        if include_playoffs and league not in ['MSI', 'WORLDS']:
             # Playoffs are usually separate pages (e.g., "LEC/2024 Season/Summer Playoffs")
             # Remove " Season" suffix and add " Playoffs"
             if " Season" in tournament_name:
