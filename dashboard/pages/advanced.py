@@ -146,7 +146,7 @@ def show():
             Or use Python:
 
             ```python
-            from core.team_name_resolver import TeamNameResolver
+            from core.name_resolver import TeamNameResolver
 
             resolver = TeamNameResolver()
             resolver.add_mapping(
@@ -234,12 +234,12 @@ def show():
             ```sql
             -- Top 10 teams by win count
             SELECT
-                t.team_name,
-                COUNT(m.match_id) as total_matches,
-                SUM(CASE WHEN m.winner_id = t.team_id THEN 1 ELSE 0 END) as wins
+                t.name,
+                COUNT(m.id) as total_matches,
+                SUM(CASE WHEN m.winner_id = t.id THEN 1 ELSE 0 END) as wins
             FROM teams t
-            JOIN matches m ON t.team_id IN (m.team1_id, m.team2_id)
-            GROUP BY t.team_id
+            JOIN matches m ON t.id IN (m.team1_id, m.team2_id)
+            GROUP BY t.id
             ORDER BY wins DESC
             LIMIT 10;
 
@@ -262,15 +262,15 @@ def show():
 
             -- Recent Worlds matches
             SELECT
-                m.match_date,
-                t1.team_name as team1,
-                t2.team_name as team2,
+                m.date,
+                t1.name as team1,
+                t2.name as team2,
                 m.team1_score || '-' || m.team2_score as score
             FROM matches m
             JOIN teams t1 ON m.team1_id = t1.team_id
             JOIN teams t2 ON m.team2_id = t2.team_id
             WHERE m.tournament LIKE '%World%'
-            ORDER BY m.match_date DESC
+            ORDER BY m.date DESC
             LIMIT 20;
             ```
             """)

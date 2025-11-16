@@ -95,23 +95,23 @@ def show():
             try:
                 query = """
                     SELECT
-                        m.match_date,
-                        t1.team_name as team1,
-                        t2.team_name as team2,
+                        m.date,
+                        t1.name as team1,
+                        t2.name as team2,
                         m.team1_score || '-' || m.team2_score as score,
-                        tw.team_name as winner
+                        tw.name as winner
                     FROM matches m
-                    JOIN teams t1 ON m.team1_id = t1.team_id
-                    JOIN teams t2 ON m.team2_id = t2.team_id
-                    JOIN teams tw ON m.winner_id = tw.team_id
-                    ORDER BY m.match_date DESC
+                    JOIN teams t1 ON m.team1_id = t1.id
+                    JOIN teams t2 ON m.team2_id = t2.id
+                    JOIN teams tw ON m.winner_id = tw.id
+                    ORDER BY m.date DESC
                     LIMIT 5
                 """
 
                 df_recent = pd.read_sql_query(query, db.conn)
 
                 if not df_recent.empty:
-                    df_recent['match_date'] = pd.to_datetime(df_recent['match_date']).dt.strftime('%Y-%m-%d')
+                    df_recent['date'] = pd.to_datetime(df_recent['date']).dt.strftime('%Y-%m-%d')
                     df_recent.columns = ['Date', 'Team 1', 'Team 2', 'Score', 'Winner']
 
                     st.dataframe(df_recent, use_container_width=True, hide_index=True)
@@ -340,7 +340,7 @@ def show():
                     SELECT COUNT(*) FROM teams t
                     WHERE NOT EXISTS (
                         SELECT 1 FROM matches m
-                        WHERE m.team1_id = t.team_id OR m.team2_id = t.team_id
+                        WHERE m.team1_id = t.id OR m.team2_id = t.id
                     )
                 """)
                 orphan_teams = cursor.fetchone()[0]

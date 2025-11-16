@@ -61,10 +61,10 @@ def show():
 
                         st.metric(
                             "K-Fold Accuracy (K=5)",
-                            f"{kfold_data.get('mean_accuracy', 0):.2%}",
-                            delta=f"±{kfold_data.get('margin_of_error', 0):.2%}"
+                            f"{kfold_data.get('mean_accuracy', 0):.2f}%",
+                            delta=f"±{kfold_data.get('std_accuracy', 0):.2f}%"
                         )
-                        st.caption(f"Std Dev: {kfold_data.get('std_dev', 0):.3%}")
+                        st.caption(f"Std Dev: {kfold_data.get('std_accuracy', 0):.2f}%")
                     except:
                         st.info("K-Fold results not available")
                 else:
