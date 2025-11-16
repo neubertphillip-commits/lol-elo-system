@@ -41,4 +41,4 @@ db/*.db-*
 
 # Jupyter
 .ipynb_checkpoints/
-*.ipynb
+*.ipynbimport_log.txt
