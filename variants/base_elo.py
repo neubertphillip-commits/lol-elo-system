@@ -352,5 +352,34 @@ if __name__ == "__main__":
     print("\n" + "="*60)
 
 
-# Alias for backwards compatibility
-BaseElo = BaseEloCalculator
+# Wrapper class for backwards compatibility with validation scripts
+class BaseElo:
+    """
+    Backwards-compatible wrapper for BaseEloCalculator
+    Provides the old API expected by validation scripts
+    """
+    def __init__(self, k_factor: float = 24, initial_elo: float = 1500,
+                 use_scale_factors: bool = False, scale_factors: dict = None):
+        # Create underlying calculator (ignores scale_factors since it's base ELO)
+        self.calculator = BaseEloCalculator(K=k_factor, initial_elo=initial_elo)
+        self.k_factor = k_factor
+        self.initial_elo = initial_elo
+
+    def update_ratings(self, team1: str, team2: str, score1: int, score2: int):
+        """Update ratings"""
+        match = {
+            'team1': team1,
+            'team2': team2,
+            'score1': score1,
+            'score2': score2,
+            'winner': team1 if score1 > score2 else team2
+        }
+        self.calculator.update(match)
+
+    def predict(self, team1: str, team2: str):
+        """Predict match outcome"""
+        return self.calculator.predict(team1, team2)
+
+    def get_elo(self, team: str) -> float:
+        """Get current ELO"""
+        return self.calculator.get_elo(team)

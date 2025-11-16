@@ -300,5 +300,46 @@ if __name__ == "__main__":
     print(f"✓ Overall accuracy: {stats['accuracy']:.2%}")
 
 
-# Alias for backwards compatibility
-DynamicOffsetElo = DynamicOffsetCalculator
+# Wrapper class for backwards compatibility with validation scripts
+class DynamicOffsetElo:
+    """
+    Backwards-compatible wrapper for DynamicOffsetCalculator
+    Provides the old API expected by validation scripts
+    """
+    def __init__(self, k_factor: float = 24, initial_elo: float = 1500,
+                 use_scale_factors: bool = True, scale_factors: dict = None):
+        # Create underlying calculator
+        self.calculator = DynamicOffsetCalculator(
+            K=k_factor,
+            scale_factors=scale_factors if use_scale_factors else None
+        )
+        self.k_factor = k_factor
+        self.initial_elo = initial_elo
+
+    def update_ratings(self, team1: str, team2: str, score1: int, score2: int):
+        """Update ratings (delegates to calculator)"""
+        match = {
+            'team1': team1,
+            'team2': team2,
+            'score1': score1,
+            'score2': score2,
+            'winner': team1 if score1 > score2 else team2
+        }
+        self.calculator.update(match)
+
+    def predict(self, team1: str, team2: str):
+        """Predict match outcome"""
+        elo1 = self.calculator.get_elo(team1)
+        elo2 = self.calculator.get_elo(team2)
+
+        # Expected score
+        E1 = 1 / (1 + 10 ** ((elo2 - elo1) / 400))
+
+        return {
+            'predicted_winner': team1 if E1 > 0.5 else team2,
+            'win_prob': max(E1, 1 - E1)
+        }
+
+    def get_elo(self, team: str) -> float:
+        """Get current ELO"""
+        return self.calculator.get_elo(team)
