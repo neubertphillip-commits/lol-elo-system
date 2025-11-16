@@ -109,26 +109,26 @@ st.sidebar.caption("Built with ❤️ for League of Legends Esports")
 
 # Load selected page
 if page == "🏠 Home":
-    from dashboard.pages import home
+    from dashboard.page_modules import home
     home.show()
 elif page == "📊 Rankings":
-    from dashboard.pages import rankings
+    from dashboard.page_modules import rankings
     rankings.show()
 elif page == "🎯 Match Predictor":
-    from dashboard.pages import predictor
+    from dashboard.page_modules import predictor
     predictor.show()
 elif page == "📈 Validation Suite":
-    from dashboard.pages import validation
+    from dashboard.page_modules import validation
     validation.show()
 elif page == "🔍 Analysis Tools":
-    from dashboard.pages import analysis
+    from dashboard.page_modules import analysis
     analysis.show()
 elif page == "📥 Data Management":
-    from dashboard.pages import data_management
+    from dashboard.page_modules import data_management
     data_management.show()
 elif page == "⚙️ Advanced Tools":
-    from dashboard.pages import advanced
+    from dashboard.page_modules import advanced
     advanced.show()
 elif page == "📚 Documentation":
-    from dashboard.pages import documentation
+    from dashboard.page_modules import documentation
     documentation.show()

@@ -448,8 +448,6 @@ def show():
 
                 if history and len(history) > 10:
                     # Build time series data
-                    import pandas as pd
-
                     # Group by match index to track offset evolution
                     offset_evolution = {}
                     regions = list(offsets.keys())
@@ -538,21 +536,24 @@ def show():
                 st.markdown("---")
                 st.subheader("Interpretation")
 
-                strongest = df_offsets.iloc[0]
-                weakest = df_offsets.iloc[-1]
+                if len(df_offsets) >= 2:
+                    strongest = df_offsets.iloc[0]
+                    weakest = df_offsets.iloc[-1]
 
-                st.markdown(f"""
-                **Strongest Region:** {strongest['Region']} (+{strongest['Offset']:.1f} ELO)
-                - Teams from this region perform ~{abs(strongest['Offset'])/20:.0f} points better than expected
-                - Based on {strongest['Samples']} cross-regional matches
+                    st.markdown(f"""
+                    **Strongest Region:** {strongest['Region']} (+{strongest['Offset']:.1f} ELO)
+                    - Teams from this region perform ~{abs(strongest['Offset'])/20:.0f} points better than expected
+                    - Based on {strongest['Samples']} cross-regional matches
 
-                **Weakest Region:** {weakest['Region']} ({weakest['Offset']:+.1f} ELO)
-                - Teams from this region perform ~{abs(weakest['Offset'])/20:.0f} points worse than expected
-                - Based on {weakest['Samples']} cross-regional matches
+                    **Weakest Region:** {weakest['Region']} ({weakest['Offset']:+.1f} ELO)
+                    - Teams from this region perform ~{abs(weakest['Offset'])/20:.0f} points worse than expected
+                    - Based on {weakest['Samples']} cross-regional matches
 
-                **Gap:** {strongest['Offset'] - weakest['Offset']:.1f} ELO points
-                - This equals ~{(strongest['Offset'] - weakest['Offset'])*2.5:.0f}% win probability swing
-                """)
+                    **Gap:** {strongest['Offset'] - weakest['Offset']:.1f} ELO points
+                    - This equals ~{(strongest['Offset'] - weakest['Offset'])*2.5:.0f}% win probability swing
+                    """)
+                else:
+                    st.info("Need at least 2 regions to show comparison")
 
             else:
                 st.warning("No regional offset data available. Need more cross-regional matches!")

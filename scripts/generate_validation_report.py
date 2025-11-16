@@ -93,20 +93,20 @@ def generate_comprehensive_report(output_file: str = "reports/validation_report.
         # Interpretation
         std = k_fold_results['std_accuracy']
         if std < 2.0:
-            interpretation = "✅ **Very Robust** - System performs consistently across time periods"
+            interpretation = "[PASS] **Very Robust** - System performs consistently across time periods"
         elif std < 5.0:
-            interpretation = "✅ **Robust** - Minor variations across time periods"
+            interpretation = "[PASS] **Robust** - Minor variations across time periods"
         elif std < 10.0:
             interpretation = "[WARNING] **Moderate** - Performance depends on time period"
         else:
-            interpretation = "❌ **High Variation** - System may be overfitting"
+            interpretation = "[FAIL] **High Variation** - System may be overfitting"
 
         report.append(f"\n\n**Interpretation:** {interpretation}")
 
     except Exception as e:
         print(f"[WARNING]  K-Fold validation failed: {e}")
         report.append("\n## 1. K-Fold Cross-Validation")
-        report.append(f"\n❌ **Failed:** {str(e)}")
+        report.append(f"\n[FAIL] **Failed:** {str(e)}")
 
     # 2. Bootstrap CI
     print("\n" + "="*70)
@@ -138,12 +138,12 @@ def generate_comprehensive_report(output_file: str = "reports/validation_report.
             elif cr['n_samples'] < 100:
                 report.append(f"\n[WARNING] **Note:** Moderate sample size - margin of error is significant")
             else:
-                report.append(f"\n✅ **Good:** Sufficient sample size for reliable estimates")
+                report.append(f"\n[PASS] **Good:** Sufficient sample size for reliable estimates")
 
     except Exception as e:
         print(f"[WARNING]  Bootstrap CI failed: {e}")
         report.append("\n\n## 2. Bootstrap Confidence Intervals")
-        report.append(f"\n❌ **Failed:** {str(e)}")
+        report.append(f"\n[FAIL] **Failed:** {str(e)}")
 
     # 3. Feature Importance
     print("\n" + "="*70)
@@ -237,7 +237,7 @@ def generate_comprehensive_report(output_file: str = "reports/validation_report.
     report.append("\n- **Insights:** Error patterns reveal where system struggles")
 
     report.append("\n\n### Recommendations:")
-    report.append("\n1. If std deviation < 5%: System is robust ✅")
+    report.append("\n1. If std deviation < 5%: System is robust [PASS]")
     report.append("\n2. If cross-regional samples < 100: Import more international data [IMPORT]")
     report.append("\n3. Check feature importance to prioritize improvements [CHECK]")
     report.append("\n4. Review error patterns to identify weaknesses [WARNING]")
@@ -252,7 +252,7 @@ def generate_comprehensive_report(output_file: str = "reports/validation_report.
     print("\n" + "="*70)
     print("REPORT GENERATION COMPLETE")
     print("="*70)
-    print(f"\n✅ Report saved to: {output_file}")
+    print(f"\n[OK] Report saved to: {output_file}")
 
     return output_file
 
