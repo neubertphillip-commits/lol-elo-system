@@ -78,8 +78,8 @@ def evaluate_fold(train_df: pd.DataFrame, test_df: pd.DataFrame,
     # Train on training data
     for _, row in train_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
 
             # Parse score
@@ -102,8 +102,8 @@ def evaluate_fold(train_df: pd.DataFrame, test_df: pd.DataFrame,
 
     for _, row in test_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
 
             # Parse score
