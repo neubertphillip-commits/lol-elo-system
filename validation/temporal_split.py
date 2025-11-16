@@ -80,7 +80,7 @@ class TemporalValidator:
         
         train_accuracy = sum(r['correct'] for r in train_results) / len(train_results)
         
-        print(f"✓ Train accuracy: {train_accuracy:.2%}")
+        print(f"[OK] Train accuracy: {train_accuracy:.2%}")
         
         # TEST PHASE (CRITICAL!)
         print(f"Testing on {len(test_matches)} matches (UNSEEN DATA)...")
@@ -111,8 +111,8 @@ class TemporalValidator:
         
         test_accuracy = sum(p['correct'] for p in test_predictions) / len(test_predictions)
         
-        print(f"✓ Test accuracy: {test_accuracy:.2%}")
-        print(f"✓ Overfitting: {(train_accuracy - test_accuracy):.2%}")
+        print(f"[OK] Test accuracy: {test_accuracy:.2%}")
+        print(f"[OK] Overfitting: {(train_accuracy - test_accuracy):.2%}")
         
         # Calculate additional metrics
         brier_score = self._calculate_brier_score(test_predictions)
@@ -261,7 +261,7 @@ def print_validation_report(result: Dict) -> None:
     print(f"VALIDATION REPORT: {result['variant_name']}")
     print("="*60)
     
-    print(f"\n📊 DATA SPLIT:")
+    print(f"\n[DATA] DATA SPLIT:")
     print(f"  Train: {result['train_size']} matches ({result['train_size']/(result['train_size']+result['test_size']):.0%})")
     print(f"  Test:  {result['test_size']} matches ({result['test_size']/(result['train_size']+result['test_size']):.0%})")
     if result['split_date']:
@@ -275,7 +275,7 @@ def print_validation_report(result: Dict) -> None:
     if result['overfitting'] < 0.02:
         overfitting_status = "✅ Excellent (no overfitting)"
     elif result['overfitting'] < 0.05:
-        overfitting_status = "⚠️  Moderate"
+        overfitting_status = "[WARNING]  Moderate"
     else:
         overfitting_status = "❌ High overfitting!"
     
@@ -303,7 +303,7 @@ if __name__ == "__main__":
     print("\nLoading matches...")
     loader = MatchDataLoader()
     matches = loader.get_matches_as_dicts()
-    print(f"✓ Loaded {len(matches)} matches")
+    print(f"[OK] Loaded {len(matches)} matches")
     
     # Validate base ELO
     validator = TemporalValidator(train_ratio=0.7)

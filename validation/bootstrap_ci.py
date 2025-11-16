@@ -53,7 +53,7 @@ def calculate_accuracy_ci(predictions: List[Dict],
     Returns:
         Dictionary with CI results
     """
-    print(f"\n🔄 Running bootstrap with {n_iterations} iterations...")
+    print(f"\n[PROCESSING] Running bootstrap with {n_iterations} iterations...")
 
     # Extract binary results
     results = [1 if p['correct'] else 0 for p in predictions]
@@ -141,7 +141,7 @@ def analyze_cross_regional_ci(df: pd.DataFrame,
     total_predictions = []
     team_regions = {}  # Track which region each team is from
 
-    print(f"\n📊 Processing {len(df)} matches...")
+    print(f"\n[DATA] Processing {len(df)} matches...")
 
     for _, row in df.iterrows():
         try:
@@ -202,8 +202,8 @@ def analyze_cross_regional_ci(df: pd.DataFrame,
         except Exception as e:
             continue
 
-    print(f"✓ Total predictions: {len(total_predictions)}")
-    print(f"✓ Cross-regional predictions: {len(cross_regional_predictions)}")
+    print(f"[OK] Total predictions: {len(total_predictions)}")
+    print(f"[OK] Cross-regional predictions: {len(cross_regional_predictions)}")
 
     # Calculate CIs
     print(f"\n📈 Calculating confidence intervals...")
@@ -224,7 +224,7 @@ def analyze_cross_regional_ci(df: pd.DataFrame,
     print("RESULTS")
     print("="*70)
 
-    print(f"\n📊 Overall Accuracy:")
+    print(f"\n[DATA] Overall Accuracy:")
     print(f"  Accuracy: {overall_ci['accuracy']:.2f}%")
     print(f"  95% CI:   [{overall_ci['ci_lower']:.2f}%, {overall_ci['ci_upper']:.2f}%]")
     print(f"  Samples:  {overall_ci['n_samples']}")
@@ -241,11 +241,11 @@ def analyze_cross_regional_ci(df: pd.DataFrame,
         # Comparison
         print(f"\n💡 Interpretation:")
         if cr_ci['n_samples'] < 50:
-            print(f"  ⚠️  Warning: Only {cr_ci['n_samples']} cross-regional samples")
+            print(f"  [WARNING]  Warning: Only {cr_ci['n_samples']} cross-regional samples")
             print(f"     Large margin of error (±{(cr_ci['ci_upper'] - cr_ci['ci_lower']) / 2:.2f}%)")
             print(f"     Need more international tournament data")
         elif cr_ci['n_samples'] < 100:
-            print(f"  ⚠️  Moderate sample size ({cr_ci['n_samples']} samples)")
+            print(f"  [WARNING]  Moderate sample size ({cr_ci['n_samples']} samples)")
             print(f"     Margin of error: ±{(cr_ci['ci_upper'] - cr_ci['ci_lower']) / 2:.2f}%")
         else:
             print(f"  ✅ Good sample size ({cr_ci['n_samples']} samples)")
@@ -264,11 +264,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Load data
-    print("\n📥 Loading data...")
+    print("\n[LOADING] Loading data...")
     with UnifiedDataLoader() as loader:
         df = loader.load_matches(source='auto')
 
-    print(f"✓ Loaded {len(df)} matches")
+    print(f"[OK] Loaded {len(df)} matches")
 
     # Run bootstrap
     results = analyze_cross_regional_ci(df, n_iterations=args.iterations)
@@ -286,4 +286,4 @@ if __name__ == "__main__":
         }
         json.dump(json_results, f, indent=2)
 
-    print(f"\n💾 Results saved to: {output_file}")
+    print(f"\n[SAVED] Results saved to: {output_file}")

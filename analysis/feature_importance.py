@@ -273,7 +273,7 @@ def run_feature_importance_analysis(df: pd.DataFrame) -> List[Dict]:
         result = evaluate_configuration(df, config_obj)
         results.append(result)
 
-        print(f"\n📊 Results:")
+        print(f"\n[DATA] Results:")
         print(f"  Train Accuracy: {result['train_accuracy']:.2f}%")
         print(f"  Test Accuracy:  {result['test_accuracy']:.2f}%")
         print(f"  Overfitting:    {result['overfitting']:+.2f}%")
@@ -316,11 +316,11 @@ def print_comparison_table(results: List[Dict]):
 
 if __name__ == "__main__":
     # Load data
-    print("\n📥 Loading data...")
+    print("\n[LOADING] Loading data...")
     with UnifiedDataLoader() as loader:
         df = loader.load_matches(source='auto')
 
-    print(f"✓ Loaded {len(df)} matches")
+    print(f"[OK] Loaded {len(df)} matches")
 
     # Run analysis
     results = run_feature_importance_analysis(df)
@@ -336,4 +336,4 @@ if __name__ == "__main__":
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
 
-    print(f"\n💾 Results saved to: {output_file}")
+    print(f"\n[SAVED] Results saved to: {output_file}")

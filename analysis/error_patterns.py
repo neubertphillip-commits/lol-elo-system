@@ -59,7 +59,7 @@ def analyze_error_patterns(df: pd.DataFrame, train_split: float = 0.7) -> Dict:
     train_df = df.iloc[:split_idx].copy()
     test_df = df.iloc[split_idx:].copy()
 
-    print(f"\n📊 Data Split:")
+    print(f"\n[DATA] Data Split:")
     print(f"  Train: {len(train_df)} matches")
     print(f"  Test:  {len(test_df)} matches")
 
@@ -72,7 +72,7 @@ def analyze_error_patterns(df: pd.DataFrame, train_split: float = 0.7) -> Dict:
     )
 
     # Train
-    print(f"\n🔄 Training on {len(train_df)} matches...")
+    print(f"\n[PROCESSING] Training on {len(train_df)} matches...")
     for _, row in train_df.iterrows():
         try:
             team1 = row['team1']
@@ -91,7 +91,7 @@ def analyze_error_patterns(df: pd.DataFrame, train_split: float = 0.7) -> Dict:
             continue
 
     # Analyze test set
-    print(f"\n🔍 Analyzing {len(test_df)} test matches...")
+    print(f"\n[ANALYZING] Analyzing {len(test_df)} test matches...")
 
     predictions = []
     errors_by_category = defaultdict(lambda: {'correct': 0, 'total': 0})
@@ -187,7 +187,7 @@ def print_error_analysis(results: Dict):
     correct = sum(1 for p in results['predictions'] if p['correct'])
     accuracy = (correct / total * 100) if total > 0 else 0
 
-    print(f"\n📊 Overall Test Accuracy: {accuracy:.2f}% ({correct}/{total})")
+    print(f"\n[DATA] Overall Test Accuracy: {accuracy:.2f}% ({correct}/{total})")
 
     # By ELO difference
     print(f"\n📈 Accuracy by ELO Difference:")
@@ -263,7 +263,7 @@ def print_error_analysis(results: Dict):
         elif stomp_acc > tossup_acc:
             print(f"  ✅ Stomps are slightly easier to predict ({stomp_acc:.1f}% vs {tossup_acc:.1f}%)")
         else:
-            print(f"  ⚠️  Stomps are NOT easier to predict ({stomp_acc:.1f}% vs {tossup_acc:.1f}%)")
+            print(f"  [WARNING]  Stomps are NOT easier to predict ({stomp_acc:.1f}% vs {tossup_acc:.1f}%)")
 
     # Check close vs stomp matches
     by_close = results['by_closeness']
@@ -274,18 +274,18 @@ def print_error_analysis(results: Dict):
         if abs(stomp_match_acc - close_match_acc) < 5:
             print(f"  ✅ Accuracy similar for close and stomp matches")
         elif stomp_match_acc > close_match_acc:
-            print(f"  ⚠️  Stomp matches easier to predict ({stomp_match_acc:.1f}% vs {close_match_acc:.1f}%)")
+            print(f"  [WARNING]  Stomp matches easier to predict ({stomp_match_acc:.1f}% vs {close_match_acc:.1f}%)")
         else:
-            print(f"  ⚠️  Close matches easier to predict ({close_match_acc:.1f}% vs {stomp_match_acc:.1f}%)")
+            print(f"  [WARNING]  Close matches easier to predict ({close_match_acc:.1f}% vs {stomp_match_acc:.1f}%)")
 
 
 if __name__ == "__main__":
     # Load data
-    print("\n📥 Loading data...")
+    print("\n[LOADING] Loading data...")
     with UnifiedDataLoader() as loader:
         df = loader.load_matches(source='auto')
 
-    print(f"✓ Loaded {len(df)} matches")
+    print(f"[OK] Loaded {len(df)} matches")
 
     # Run analysis
     results = analyze_error_patterns(df)
@@ -309,4 +309,4 @@ if __name__ == "__main__":
         }
         json.dump(json_results, f, indent=2)
 
-    print(f"\n💾 Results saved to: {output_file}")
+    print(f"\n[SAVED] Results saved to: {output_file}")
