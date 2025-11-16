@@ -41,4 +41,8 @@ db/*.db-*
 
 # Jupyter
 .ipynb_checkpoints/
-*.ipynbimport_log.txt
+*.ipynb
+
+# Import logs
+import_log.txt
+nohup.out
