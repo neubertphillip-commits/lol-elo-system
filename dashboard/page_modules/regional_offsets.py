@@ -127,19 +127,28 @@ def show():
             if history and len(history) > 10:
                 # Build time series data
                 offset_evolution = {}
-                regions = list(offsets.keys())
 
                 for i, h in enumerate(history):
                     if h.get('is_cross_region'):
-                        for region in regions:
-                            offset_key = f'offset{1 if region == h.get("region1") else 2 if region == h.get("region2") else None}'
-                            if offset_key and offset_key in h:
-                                if region not in offset_evolution:
-                                    offset_evolution[region] = []
-                                offset_evolution[region].append({
-                                    'match_index': i,
-                                    'offset': h[offset_key]
-                                })
+                        # Only track regions involved in this match
+                        region1 = h.get('region1')
+                        region2 = h.get('region2')
+
+                        if region1 and 'offset1' in h:
+                            if region1 not in offset_evolution:
+                                offset_evolution[region1] = []
+                            offset_evolution[region1].append({
+                                'match_index': i,
+                                'offset': h['offset1']
+                            })
+
+                        if region2 and 'offset2' in h:
+                            if region2 not in offset_evolution:
+                                offset_evolution[region2] = []
+                            offset_evolution[region2].append({
+                                'match_index': i,
+                                'offset': h['offset2']
+                            })
 
                 # Create chart data
                 if offset_evolution:
