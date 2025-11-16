@@ -321,32 +321,35 @@ class LeaguepediaLoader:
             print(f"[WARNING] Using per-game player queries (slow, may cause rate limiting!)")
 
         # Build WHERE clause
-        where_parts = [f"ScoreboardGames.OverviewPage='{tournament_name}'"]
+        # IMPORTANT: Don't use table prefixes in WHERE - causes MWException
+        where_parts = [f"OverviewPage='{tournament_name}'"]
         if stage_filter:
-            where_parts.append(f"ScoreboardGames.Tab='{stage_filter}'")
+            where_parts.append(f"Tab='{stage_filter}'")
 
         where = " AND ".join(where_parts)
 
         # Query ScoreboardGames
+        # IMPORTANT: Don't use table prefixes - causes MWException with WHERE clauses
+        # IMPORTANT: "Tab" field causes MWException - cannot be queried!
         fields = [
-            "ScoreboardGames.GameId",
-            "ScoreboardGames.Team1",
-            "ScoreboardGames.Team2",
-            "ScoreboardGames.Team1Score",
-            "ScoreboardGames.Team2Score",
-            "ScoreboardGames.Winner",
-            "ScoreboardGames.DateTime_UTC",
-            "ScoreboardGames.OverviewPage",
-            "ScoreboardGames.Tab",
-            "ScoreboardGames.Patch",
-            "ScoreboardGames.Gamelength"
+            "GameId",
+            "Team1",
+            "Team2",
+            "Team1Score",
+            "Team2Score",
+            "Winner",
+            "DateTime_UTC",
+            "OverviewPage",
+            # "Tab",  # REMOVED: Causes MWException
+            "Patch",
+            "Gamelength"
         ]
 
         games = self._query_cargo(
             tables="ScoreboardGames",
             fields=", ".join(fields),
             where=where,
-            order_by="ScoreboardGames.DateTime_UTC",
+            order_by="DateTime_UTC",
             limit=500
         )
 
@@ -365,7 +368,9 @@ class LeaguepediaLoader:
                 team2 = game.get('Team2')
                 winner = int(game.get('Winner', 0))
                 date_str = game.get('DateTime UTC')
-                stage = game.get('Tab', 'Regular Season')
+                # Tab field cannot be queried (causes MWException)
+                # Infer stage from tournament_name instead
+                stage = 'Playoffs' if 'Playoff' in tournament_name else 'Regular Season'
                 patch = game.get('Patch')
 
                 # Parse date
