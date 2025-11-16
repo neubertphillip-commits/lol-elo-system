@@ -45,11 +45,11 @@ class DynamicOffsetCalculator:
         # History
         self.history = []
         
-        # FIXED: Tighter regularization
+        # FIXED: Much tighter regularization to match Excel
         self.prior_mean = 0.0
-        self.prior_std = 15.0  # Was 30.0 - now tighter!
-        self.max_offset = 75.0  # Hard cap
-        self.min_samples_for_confidence = 10
+        self.prior_std = 5.0  # Very tight prior - offsets should be small
+        self.max_offset = 50.0  # Lower cap to match Excel range
+        self.min_samples_for_confidence = 20  # Higher threshold
     
     def get_elo(self, team: str) -> float:
         """Get ELO (delegates to base calculator)"""
@@ -62,33 +62,33 @@ class DynamicOffsetCalculator:
     def _bayesian_update(self, region: str, observation: float,
                         uncertainty: float, sample_count: int) -> Tuple[float, float]:
         """
-        Bayesian update with FIXED regularization
+        SIMPLIFIED Bayesian update - much more conservative like Excel
         """
         current_offset = self.offsets[region]
         current_confidence = self.confidence[region]
-        
-        # Prior variance (less confident = more pull to prior)
-        prior_variance = (self.prior_std ** 2) * (1 - current_confidence)
-        observation_variance = uncertainty ** 2
-        
-        # Posterior (weighted average)
-        total_variance = prior_variance + observation_variance
-        weight_obs = prior_variance / total_variance
-        weight_prior = observation_variance / total_variance
-        
-        new_offset = weight_prior * current_offset + weight_obs * observation
-        
-        # FIXED: Strong regularization for low samples
+
+        # Simple weighted update with moderate learning rate
+        # Like Excel, we make steady adjustments based on evidence
+        learning_rate = 0.15  # 15% of evidence is applied per update
+
+        # Reduce learning rate for low sample counts
         if sample_count < 20:
-            regularization = 1.0 - (sample_count / 20)
-            new_offset = new_offset * (1 - regularization * 0.5)
-        
-        # FIXED: Hard cap
+            learning_rate *= (sample_count / 20)
+
+        # Calculate change: move offset toward observation
+        change = learning_rate * (observation - current_offset)
+        new_offset = current_offset + change
+
+        # Very gentle pull toward zero (regularization)
+        regularization_strength = 0.005  # 0.5% pull to zero each update
+        new_offset = new_offset * (1 - regularization_strength)
+
+        # Hard cap
         new_offset = np.clip(new_offset, -self.max_offset, self.max_offset)
-        
-        # Update confidence
-        new_confidence = min(1.0, current_confidence + 0.005)  # Slower confidence growth
-        
+
+        # Update confidence (slower growth)
+        new_confidence = min(1.0, current_confidence + 0.002)
+
         return new_offset, new_confidence
     
     def update(self, match: Dict) -> Dict:
@@ -100,22 +100,23 @@ class DynamicOffsetCalculator:
         team2 = match['team2']
         winner = match['winner']
         
-        # Get regions (use parent for LTA)
-        region1 = self.region_mapper.get_region(team1, detailed=False)
-        region2 = self.region_mapper.get_region(team2, detailed=False)
+        # Get regions (use detailed=True to separate LTAN/LTAS like in Excel)
+        region1 = self.region_mapper.get_region(team1, detailed=True)
+        region2 = self.region_mapper.get_region(team2, detailed=True)
         
         # Get ELOs
         elo1 = self.get_elo(team1)
         elo2 = self.get_elo(team2)
-        
-        # Update base ELO first
+
+        # Update base ELO WITHOUT offsets (like Excel)
+        # Offsets are ONLY used for prediction, NOT for ELO updates
         base_update = self.base_calc.update(match)
-        
+
         # Check cross-region
-        is_cross_region = (region1 != region2 and 
-                          region1 != 'Unknown' and 
+        is_cross_region = (region1 != region2 and
+                          region1 != 'Unknown' and
                           region2 != 'Unknown')
-        
+
         update_record = {
             **base_update,
             'region1': region1,
@@ -128,7 +129,7 @@ class DynamicOffsetCalculator:
         # For non-cross-regional matches, still store current offsets for ALL regions
         # This prevents gaps in the history
         if not is_cross_region:
-            all_regions = self.region_mapper.get_all_regions(include_sub=False)
+            all_regions = self.region_mapper.get_all_regions(include_sub=True)
             for region in all_regions:
                 update_record[f'offset_{region}'] = self.offsets.get(region, 0.0)
 
@@ -139,17 +140,17 @@ class DynamicOffsetCalculator:
         pair_key = self._get_region_pair_key(region1, region2)
         self.sample_counts[pair_key] += 1
         sample_count = self.sample_counts[pair_key]
-        
-        # Calculate residual
+
+        # Calculate residual WITH offsets (to see if offsets need adjustment)
         offset1 = self.offsets.get(region1, 0.0)
         offset2 = self.offsets.get(region2, 0.0)
         adjusted_elo1 = elo1 + offset1
         adjusted_elo2 = elo2 + offset2
-        
+
         expected = 1 / (1 + 10 ** ((adjusted_elo2 - adjusted_elo1) / 400))
         actual = 1.0 if winner == team1 else 0.0
         residual = actual - expected
-        
+
         # Offset evidence
         offset_evidence = residual * 400 / np.log(10)
         
@@ -194,7 +195,7 @@ class DynamicOffsetCalculator:
 
         # FIXED: Store ALL region offsets after normalization
         # This ensures we can track how normalization affected all regions
-        all_regions = self.region_mapper.get_all_regions(include_sub=False)
+        all_regions = self.region_mapper.get_all_regions(include_sub=True)
         for region in all_regions:
             update_record[f'offset_{region}'] = self.offsets.get(region, 0.0)
 
@@ -206,8 +207,8 @@ class DynamicOffsetCalculator:
         return update_record
     
     def _normalize_offsets(self):
-        """Zero-sum normalization"""
-        regions = self.region_mapper.get_all_regions(include_sub=False)
+        """Zero-sum normalization across all 6 regions (LCK, LPL, LEC, LCP, LTAN, LTAS)"""
+        regions = self.region_mapper.get_all_regions(include_sub=True)
         total = sum(self.offsets.get(r, 0.0) for r in regions)
         mean_offset = total / len(regions)
         for region in regions:
@@ -216,9 +217,9 @@ class DynamicOffsetCalculator:
     def predict(self, team1: str, team2: str) -> Dict:
         """Predict with offsets"""
         base_pred = self.base_calc.predict(team1, team2)
-        
-        region1 = self.region_mapper.get_region(team1, detailed=False)
-        region2 = self.region_mapper.get_region(team2, detailed=False)
+
+        region1 = self.region_mapper.get_region(team1, detailed=True)
+        region2 = self.region_mapper.get_region(team2, detailed=True)
         
         offset1 = self.offsets.get(region1, 0.0) if region1 != region2 else 0.0
         offset2 = self.offsets.get(region2, 0.0) if region1 != region2 else 0.0
@@ -244,8 +245,8 @@ class DynamicOffsetCalculator:
         }
     
     def get_current_offsets(self) -> pd.DataFrame:
-        """Get offsets as DataFrame"""
-        regions = self.region_mapper.get_all_regions(include_sub=False)
+        """Get offsets as DataFrame (all 6 regions)"""
+        regions = self.region_mapper.get_all_regions(include_sub=True)
         
         data = []
         for region in sorted(regions):
