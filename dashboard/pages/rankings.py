@@ -11,27 +11,73 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from core.database import DatabaseManager
-from core.unified_data_loader import UnifiedDataLoader
-from variants.with_tournament_context import TournamentContextElo
+from core.elo_calculator_service import EloCalculatorService
 
 
 def show():
     """Display rankings page"""
 
-    st.title("📊 Team & Player Rankings")
+    st.title("Team & Player Rankings")
     st.markdown("Current ELO ratings and historical performance")
 
     # Tab selection
-    tab1, tab2, tab3 = st.tabs(["🏆 Team Rankings", "👤 Player Rankings", "📈 Historical Charts"])
+    tab1, tab2, tab3 = st.tabs(["Team Rankings", "Player Rankings", "Historical Charts"])
 
     # === TAB 1: TEAM RANKINGS ===
     with tab1:
-        st.subheader("🏆 Team Rankings")
+        st.subheader("Team Rankings")
 
         try:
             db = DatabaseManager()
+            service = EloCalculatorService(db)
+
+            # ELO Configuration Selection
+            st.markdown("---")
+            col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+
+            with col1:
+                variant = st.selectbox(
+                    "ELO Variant",
+                    ["tournament_context", "dynamic_offset", "scale_factor", "base"],
+                    format_func=lambda x: {
+                        'tournament_context': 'Tournament Context (Best)',
+                        'dynamic_offset': 'Dynamic Regional Offsets',
+                        'scale_factor': 'Scale Factor',
+                        'base': 'Base ELO'
+                    }[x]
+                )
+
+            with col2:
+                k_factor = st.number_input("K-Factor", min_value=8, max_value=48, value=24, step=4)
+
+            with col3:
+                use_scale_factors = st.checkbox("Scale Factors", value=True)
+
+            with col4:
+                if st.button("Recalculate", type="primary"):
+                    st.session_state['force_recalc'] = True
+
+            # Calculate or load ELOs
+            force_recalc = st.session_state.get('force_recalc', False)
+            if force_recalc:
+                st.session_state['force_recalc'] = False
+
+            with st.spinner('Loading ELO ratings...'):
+                config_id, team_elos = service.calculate_or_load_elos(
+                    variant=variant,
+                    k_factor=k_factor,
+                    use_scale_factors=use_scale_factors,
+                    force_recalculate=force_recalc
+                )
+
+            if not team_elos:
+                st.warning("No ELO data available. Import matches first!")
+                return
+
+            st.success(f"Loaded {len(team_elos)} teams")
 
             # Filters
+            st.markdown("---")
             col1, col2, col3 = st.columns(3)
 
             with col1:
@@ -53,77 +99,6 @@ def show():
                     "Sort By",
                     ["ELO Rating", "Team Name", "Region", "Matches Played"]
                 )
-
-            # Calculate current ELO for all teams
-            st.info("📊 Calculating current ELO ratings from match history...")
-
-            # Load matches
-            loader = UnifiedDataLoader()
-            matches_df = loader.load_matches(source='auto')
-
-            if matches_df.empty:
-                st.warning("No match data available. Import data first!")
-                db.close()
-                return
-
-            # Calculate ELO
-            elo = TournamentContextElo(k_factor=24)
-            team_elos = {}
-
-            # Sort by date
-            matches_df = matches_df.sort_values('date')
-
-            for _, match in matches_df.iterrows():
-                team1 = match['team1']
-                team2 = match['team2']
-
-                # Initialize teams if not seen before
-                if team1 not in team_elos:
-                    team_elos[team1] = {'elo': 1500, 'matches': 0, 'wins': 0, 'losses': 0}
-                if team2 not in team_elos:
-                    team_elos[team2] = {'elo': 1500, 'matches': 0, 'wins': 0, 'losses': 0}
-
-                # Determine tournament context
-                tournament = match.get('tournament', '') or ''
-                if tournament and isinstance(tournament, str):
-                    tournament_lower = tournament.lower()
-                    if 'world' in tournament_lower:
-                        context = 'worlds'
-                    elif 'playoff' in tournament_lower or 'final' in tournament_lower:
-                        context = 'playoffs'
-                    else:
-                        context = 'regular_season'
-                else:
-                    context = 'regular_season'
-
-                # Get current ratings
-                elo1_before = team_elos[team1]['elo']
-                elo2_before = team_elos[team2]['elo']
-
-                # Determine winner
-                winner = match['winner']
-
-                # Update ratings
-                score1 = 1 if winner == team1 else 0
-                score2 = 1 if winner == team2 else 0
-
-                elo1_after, elo2_after = elo.update_ratings_with_context(
-                    elo1_before, elo2_before, score1, score2, context
-                )
-
-                team_elos[team1]['elo'] = elo1_after
-                team_elos[team2]['elo'] = elo2_after
-
-                # Update stats
-                team_elos[team1]['matches'] += 1
-                team_elos[team2]['matches'] += 1
-
-                if score1 == 1:
-                    team_elos[team1]['wins'] += 1
-                    team_elos[team2]['losses'] += 1
-                else:
-                    team_elos[team2]['wins'] += 1
-                    team_elos[team1]['losses'] += 1
 
             # Get team regions from database
             cursor.execute("SELECT name, region FROM teams")

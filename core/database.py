@@ -126,11 +126,49 @@ class DatabaseManager:
             )
         """)
 
+        # ELO Configurations table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS elo_configs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                variant TEXT NOT NULL,
+                k_factor REAL NOT NULL,
+                use_scale_factors BOOLEAN DEFAULT 0,
+                scale_factors TEXT,
+                parameters TEXT,
+                config_hash TEXT UNIQUE NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        # ELO Ratings table (snapshot after each match)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS elo_ratings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                config_id INTEGER NOT NULL,
+                team_id INTEGER NOT NULL,
+                match_id INTEGER NOT NULL,
+                elo_value REAL NOT NULL,
+                matches_played INTEGER NOT NULL,
+                wins INTEGER DEFAULT 0,
+                losses INTEGER DEFAULT 0,
+                date TIMESTAMP NOT NULL,
+                FOREIGN KEY (config_id) REFERENCES elo_configs(id),
+                FOREIGN KEY (team_id) REFERENCES teams(id),
+                FOREIGN KEY (match_id) REFERENCES matches(id),
+                UNIQUE(config_id, team_id, match_id)
+            )
+        """)
+
         # Indices for performance
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_matches_date ON matches(date)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_matches_tournament ON matches(tournament_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_matches_teams ON matches(team1_id, team2_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_matches_external_id ON matches(external_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_elo_ratings_config ON elo_ratings(config_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_elo_ratings_team ON elo_ratings(team_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_elo_ratings_date ON elo_ratings(date)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_elo_configs_hash ON elo_configs(config_hash)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_match_players_match ON match_players(match_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_match_players_player ON match_players(player_id)")
 
