@@ -22,14 +22,14 @@ def temporal_k_fold_split(df: pd.DataFrame, k: int = 5) -> List[tuple]:
     Split data into k chronological folds
 
     Args:
-        df: DataFrame with matches (must have 'Date' column)
+        df: DataFrame with matches (must have 'date' column)
         k: Number of folds
 
     Returns:
         List of (train_df, test_df) tuples
     """
     # Sort by date
-    df = df.sort_values('Date').reset_index(drop=True)
+    df = df.sort_values('date').reset_index(drop=True)
 
     # Calculate fold size
     fold_size = len(df) // k
@@ -78,8 +78,8 @@ def evaluate_fold(train_df: pd.DataFrame, test_df: pd.DataFrame,
     # Train on training data
     for _, row in train_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
 
             # Parse score
@@ -102,8 +102,8 @@ def evaluate_fold(train_df: pd.DataFrame, test_df: pd.DataFrame,
 
     for _, row in test_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
 
             # Parse score
@@ -172,7 +172,7 @@ def run_k_fold_validation(k: int = 5, variant_class=DynamicOffsetElo) -> Dict:
         df = loader.load_matches(source='auto')
 
     print(f"✓ Loaded {len(df)} matches")
-    print(f"  Date range: {df['Date'].min()} to {df['Date'].max()}")
+    print(f"  Date range: {df['date'].min()} to {df['date'].max()}")
 
     # Create folds
     print(f"\n📊 Creating {k} temporal folds...")
@@ -184,8 +184,8 @@ def run_k_fold_validation(k: int = 5, variant_class=DynamicOffsetElo) -> Dict:
 
     for i, (train_df, test_df) in enumerate(folds, 1):
         print(f"\n🔄 Fold {i}/{len(folds)}")
-        print(f"  Train: {len(train_df)} matches ({train_df['Date'].min()} to {train_df['Date'].max()})")
-        print(f"  Test:  {len(test_df)} matches ({test_df['Date'].min()} to {test_df['Date'].max()})")
+        print(f"  Train: {len(train_df)} matches ({train_df['date'].min()} to {train_df['date'].max()})")
+        print(f"  Test:  {len(test_df)} matches ({test_df['date'].min()} to {test_df['date'].max()})")
 
         fold_result = evaluate_fold(train_df, test_df, variant_class)
         results.append(fold_result)

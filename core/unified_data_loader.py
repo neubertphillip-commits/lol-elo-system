@@ -66,12 +66,12 @@ class UnifiedDataLoader:
         df_data = []
         for m in matches:
             df_data.append({
-                'Date': pd.Timestamp(m['date']),
-                'Team 1': m['team1_name'],
-                'team 2': m['team2_name'],  # Note: lowercase to match sheets
+                'date': pd.Timestamp(m['date']),
+                'team1': m['team1_name'],
+                'team2': m['team2_name'],
                 'score': f"{m['team1_score']}-{m['team2_score']}",
-                'Elo Team 1': 1500,  # Will be calculated
-                'elo team 2': 1500,  # Will be calculated
+                'elo_team1': 1500,  # Will be calculated
+                'elo_team2': 1500,  # Will be calculated
                 'tournament': m.get('tournament', ''),
                 'stage': m.get('stage', ''),
                 'patch': m.get('patch', ''),
@@ -81,7 +81,7 @@ class UnifiedDataLoader:
         df = pd.DataFrame(df_data)
 
         # Sort chronologically
-        df = df.sort_values('Date').reset_index(drop=True)
+        df = df.sort_values('date').reset_index(drop=True)
 
         print(f"  ✓ Loaded {len(df)} matches from database")
         return df
@@ -89,6 +89,18 @@ class UnifiedDataLoader:
     def _load_from_google_sheets(self) -> pd.DataFrame:
         """Load matches from Google Sheets"""
         df = self.google_sheets_loader.load_matches()
+
+        # Normalize column names (Team 1 -> team1, team 2 -> team2)
+        column_mapping = {
+            'Team 1': 'team1',
+            'team 2': 'team2',
+            'Elo Team 1': 'elo_team1',
+            'elo team 2': 'elo_team2',
+            'Date': 'date'
+        }
+
+        # Rename columns that exist
+        df = df.rename(columns={k: v for k, v in column_mapping.items() if k in df.columns})
 
         # Add empty columns if not present
         if 'tournament' not in df.columns:
@@ -252,8 +264,8 @@ if __name__ == "__main__":
         if len(df) > 0:
             print(f"\n  First match:")
             first = df.iloc[0]
-            print(f"    Date: {first['Date']}")
-            print(f"    {first['Team 1']} vs {first['team 2']}")
+            print(f"    Date: {first['date']}")
+            print(f"    {first['team1']} vs {first['team2']}")
             print(f"    Score: {first['score']}")
             if 'source' in first:
                 print(f"    Source: {first['source']}")

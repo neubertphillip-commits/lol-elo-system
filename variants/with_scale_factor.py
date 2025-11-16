@@ -386,3 +386,52 @@ if __name__ == "__main__":
         print(f"  {sf:.2f}: {count} matches ({percentage:.1f}%)")
     
     print("\n" + "="*60)
+
+
+# Wrapper class for backwards compatibility with validation scripts
+class ScaleFactorElo:
+    """
+    Backwards-compatible wrapper for ScaleFactorEloCalculator
+    Provides the old API expected by validation scripts
+    """
+    def __init__(self, k_factor: float = 24, initial_elo: float = 1500,
+                 use_scale_factors: bool = True, scale_factors: dict = None):
+        # Create underlying calculator
+        self.calculator = ScaleFactorEloCalculator(
+            K=k_factor,
+            initial_elo=initial_elo,
+            scale_factors=scale_factors if use_scale_factors else None
+        )
+        self.k_factor = k_factor
+        self.initial_elo = initial_elo
+
+    def update_ratings(self, team1: str, team2: str, score1: int, score2: int):
+        """Update ratings"""
+        match = {
+            'team1': team1,
+            'team2': team2,
+            'score1': score1,
+            'score2': score2,
+            'winner': team1 if score1 > score2 else team2
+        }
+        self.calculator.update(match)
+
+    def predict(self, team1: str, team2: str):
+        """Predict match outcome"""
+        elo1 = self.calculator.get_elo(team1)
+        elo2 = self.calculator.get_elo(team2)
+
+        E1 = self.calculator.expected_score(elo1, elo2)
+
+        return {
+            'predicted_winner': team1 if E1 > 0.5 else team2,
+            'win_prob': max(E1, 1 - E1)
+        }
+
+    def get_elo(self, team: str) -> float:
+        """Get current ELO"""
+        return self.calculator.get_elo(team)
+
+    def get_rating(self, team: str) -> float:
+        """Get current rating (alias for get_elo)"""
+        return self.get_elo(team)
