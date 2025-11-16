@@ -75,18 +75,98 @@ class LeaguepediaLoader:
     RATE_LIMIT_DELAY = 10.0  # seconds between requests (increased to avoid rate limiting)
     MAX_RETRIES = 3  # number of retries for rate-limited requests
 
-    def __init__(self, db: DatabaseManager = None):
+    def __init__(self, db: DatabaseManager = None, bot_username: str = None, bot_password: str = None):
         """
         Initialize Leaguepedia loader
 
         Args:
             db: DatabaseManager instance (creates new if None)
+            bot_username: Bot username from Special:BotPasswords (optional, for higher rate limits)
+            bot_password: Bot password from Special:BotPasswords (optional)
         """
         self.db = db or DatabaseManager()
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'LOL-ELO-System/1.0 (Educational Research)'
         })
+
+        # Bot authentication (optional - reduces rate limiting)
+        self.authenticated = False
+        if bot_username and bot_password:
+            self._login(bot_username, bot_password)
+        else:
+            # Try to get credentials from environment variables
+            import os
+            env_username = os.getenv('LEAGUEPEDIA_BOT_USERNAME')
+            env_password = os.getenv('LEAGUEPEDIA_BOT_PASSWORD')
+            if env_username and env_password:
+                self._login(env_username, env_password)
+            else:
+                print("[INFO] Running without authentication - rate limits may apply")
+                print("[INFO] To authenticate, set LEAGUEPEDIA_BOT_USERNAME and LEAGUEPEDIA_BOT_PASSWORD")
+                print("[INFO] or create bot credentials at: https://lol.fandom.com/wiki/Special:BotPasswords")
+
+    def _login(self, username: str, password: str) -> bool:
+        """
+        Authenticate with Leaguepedia using bot credentials
+
+        Args:
+            username: Bot username (e.g., 'YourName@BotName')
+            password: Bot password from Special:BotPasswords
+
+        Returns:
+            True if authentication successful
+        """
+        try:
+            # Step 1: Get login token
+            token_params = {
+                'action': 'query',
+                'meta': 'tokens',
+                'type': 'login',
+                'format': 'json'
+            }
+
+            response = self.session.get(self.API_ENDPOINT, params=token_params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            if 'query' not in data or 'tokens' not in data['query']:
+                print(f"[ERROR] Failed to get login token: {data}")
+                return False
+
+            login_token = data['query']['tokens']['logintoken']
+
+            # Step 2: Login with credentials
+            login_params = {
+                'action': 'login',
+                'lgname': username,
+                'lgpassword': password,
+                'lgtoken': login_token,
+                'format': 'json'
+            }
+
+            response = self.session.post(self.API_ENDPOINT, data=login_params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            if 'login' in data:
+                result = data['login'].get('result', '')
+                if result == 'Success':
+                    self.authenticated = True
+                    print(f"[OK] Authenticated as {username}")
+                    return True
+                else:
+                    print(f"[ERROR] Login failed: {result}")
+                    if 'reason' in data['login']:
+                        print(f"[ERROR] Reason: {data['login']['reason']}")
+                    return False
+            else:
+                print(f"[ERROR] Unexpected login response: {data}")
+                return False
+
+        except Exception as e:
+            print(f"[ERROR] Authentication failed: {e}")
+            return False
 
     def _query_cargo(self, tables: str, fields: str, where: str = None,
                      join_on: str = None, order_by: str = None,
