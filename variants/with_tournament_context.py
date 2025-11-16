@@ -55,8 +55,13 @@ class TournamentContextElo(DynamicOffsetCalculator):
             use_scale_factors: Whether to use match closeness adjustments
             scale_factors: Scale factor configuration
         """
-        super().__init__(k_factor, initial_elo, use_scale_factors, scale_factors)
+        # Call parent with correct parameters (it only takes K and scale_factors)
+        super().__init__(
+            K=k_factor,
+            scale_factors=scale_factors if use_scale_factors else None
+        )
         self.baseline_k = k_factor
+        self.initial_elo = initial_elo
 
     def get_tournament_k_factor(self, tournament: Optional[str], stage: Optional[str]) -> float:
         """
@@ -104,16 +109,23 @@ class TournamentContextElo(DynamicOffsetCalculator):
         # Get context-appropriate K-factor
         k_factor = self.get_tournament_k_factor(tournament, stage)
 
-        # Temporarily override K-factor
-        original_k = self.k_factor
-        self.k_factor = k_factor
+        # Temporarily override K-factor in base calculator
+        original_k = self.base_calc.K
+        self.base_calc.K = k_factor
 
         try:
-            # Call parent's update_ratings
-            super().update_ratings(team1, team2, score1, score2, **kwargs)
+            # Call parent's update method with match dict
+            match = {
+                'team1': team1,
+                'team2': team2,
+                'score1': score1,
+                'score2': score2,
+                'winner': team1 if score1 > score2 else team2
+            }
+            super().update(match)
         finally:
             # Restore original K-factor
-            self.k_factor = original_k
+            self.base_calc.K = original_k
 
     def get_match_importance(self, tournament: Optional[str], stage: Optional[str]) -> str:
         """
@@ -186,6 +198,14 @@ class TournamentContextElo(DynamicOffsetCalculator):
 
         return new_elo1, new_elo2
 
+    def get_elo(self, team: str) -> float:
+        """Get current ELO (delegates to base calculator)"""
+        return self.base_calc.get_elo(team)
+
+    def get_rating(self, team: str) -> float:
+        """Get current rating (alias for get_elo)"""
+        return self.get_elo(team)
+
 
 if __name__ == "__main__":
     # Test the tournament context system
@@ -254,3 +274,48 @@ if __name__ == "__main__":
     print(f"  Gen.G: {elo.get_rating('Gen.G'):.0f} (change: {elo.get_rating('Gen.G') - 1500:.0f})")
 
     print("\n💡 Notice: Worlds produces bigger rating changes than regular season!")
+
+
+# Wrapper class for backwards compatibility with validation scripts
+class TournamentContextEloWrapper:
+    """
+    Backwards-compatible wrapper for TournamentContextElo
+    Provides the old API expected by validation scripts
+    """
+    def __init__(self, k_factor: float = 24, initial_elo: float = 1500,
+                 use_scale_factors: bool = True, scale_factors: dict = None):
+        # Create underlying calculator
+        self.calculator = TournamentContextElo(
+            k_factor=k_factor,
+            initial_elo=initial_elo,
+            use_scale_factors=use_scale_factors,
+            scale_factors=scale_factors
+        )
+        self.k_factor = k_factor
+        self.initial_elo = initial_elo
+
+    def update_ratings(self, team1: str, team2: str, score1: int, score2: int,
+                       tournament: str = None, stage: str = None):
+        """Update ratings with tournament context"""
+        self.calculator.update_ratings(team1, team2, score1, score2,
+                                      tournament=tournament, stage=stage)
+
+    def predict(self, team1: str, team2: str):
+        """Predict match outcome"""
+        elo1 = self.calculator.get_elo(team1)
+        elo2 = self.calculator.get_elo(team2)
+
+        E1 = self.calculator.expected_score(elo1, elo2)
+
+        return {
+            'predicted_winner': team1 if E1 > 0.5 else team2,
+            'win_prob': max(E1, 1 - E1)
+        }
+
+    def get_elo(self, team: str) -> float:
+        """Get current ELO"""
+        return self.calculator.get_elo(team)
+
+    def get_rating(self, team: str) -> float:
+        """Get current rating (alias for get_elo)"""
+        return self.get_elo(team)

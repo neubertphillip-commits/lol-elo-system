@@ -145,8 +145,8 @@ def analyze_cross_regional_ci(df: pd.DataFrame,
 
     for _, row in df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
             tournament = row.get('tournament', '')
 
