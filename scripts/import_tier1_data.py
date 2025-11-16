@@ -55,7 +55,7 @@ def import_tier1_historical_data(start_year: int = 2013,
     # Import each league
     for league in leagues:
         print(f"\n{'='*70}")
-        print(f"📥 Importing {league}")
+        print(f"[IMPORT] Importing {league}")
         print(f"{'='*70}")
 
         league_stats = {
@@ -65,7 +65,7 @@ def import_tier1_historical_data(start_year: int = 2013,
 
         # Get league configuration
         if league not in loader.TIER1_LEAGUES:
-            print(f"  ⚠️ Unknown league: {league}")
+            print(f"  [WARNING] Unknown league: {league}")
             continue
 
         config = loader.TIER1_LEAGUES[league]
@@ -77,7 +77,7 @@ def import_tier1_historical_data(start_year: int = 2013,
 
             for split in config['splits']:
                 try:
-                    print(f"\n  📅 {league} {year} {split}")
+                    print(f"\n  {league} {year} {split}")
 
                     imported = loader.import_league_season(
                         league=league,
@@ -91,18 +91,18 @@ def import_tier1_historical_data(start_year: int = 2013,
                     league_stats['total'] += imported
 
                 except Exception as e:
-                    print(f"    ⚠️ Error: {e}")
+                    print(f"    [WARNING] Error: {e}")
                     continue
 
             if year_total > 0:
                 league_stats['by_year'][year] = year_total
-                print(f"  ✓ {year} Total: {year_total} matches")
+                print(f"  [OK] {year} Total: {year_total} matches")
 
         # Update total stats
         total_stats['by_league'][league] = league_stats['total']
         total_stats['total_matches'] += league_stats['total']
 
-        print(f"\n✓ {league} Complete: {league_stats['total']} matches imported")
+        print(f"\n[OK] {league} Complete: {league_stats['total']} matches imported")
 
     # Final summary
     duration = datetime.now() - total_stats['start_time']
@@ -111,7 +111,7 @@ def import_tier1_historical_data(start_year: int = 2013,
     print("IMPORT COMPLETE")
     print("="*70)
 
-    print(f"\n📊 Import Statistics:")
+    print(f"\n[STATS] Import Statistics:")
     print(f"  Total Matches Imported: {total_stats['total_matches']}")
     print(f"  Duration: {duration}")
 
@@ -121,7 +121,7 @@ def import_tier1_historical_data(start_year: int = 2013,
 
     # Database final stats
     db_stats = db.get_stats()
-    print(f"\n📦 Final Database Stats:")
+    print(f"\n[DATABASE] Final Database Stats:")
     print(f"  Total Matches: {db_stats['total_matches']}")
     print(f"  Total Teams: {db_stats['total_teams']}")
     print(f"  Total Players: {db_stats['total_players']}")
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.test:
-        print("\n🧪 TEST MODE: Importing 2024 data only\n")
+        print("\n[TEST] TEST MODE: Importing 2024 data only\n")
         args.start_year = 2024
         args.end_year = 2024
 

@@ -43,6 +43,22 @@ def show():
     with col3:
         use_scale_factors = st.checkbox("Scale Factors", value=True, key="predictor_scale")
 
+    # ELO Variant Descriptions
+    with st.expander("What are these ELO variants?", expanded=False):
+        st.markdown("""
+        ### ELO Calculation Methods
+
+        **Base ELO:** Classic ELO - Simple and transparent (~69.85% accuracy)
+
+        **Scale Factor:** Rewards dominant victories more than close wins (~70.46% accuracy)
+
+        **Dynamic Regional Offsets:** Adjusts for regional strength based on international matches (~70.46% accuracy)
+
+        **Tournament Context (BEST):** Adapts K-factor based on tournament importance (~70.56% accuracy)
+
+        See the Rankings page for detailed explanations.
+        """)
+
     # Load current ELOs
     with st.spinner("Loading current team ratings..."):
         try:

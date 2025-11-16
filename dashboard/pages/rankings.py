@@ -59,6 +59,56 @@ def show():
                 if st.button("Recalculate", type="primary"):
                     st.session_state['force_recalc'] = True
 
+            # ELO Variant Descriptions
+            with st.expander("What are these ELO variants?", expanded=False):
+                st.markdown("""
+                ### ELO Calculation Methods
+
+                #### 1. Base ELO
+                **Simplest method** - Classic ELO rating system
+                - Fixed K-factor for all matches
+                - No adjustments for match context
+                - No regional considerations
+                - **Use when:** You want the simplest, most transparent system
+                - **Accuracy:** ~69.85%
+
+                #### 2. Scale Factor
+                **Match closeness matters** - Adjusts for score difference
+                - 3-0 win = Full K-factor (dominant performance)
+                - 3-2 win = Reduced K-factor (close match, less certain)
+                - Prevents overreacting to lucky wins
+                - **Use when:** You want to reward dominant victories more than close ones
+                - **Accuracy:** ~70.46%
+
+                #### 3. Dynamic Regional Offsets
+                **Cross-regional learning** - Adjusts for regional strength
+                - Tracks regional power automatically from international matches
+                - LCK beats LEC → LCK gets bonus, LEC gets penalty
+                - Updates dynamically as more data comes in
+                - **Use when:** You want to compare teams across regions fairly
+                - **Accuracy:** ~70.46%
+
+                #### 4. Tournament Context (BEST) ⭐
+                **Context-aware** - Different stakes = different K-factors
+                - Worlds/MSI: K=32 (high stakes, more rating change)
+                - Playoffs: K=28 (important matches)
+                - Regular Season: K=24 (standard)
+                - Combines Scale Factor + Dynamic Offsets
+                - **Use when:** You want the most accurate predictions
+                - **Accuracy:** ~70.56%
+
+                ### Parameters
+
+                **K-Factor:** Controls how much ratings change per match
+                - Higher K (32-48): Ratings change quickly, volatile
+                - Medium K (20-28): Balanced, recommended
+                - Lower K (8-16): Ratings change slowly, stable
+
+                **Scale Factors:** Match closeness adjustment
+                - Enabled: 3-0 wins count more than 3-2 wins
+                - Disabled: All wins count equally
+                """)
+
             # Calculate or load ELOs
             force_recalc = st.session_state.get('force_recalc', False)
             if force_recalc:
