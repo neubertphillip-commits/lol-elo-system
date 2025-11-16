@@ -151,7 +151,7 @@ if __name__ == "__main__":
     parser.add_argument('--end-year', type=int, default=None,
                        help='Ending year (default: current year)')
     parser.add_argument('--no-players', action='store_true',
-                       help='Skip player data import (faster)')
+                       help='Skip player data import (MUCH faster, avoids rate limits)')
     parser.add_argument('--leagues', nargs='+',
                        default=['LEC', 'LPL', 'LCK', 'LCS', 'WORLDS', 'MSI'],
                        help='Leagues to import (default: all Tier 1)')
@@ -164,6 +164,11 @@ if __name__ == "__main__":
         print("\n[TEST] TEST MODE: Importing 2024 data only\n")
         args.start_year = 2024
         args.end_year = 2024
+        # IMPORTANT: Disable players in test mode to avoid rate limiting!
+        if not args.no_players:
+            print("[INFO] Disabling player data in test mode to avoid rate limits")
+            print("[INFO] Use --no-players flag to disable this warning\n")
+            args.no_players = True
 
     import_tier1_historical_data(
         start_year=args.start_year,

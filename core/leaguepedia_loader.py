@@ -194,7 +194,8 @@ class LeaguepediaLoader:
 
     def get_tournament_matches(self, tournament_name: str,
                                include_players: bool = True,
-                               stage_filter: str = None) -> int:
+                               stage_filter: str = None,
+                               use_roster_inference: bool = True) -> int:
         """
         Load matches from a specific tournament
 
@@ -202,11 +203,19 @@ class LeaguepediaLoader:
             tournament_name: Tournament name (e.g. "LEC/2024 Season/Summer")
             include_players: Whether to fetch player data
             stage_filter: Optional stage filter (e.g. "Playoffs")
+            use_roster_inference: Use roster data to infer players (MUCH faster!)
+                                 True: ~10 queries per tournament (recommended)
+                                 False: ~150 queries per tournament (old method)
 
         Returns:
             Number of matches imported
         """
         print(f"\n[LOADING] Fetching matches from: {tournament_name}")
+
+        if include_players and use_roster_inference:
+            print(f"[INFO] Using roster inference for player data (efficient mode)")
+        elif include_players and not use_roster_inference:
+            print(f"[WARNING] Using per-game player queries (slow, may cause rate limiting!)")
 
         # Build WHERE clause
         where_parts = [f"ScoreboardGames.OverviewPage='{tournament_name}'"]
@@ -309,6 +318,28 @@ class LeaguepediaLoader:
 
         print(f"  Aggregated into {len(matches_by_id)} matches")
 
+        # Load roster data if using inference method
+        roster_mgr = None
+        if include_players and use_roster_inference:
+            # Extract all unique teams from matches
+            all_teams = set()
+            for match_data in matches_by_id.values():
+                all_teams.add(match_data['team1'])
+                all_teams.add(match_data['team2'])
+
+            # Load rosters for all teams (N queries where N = number of teams)
+            from core.roster_manager import RosterManager
+            roster_mgr = RosterManager(
+                api_endpoint=self.API_ENDPOINT,
+                session=self.session,
+                rate_limit_delay=self.RATE_LIMIT_DELAY
+            )
+            roster_mgr.load_tournament_rosters(tournament_name, all_teams)
+
+            summary = roster_mgr.get_roster_summary()
+            print(f"  [ROSTER] Loaded {summary['total_entries']} roster entries for {summary['teams']} teams")
+            print(f"  [EFFICIENCY] Using roster inference: ~{summary['teams']} queries instead of ~{len(games)} queries!")
+
         # Insert matches into database
         for match_id, match_data in matches_by_id.items():
             try:
@@ -336,12 +367,24 @@ class LeaguepediaLoader:
                 if db_match_id:
                     imported_count += 1
 
-                    # Fetch player data if requested
+                    # Import player data using one of two methods:
                     if include_players:
-                        for game in match_data['games']:
-                            self._fetch_game_players(db_match_id, game['game_id'],
-                                                    match_data['team1'],
-                                                    match_data['team2'])
+                        if use_roster_inference and roster_mgr:
+                            # METHOD 1: Roster Inference (EFFICIENT)
+                            # Infer players from roster data (no API queries!)
+                            self._infer_players_from_roster(
+                                db_match_id, match_data, roster_mgr
+                            )
+                        else:
+                            # METHOD 2: Per-Game Queries (SLOW)
+                            # WARNING: Makes MANY API queries (1 per game)
+                            # This will cause rate limiting for large tournaments
+                            for game in match_data['games']:
+                                self._fetch_game_players(
+                                    db_match_id, game['game_id'],
+                                    match_data['team1'],
+                                    match_data['team2']
+                                )
                 else:
                     skipped_count += 1
 
@@ -354,6 +397,86 @@ class LeaguepediaLoader:
             print(f"  [SKIP] Skipped (duplicates): {skipped_count} matches")
 
         return imported_count
+
+    def _infer_players_from_roster(self, match_id: int, match_data: Dict,
+                                   roster_mgr) -> None:
+        """
+        Infer player lineup from roster data (no API queries!)
+
+        This is MUCH more efficient than querying per game:
+        - Uses pre-loaded roster data
+        - Assumes roster stability between transactions
+        - No additional API calls needed
+
+        Args:
+            match_id: Database match ID
+            match_data: Match data dict with team1, team2, date
+            roster_mgr: RosterManager instance with loaded roster data
+        """
+        roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support']
+
+        # Get players for team1
+        team1_players = roster_mgr.get_players_for_game(
+            team=match_data['team1'],
+            game_date=match_data['date'],
+            roles=roles
+        )
+
+        # Get players for team2
+        team2_players = roster_mgr.get_players_for_game(
+            team=match_data['team2'],
+            game_date=match_data['date'],
+            roles=roles
+        )
+
+        # Insert team1 players
+        for role, player_name in team1_players.items():
+            if player_name:  # Only insert if we have a player
+                try:
+                    self.db.insert_match_player(
+                        match_id=match_id,
+                        player_name=player_name,
+                        team_name=match_data['team1'],
+                        role=role,
+                        # Note: We don't have game statistics from roster data
+                        # These would require per-game queries
+                        champion=None,
+                        kills=None,
+                        deaths=None,
+                        assists=None,
+                        gold=None,
+                        cs=None,
+                        damage_to_champions=None,
+                        vision_score=None,
+                        items=None,
+                        won=None
+                    )
+                except Exception as e:
+                    print(f"    [WARNING] Error inserting player {player_name} (Team1): {e}")
+
+        # Insert team2 players
+        for role, player_name in team2_players.items():
+            if player_name:  # Only insert if we have a player
+                try:
+                    self.db.insert_match_player(
+                        match_id=match_id,
+                        player_name=player_name,
+                        team_name=match_data['team2'],
+                        role=role,
+                        # Note: We don't have game statistics from roster data
+                        champion=None,
+                        kills=None,
+                        deaths=None,
+                        assists=None,
+                        gold=None,
+                        cs=None,
+                        damage_to_champions=None,
+                        vision_score=None,
+                        items=None,
+                        won=None
+                    )
+                except Exception as e:
+                    print(f"    [WARNING] Error inserting player {player_name} (Team2): {e}")
 
     def _fetch_game_players(self, match_id: int, game_id: str,
                            team1_name: str, team2_name: str) -> None:
