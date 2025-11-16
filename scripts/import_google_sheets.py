@@ -47,13 +47,18 @@ def import_google_sheets_to_db():
             try:
                 match_data = loader.parse_match(row)
 
+                # Convert pandas Timestamp to Python datetime
+                match_date = match_data['date']
+                if hasattr(match_date, 'to_pydatetime'):
+                    match_date = match_date.to_pydatetime()
+
                 # Insert match (with deduplication)
                 match_id = db.insert_match(
                     team1_name=match_data['team1'],
                     team2_name=match_data['team2'],
                     team1_score=match_data['score1'],
                     team2_score=match_data['score2'],
-                    date=match_data['date'],
+                    date=match_date,
                     source='google_sheets'
                 )
 

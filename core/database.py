@@ -298,6 +298,10 @@ class DatabaseManager:
         Returns:
             Match ID or None if duplicate
         """
+        # Convert pandas Timestamp to Python datetime if needed
+        if hasattr(date, 'to_pydatetime'):
+            date = date.to_pydatetime()
+
         # Check for duplicates
         if self.match_exists(external_id, team1_name, team2_name, date):
             return None
