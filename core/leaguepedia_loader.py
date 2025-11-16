@@ -287,12 +287,17 @@ class LeaguepediaLoader:
         elif league == 'LCS' and year < 2018:
             primary_name = 'NA LCS'
 
-        # International tournaments (MSI, Worlds) don't use "Season" suffix for split
-        # Regional leagues use: "LEC/2024 Season/Summer Season"
-        # International use: "Mid-Season Invitational/2024 Season/Main Event"
+        # International tournaments use "YEAR Tournament-Name" format
+        # MSI: "2024 Mid-Season Invitational"
+        # Worlds: "2024 Season World Championship"
         if league in ['MSI', 'WORLDS']:
-            return f"{primary_name}/{year} Season/{split}"
+            # Worlds uses "Season" prefix for most years
+            if league == 'WORLDS':
+                return f"{year} Season {primary_name}"
+            else:
+                return f"{year} {primary_name}"
         else:
+            # Regional leagues use: "LEC/2024 Season/Summer Season"
             return f"{primary_name}/{year} Season/{split} Season"
 
     def get_tournament_matches(self, tournament_name: str,
