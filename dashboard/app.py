@@ -75,6 +75,7 @@ page = st.sidebar.radio(
         "🏠 Home",
         "📊 Rankings",
         "🎯 Match Predictor",
+        "🌍 Regional Offsets",
         "📈 Validation Suite",
         "🔍 Analysis Tools",
         "📥 Data Management",
@@ -117,6 +118,9 @@ elif page == "📊 Rankings":
 elif page == "🎯 Match Predictor":
     from dashboard.page_modules import predictor
     predictor.show()
+elif page == "🌍 Regional Offsets":
+    from dashboard.page_modules import regional_offsets
+    regional_offsets.show()
 elif page == "📈 Validation Suite":
     from dashboard.page_modules import validation
     validation.show()
