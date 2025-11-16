@@ -435,6 +435,124 @@ def show():
             except Exception as e:
                 st.error(f"Error exporting: {str(e)}")
 
+        # Export ELO Match History
+        st.markdown("---")
+        st.markdown("### 📊 Export ELO Match History")
+
+        st.info("""
+        **Complete match history with ELO ratings:**
+
+        This export includes all matches with calculated ELO ratings before and after each match,
+        win probabilities, and ELO changes - similar to the Excel match sheet format.
+        """)
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            elo_variant = st.selectbox(
+                "ELO Variant",
+                ["dynamic_offset", "tournament_context", "scale_factor", "base"],
+                format_func=lambda x: {
+                    'dynamic_offset': 'Dynamic Regional Offsets',
+                    'tournament_context': 'Tournament Context',
+                    'scale_factor': 'Scale Factor',
+                    'base': 'Base ELO'
+                }[x],
+                key="export_elo_variant"
+            )
+
+        with col2:
+            elo_k_factor = st.number_input("K-Factor", min_value=8, max_value=48, value=24, step=4, key="export_k")
+
+        with col3:
+            elo_scale = st.checkbox("Use Scale Factors", value=True, key="export_scale")
+
+        if st.button("📥 Export ELO History", key="export_elo_history"):
+            try:
+                with st.spinner("Calculating ELO history... This may take a moment..."):
+                    # Use the export script logic
+                    from variants.with_dynamic_offsets import DynamicOffsetElo
+
+                    db = DatabaseManager()
+                    matches = db.get_all_matches(limit=None)
+
+                    # Initialize ELO calculator
+                    elo = DynamicOffsetElo(
+                        k_factor=elo_k_factor,
+                        initial_elo=1500,
+                        use_scale_factors=elo_scale
+                    )
+
+                    # Build match history with ELO values
+                    history_data = []
+
+                    for i, match in enumerate(matches, 1):
+                        team1 = match['team1_name']
+                        team2 = match['team2_name']
+                        score1 = match['team1_score']
+                        score2 = match['team2_score']
+
+                        # Get ELO BEFORE match
+                        team1_elo_before = elo.get_rating(team1)
+                        team2_elo_before = elo.get_rating(team2)
+
+                        # Calculate expected win probability
+                        prob_team1_wins = elo.expected_score(team1_elo_before, team2_elo_before)
+                        prob_team2_wins = 1 - prob_team1_wins
+
+                        # Update ratings
+                        delta1, delta2 = elo.update_ratings(team1, team2, score1, score2)
+
+                        # Get ELO AFTER match
+                        team1_elo_after = elo.get_rating(team1)
+                        team2_elo_after = elo.get_rating(team2)
+
+                        # Determine winner
+                        winner = team1 if score1 > score2 else team2
+
+                        # Build row
+                        row = {
+                            'Match': i,
+                            'Date': match['date'],
+                            'Team 1': team1,
+                            'Team 2': team2,
+                            'Score': f"{score1}-{score2}",
+                            'Winner': winner,
+                            'Tournament': match.get('tournament', match.get('stage', 'Unknown')),
+                            'Team 1 ELO Before': round(team1_elo_before, 1),
+                            'Team 2 ELO Before': round(team2_elo_before, 1),
+                            'Team 1 Win Prob': f"{prob_team1_wins*100:.1f}%",
+                            'Team 2 Win Prob': f"{prob_team2_wins*100:.1f}%",
+                            'Team 1 ELO Change': f"{delta1:+.1f}" if delta1 else "0.0",
+                            'Team 2 ELO Change': f"{delta2:+.1f}" if delta2 else "0.0",
+                            'Team 1 ELO After': round(team1_elo_after, 1),
+                            'Team 2 ELO After': round(team2_elo_after, 1)
+                        }
+
+                        history_data.append(row)
+
+                    df_history = pd.DataFrame(history_data)
+
+                    # Offer download
+                    csv = df_history.to_csv(index=False)
+                    st.download_button(
+                        "📥 Download ELO Match History CSV",
+                        data=csv,
+                        file_name=f"elo_match_history_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                        mime="text/csv"
+                    )
+
+                    st.success(f"✓ Generated history for {len(df_history)} matches!")
+
+                    # Show preview
+                    with st.expander("📋 Preview (first 10 matches)", expanded=False):
+                        st.dataframe(df_history.head(10), use_container_width=True)
+
+            except Exception as e:
+                st.error(f"Error generating ELO history: {str(e)}")
+                import traceback
+                st.code(traceback.format_exc())
+
         # Backup database
         st.markdown("---")
         st.markdown("### 💾 Backup & Restore")

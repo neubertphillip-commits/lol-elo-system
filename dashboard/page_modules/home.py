@@ -126,7 +126,14 @@ def show():
                     m.team1_score,
                     m.team2_score,
                     tw.name as winner,
-                    COALESCE(tourn.name, m.stage, '') as tournament
+                    COALESCE(
+                        tourn.name,
+                        CASE
+                            WHEN m.stage IS NOT NULL AND m.stage != ''
+                            THEN m.stage
+                            ELSE 'Regular Season'
+                        END
+                    ) as tournament
                 FROM matches m
                 JOIN teams t1 ON m.team1_id = t1.id
                 JOIN teams t2 ON m.team2_id = t2.id

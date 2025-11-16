@@ -111,10 +111,15 @@ def show():
     col1, col2, col3 = st.columns([2, 1, 2])
 
     with col1:
+        # Find index of previously selected team, or default to 0
+        default_team1_idx = 0
+        if 'team1_select' in st.session_state and st.session_state.team1_select in team_names:
+            default_team1_idx = team_names.index(st.session_state.team1_select)
+
         team1 = st.selectbox(
             "Team 1",
             team_names,
-            index=0,
+            index=default_team1_idx,
             key="team1_select"
         )
         team1_elo = team_elos.get(team1, 1500)
@@ -124,10 +129,15 @@ def show():
         st.markdown("<div style='text-align: center; padding-top: 2rem;'><h2>VS</h2></div>", unsafe_allow_html=True)
 
     with col3:
+        # Find index of previously selected team, or default to 1
+        default_team2_idx = min(1, len(team_names) - 1)
+        if 'team2_select' in st.session_state and st.session_state.team2_select in team_names:
+            default_team2_idx = team_names.index(st.session_state.team2_select)
+
         team2 = st.selectbox(
             "Team 2",
             team_names,
-            index=min(1, len(team_names) - 1),
+            index=default_team2_idx,
             key="team2_select"
         )
         team2_elo = team_elos.get(team2, 1500)

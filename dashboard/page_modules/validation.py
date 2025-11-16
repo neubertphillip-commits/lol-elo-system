@@ -173,13 +173,13 @@ def show():
                     st.metric("K Folds", results.get('k', 'N/A'))
 
                 with col2:
-                    st.metric("Mean Accuracy", f"{results.get('mean_accuracy', 0):.2%}")
+                    st.metric("Mean Accuracy", f"{results.get('mean_accuracy', 0):.2f}%")
 
                 with col3:
-                    st.metric("Std Deviation", f"{results.get('std_dev', 0):.3%}")
+                    st.metric("Std Deviation", f"{results.get('std_dev', 0):.3f}%")
 
                 with col4:
-                    st.metric("Margin of Error", f"±{results.get('margin_of_error', 0):.2%}")
+                    st.metric("Margin of Error", f"±{results.get('margin_of_error', 0):.2f}%")
 
                 # Fold-by-fold results
                 st.markdown("---")

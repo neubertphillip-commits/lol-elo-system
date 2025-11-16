@@ -176,7 +176,20 @@ def show():
 
             # Get team regions from database
             cursor.execute("SELECT name, region FROM teams")
-            team_regions = {row[0]: row[1] for row in cursor.fetchall()}
+            db_team_regions = {row[0]: row[1] for row in cursor.fetchall()}
+
+            # Use RegionMapper as fallback for teams without region in DB
+            from core.region_mapper import RegionMapper
+            region_mapper = RegionMapper()
+
+            team_regions = {}
+            for team in team_elos.keys():
+                # Try database first, then RegionMapper fallback
+                db_region = db_team_regions.get(team)
+                if db_region and db_region != 'Unknown':
+                    team_regions[team] = db_region
+                else:
+                    team_regions[team] = region_mapper.get_region(team, detailed=False)
 
             # Check if this variant uses regional offsets
             using_offsets = (variant in ['dynamic_offset', 'tournament_context']) or use_regional_offsets
