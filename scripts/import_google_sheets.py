@@ -20,25 +20,25 @@ def import_google_sheets_to_db():
     Uses deduplication to avoid inserting duplicates
     """
     print("="*60)
-    print("Google Sheets → SQLite Import")
+    print("Google Sheets -> SQLite Import")
     print("="*60)
 
     # Initialize
-    print("\n📊 Loading Google Sheets data...")
+    print("\nLoading Google Sheets data...")
     loader = MatchDataLoader()
     db = DatabaseManager()
 
     try:
         # Load matches from Google Sheets
         df = loader.load_matches()
-        print(f"✓ Loaded {len(df)} matches from Google Sheets")
+        print(f"[OK] Loaded {len(df)} matches from Google Sheets")
 
         # Get unique teams
         teams = loader.get_unique_teams()
-        print(f"✓ Found {len(teams)} unique teams")
+        print(f"[OK] Found {len(teams)} unique teams")
 
         # Import matches
-        print("\n💾 Importing into SQLite...")
+        print("\nImporting into SQLite...")
         imported_count = 0
         skipped_count = 0
         error_count = 0
@@ -59,6 +59,10 @@ def import_google_sheets_to_db():
                     team1_score=match_data['score1'],
                     team2_score=match_data['score2'],
                     date=match_date,
+                    tournament_name=match_data.get('tournament'),
+                    stage=match_data.get('stage'),
+                    patch=match_data.get('patch'),
+                    tournament_type=match_data.get('tournament_type'),
                     source='google_sheets'
                 )
 
@@ -71,21 +75,21 @@ def import_google_sheets_to_db():
 
             except Exception as e:
                 error_count += 1
-                print(f"  ⚠️ Error importing row {idx}: {e}")
+                print(f"  [WARNING] Error importing row {idx}: {e}")
 
         # Print summary
         print("\n" + "="*60)
         print("Import Summary")
         print("="*60)
-        print(f"✓ Imported: {imported_count} matches")
+        print(f"[OK] Imported: {imported_count} matches")
         if skipped_count > 0:
-            print(f"⊘ Skipped (duplicates): {skipped_count} matches")
+            print(f"[SKIP] Skipped (duplicates): {skipped_count} matches")
         if error_count > 0:
-            print(f"⚠️ Errors: {error_count} matches")
+            print(f"[ERROR] Errors: {error_count} matches")
 
         # Database stats
         stats = db.get_stats()
-        print(f"\n📊 Database Stats:")
+        print(f"\nDatabase Stats:")
         print(f"  Total Matches: {stats['total_matches']}")
         print(f"  Total Teams: {stats['total_teams']}")
         if stats['date_range'][0] and stats['date_range'][1]:

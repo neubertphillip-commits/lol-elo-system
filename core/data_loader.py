@@ -113,22 +113,22 @@ class MatchDataLoader:
     def parse_match(self, row: pd.Series) -> Dict:
         """
         Convert DataFrame row to standardized match dictionary
-        
+
         Args:
             row: DataFrame row
-            
+
         Returns:
             Dictionary with match data
         """
         score_parts = str(row['score']).split('-')
-        
+
         if len(score_parts) != 2:
             raise ValueError(f"Invalid score format: {row['score']}")
-        
+
         score1 = int(score_parts[0])
         score2 = int(score_parts[1])
-        
-        return {
+
+        match_dict = {
             'date': row['Date'],
             'team1': row['Team 1'],
             'team2': row['team 2'],
@@ -142,6 +142,16 @@ class MatchDataLoader:
             'is_bo5': max(score1, score2) <= 3,
             'games_played': score1 + score2
         }
+
+        # Add optional fields if they exist in the row
+        optional_fields = ['Tournament', 'Stage', 'Tournament Type', 'Patch']
+        for field in optional_fields:
+            if field in row.index and pd.notna(row[field]):
+                # Normalize field names to lowercase with underscores
+                normalized_field = field.lower().replace(' ', '_')
+                match_dict[normalized_field] = row[field]
+
+        return match_dict
     
     def get_matches_as_dicts(self, force_reload: bool = False) -> List[Dict]:
         """

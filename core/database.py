@@ -278,7 +278,8 @@ class DatabaseManager:
                      patch: str = None,
                      external_id: str = None,
                      source: str = "leaguepedia",
-                     region: str = None) -> Optional[int]:
+                     region: str = None,
+                     tournament_type: str = None) -> Optional[int]:
         """
         Insert match into database
 
@@ -294,6 +295,7 @@ class DatabaseManager:
             external_id: External match ID
             source: Data source (leaguepedia, google_sheets)
             region: Region
+            tournament_type: Tournament type (Regular Season, Playoffs, International)
 
         Returns:
             Match ID or None if duplicate
@@ -318,7 +320,11 @@ class DatabaseManager:
         # Get or create tournament
         tournament_id = None
         if tournament_name:
-            tournament_id = self.get_or_create_tournament(tournament_name, region)
+            tournament_id = self.get_or_create_tournament(
+                tournament_name,
+                region=region,
+                tournament_type=tournament_type
+            )
 
         # Determine Bo format
         max_score = max(team1_score, team2_score)

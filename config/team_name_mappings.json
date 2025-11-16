@@ -1,8 +1,3 @@
-"""
-Team Name Mapping Configuration
-Manual overrides for team names across different data sources
-"""
-
 {
   "_comment": "Maps team names from different sources to canonical names",
   "_sources": {
