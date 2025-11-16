@@ -439,6 +439,101 @@ def show():
                     }
                 )
 
+                # Historical Offset Evolution
+                st.markdown("---")
+                st.subheader("Historical Regional Strength Evolution")
+
+                # Get history from calculator
+                history = elo.calculator.history
+
+                if history and len(history) > 10:
+                    # Build time series data
+                    import pandas as pd
+
+                    # Group by match index to track offset evolution
+                    offset_evolution = {}
+                    regions = list(offsets.keys())
+
+                    for i, h in enumerate(history):
+                        if h.get('is_cross_region'):
+                            for region in regions:
+                                offset_key = f'offset{1 if region == h.get("region1") else 2 if region == h.get("region2") else None}'
+                                if offset_key and offset_key in h:
+                                    if region not in offset_evolution:
+                                        offset_evolution[region] = []
+                                    offset_evolution[region].append({
+                                        'match_index': i,
+                                        'offset': h[offset_key]
+                                    })
+
+                    # Create chart data
+                    if offset_evolution:
+                        chart_data = pd.DataFrame()
+                        for region, data_points in offset_evolution.items():
+                            if len(data_points) > 5:  # Only show if enough data
+                                df_region = pd.DataFrame(data_points)
+                                chart_data[region] = df_region.set_index('match_index')['offset']
+
+                        if not chart_data.empty:
+                            st.line_chart(chart_data, use_container_width=True)
+
+                            st.caption("""
+                            This chart shows how regional strength offsets evolved over time as more cross-regional
+                            matches were played. Sharp changes indicate surprising results (upsets or dominant performances).
+                            """)
+                        else:
+                            st.info("Not enough historical data to show evolution chart")
+                    else:
+                        st.info("No historical offset data available")
+
+                else:
+                    st.info("Need more matches to show historical evolution (minimum 10)")
+
+                # Cross-Regional Match Flow Data
+                st.markdown("---")
+                st.subheader("Key Cross-Regional Matches")
+
+                # Filter cross-regional matches from history
+                cross_regional_matches = [h for h in history if h.get('is_cross_region')]
+
+                if cross_regional_matches:
+                    # Show last 20 cross-regional matches
+                    recent_cross = cross_regional_matches[-20:]
+
+                    flow_data = []
+                    for h in reversed(recent_cross):  # Most recent first
+                        flow_data.append({
+                            'Winner Region': h.get('region1') if h.get('correct') else h.get('region2'),
+                            'Loser Region': h.get('region2') if h.get('correct') else h.get('region1'),
+                            'ELO Change': abs(h.get('delta1', 0)),
+                            'Offset Impact': f"{h.get('offset1', 0):+.1f} / {h.get('offset2', 0):+.1f}"
+                        })
+
+                    df_flow = pd.DataFrame(flow_data)
+
+                    st.dataframe(
+                        df_flow,
+                        use_container_width=True,
+                        hide_index=True,
+                        column_config={
+                            'ELO Change': st.column_config.NumberColumn(
+                                'ELO Change',
+                                format='%.1f'
+                            ),
+                            'Offset Impact': st.column_config.TextColumn(
+                                'Regional Offset Change',
+                                help='How this match affected regional offsets'
+                            )
+                        }
+                    )
+
+                    st.caption(f"""
+                    Showing the {len(flow_data)} most recent cross-regional matches.
+                    These matches directly influence the regional strength offsets above.
+                    """)
+                else:
+                    st.info("No cross-regional match data available")
+
                 # Explanation
                 st.markdown("---")
                 st.subheader("Interpretation")
