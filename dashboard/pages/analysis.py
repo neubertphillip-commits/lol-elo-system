@@ -19,10 +19,11 @@ def show():
     st.markdown("Deep dive into model performance and error patterns")
 
     # Tabs
-    tab1, tab2, tab3 = st.tabs([
-        "🎯 Feature Importance",
-        "📉 Error Patterns",
-        "📊 Custom Analysis"
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "Feature Importance",
+        "Error Patterns",
+        "Regional Offsets",
+        "Custom Analysis"
     ])
 
     # === TAB 1: FEATURE IMPORTANCE ===
@@ -335,8 +336,139 @@ def show():
             Or run master validation report to generate all analyses.
             """)
 
-    # === TAB 3: CUSTOM ANALYSIS ===
+    # === TAB 3: REGIONAL OFFSETS ===
     with tab3:
+        st.subheader("Regional Strength Offsets")
+        st.markdown("Dynamic regional power rankings based on cross-regional match performance")
+
+        st.info("""
+        **What are Regional Offsets?**
+
+        When teams from different regions play each other, we learn about relative regional strength.
+        Dynamic Offset ELO tracks these adjustments automatically:
+
+        - **Positive offset** → Region is stronger than expected
+        - **Negative offset** → Region is weaker than expected
+        - **Zero offset** → Region performs as expected
+
+        Example: If LCK teams consistently beat LEC teams, LCK gets +offset, LEC gets -offset.
+        """)
+
+        # Load DynamicOffsetElo with data
+        try:
+            from core.database import DatabaseManager
+            from core.elo_calculator_service import EloCalculatorService
+
+            db = DatabaseManager()
+            service = EloCalculatorService(db)
+
+            # Calculate DynamicOffsetElo
+            with st.spinner('Calculating regional offsets...'):
+                config_id, ratings = service.calculate_or_load_elos(
+                    variant='dynamic_offset',
+                    k_factor=24,
+                    use_scale_factors=True
+                )
+
+            # Load the actual calculator to get offsets
+            from variants.with_dynamic_offsets import DynamicOffsetElo
+
+            elo = DynamicOffsetElo(k_factor=24, use_scale_factors=True)
+
+            # Reload all matches to populate offsets
+            matches = db.get_all_matches(limit=None)
+            for match in matches:
+                elo.update_ratings(
+                    match['team1_name'],
+                    match['team2_name'],
+                    match['team1_score'],
+                    match['team2_score']
+                )
+
+            # Get offsets
+            offsets = elo.calculator.offsets
+            confidence = elo.calculator.confidence
+            sample_counts = elo.calculator.sample_counts
+
+            if offsets:
+                # Create DataFrame
+                offset_data = []
+                for region, offset_value in offsets.items():
+                    offset_data.append({
+                        'Region': region,
+                        'Offset': round(offset_value, 1),
+                        'Confidence': f"{confidence.get(region, 0)*100:.0f}%",
+                        'Samples': sum(count for pair, count in sample_counts.items() if region in pair)
+                    })
+
+                df_offsets = pd.DataFrame(offset_data)
+                df_offsets = df_offsets.sort_values('Offset', ascending=False)
+
+                # Display
+                st.markdown("---")
+                st.subheader("Current Regional Offsets")
+
+                # Metrics in columns
+                cols = st.columns(min(4, len(df_offsets)))
+                for i, (_, row) in enumerate(df_offsets.iterrows()):
+                    if i < len(cols):
+                        with cols[i]:
+                            delta_color = "normal" if row['Offset'] >= 0 else "inverse"
+                            st.metric(
+                                row['Region'],
+                                f"{row['Offset']:+.1f}",
+                                delta=f"{row['Confidence']} confidence"
+                            )
+
+                # Table
+                st.markdown("---")
+                st.dataframe(
+                    df_offsets,
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config={
+                        'Offset': st.column_config.NumberColumn(
+                            'ELO Offset',
+                            help='Positive = stronger than expected',
+                            format='%+.1f'
+                        ),
+                        'Samples': st.column_config.NumberColumn(
+                            'Cross-Regional Matches',
+                            help='Number of matches used to calculate offset'
+                        )
+                    }
+                )
+
+                # Explanation
+                st.markdown("---")
+                st.subheader("Interpretation")
+
+                strongest = df_offsets.iloc[0]
+                weakest = df_offsets.iloc[-1]
+
+                st.markdown(f"""
+                **Strongest Region:** {strongest['Region']} (+{strongest['Offset']:.1f} ELO)
+                - Teams from this region perform ~{abs(strongest['Offset'])/20:.0f} points better than expected
+                - Based on {strongest['Samples']} cross-regional matches
+
+                **Weakest Region:** {weakest['Region']} ({weakest['Offset']:+.1f} ELO)
+                - Teams from this region perform ~{abs(weakest['Offset'])/20:.0f} points worse than expected
+                - Based on {weakest['Samples']} cross-regional matches
+
+                **Gap:** {strongest['Offset'] - weakest['Offset']:.1f} ELO points
+                - This equals ~{(strongest['Offset'] - weakest['Offset'])*2.5:.0f}% win probability swing
+                """)
+
+            else:
+                st.warning("No regional offset data available. Need more cross-regional matches!")
+
+        except Exception as e:
+            st.error(f"Error loading regional offsets: {str(e)}")
+            import traceback
+            st.code(traceback.format_exc())
+
+    # === TAB 4: CUSTOM ANALYSIS ===
+    with tab4:
         st.subheader("📊 Custom Analysis")
         st.markdown("Build custom queries and analyses")
 

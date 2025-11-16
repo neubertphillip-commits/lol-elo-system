@@ -11,77 +11,55 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from core.database import DatabaseManager
-from core.unified_data_loader import UnifiedDataLoader
-from variants.with_tournament_context import TournamentContextElo
-
-
-def calculate_current_elos():
-    """Calculate current ELO for all teams"""
-    try:
-        loader = UnifiedDataLoader()
-        matches_df = loader.load_matches(source='auto')
-
-        if matches_df.empty:
-            return {}
-
-        elo = TournamentContextElo(k_factor=24)
-        team_elos = {}
-
-        # Sort by date
-        matches_df = matches_df.sort_values('date')
-
-        for _, match in matches_df.iterrows():
-            team1 = match['team1']
-            team2 = match['team2']
-
-            # Initialize teams if not seen before
-            if team1 not in team_elos:
-                team_elos[team1] = 1500
-            if team2 not in team_elos:
-                team_elos[team2] = 1500
-
-            # Determine tournament context
-            tournament = match.get('tournament', '') or ''
-            if tournament and isinstance(tournament, str):
-                tournament_lower = tournament.lower()
-                if 'world' in tournament_lower:
-                    context = 'worlds'
-                elif 'playoff' in tournament_lower or 'final' in tournament_lower:
-                    context = 'playoffs'
-                else:
-                    context = 'regular_season'
-            else:
-                context = 'regular_season'
-
-            # Determine winner
-            winner = match['winner']
-            score1 = 1 if winner == team1 else 0
-            score2 = 1 if winner == team2 else 0
-
-            # Update ratings
-            elo1_after, elo2_after = elo.update_ratings_with_context(
-                team_elos[team1], team_elos[team2], score1, score2, context
-            )
-
-            team_elos[team1] = elo1_after
-            team_elos[team2] = elo2_after
-
-        return team_elos
-
-    except Exception as e:
-        st.error(f"Error calculating ELOs: {str(e)}")
-        return {}
+from core.elo_calculator_service import EloCalculatorService
 
 
 def show():
     """Display match predictor page"""
 
-    st.title("🎯 Match Outcome Predictor")
+    st.title("Match Outcome Predictor")
     st.markdown("Predict League of Legends match outcomes using ELO ratings")
 
-    # Calculate current ELOs
+    # ELO Configuration Selection
+    st.markdown("---")
+    col1, col2, col3 = st.columns([2, 1, 1])
+
+    with col1:
+        variant = st.selectbox(
+            "ELO Variant",
+            ["tournament_context", "dynamic_offset", "scale_factor", "base"],
+            format_func=lambda x: {
+                'tournament_context': 'Tournament Context (Best)',
+                'dynamic_offset': 'Dynamic Regional Offsets',
+                'scale_factor': 'Scale Factor',
+                'base': 'Base ELO'
+            }[x],
+            key="predictor_variant"
+        )
+
+    with col2:
+        k_factor = st.number_input("K-Factor", min_value=8, max_value=48, value=24, step=4, key="predictor_k")
+
+    with col3:
+        use_scale_factors = st.checkbox("Scale Factors", value=True, key="predictor_scale")
+
+    # Load current ELOs
     with st.spinner("Loading current team ratings..."):
-        team_elos = calculate_current_elos()
+        try:
+            db = DatabaseManager()
+            service = EloCalculatorService(db)
+
+            config_id, team_ratings = service.calculate_or_load_elos(
+                variant=variant,
+                k_factor=k_factor,
+                use_scale_factors=use_scale_factors
+            )
+
+            # Convert to simple dict (elo values only)
+            team_elos = {team: stats['elo'] for team, stats in team_ratings.items()}
+        except Exception as e:
+            st.error(f"Error loading ELOs: {str(e)}")
+            team_elos = {}
 
     if not team_elos:
         st.warning("No team data available. Import matches first!")
