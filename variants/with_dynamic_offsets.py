@@ -342,4 +342,3 @@ class DynamicOffsetElo:
 
     def get_elo(self, team: str) -> float:
         """Get current ELO"""
-        return self.calculator.get_elo(team)

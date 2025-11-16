@@ -383,3 +383,7 @@ class BaseElo:
     def get_elo(self, team: str) -> float:
         """Get current ELO"""
         return self.calculator.get_elo(team)
+
+    def get_rating(self, team: str) -> float:
+        """Get current rating (alias for get_elo)"""
+        return self.get_elo(team)
