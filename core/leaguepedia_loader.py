@@ -169,7 +169,7 @@ class LeaguepediaLoader:
 
         Args:
             league: League name (LEC, LPL, etc.)
-            year: Year
+            year: Calendar year
             split: Split (Spring, Summer)
 
         Returns:
@@ -182,14 +182,15 @@ class LeaguepediaLoader:
         # Handle name variations
         primary_name = config['names'][0]
 
-        # Special cases
+        # Special cases for league rebranding
         if league == 'LEC' and year < 2019:
             primary_name = 'EU LCS'
         elif league == 'LCS' and year < 2018:
             primary_name = 'NA LCS'
 
         # Leaguepedia uses "Split Season" format (e.g., "Summer Season")
-        return f"{primary_name}/{year} Season/{split} Season"
+        # Note: OverviewPage field might use underscores instead of spaces
+        return f"{primary_name}/{year}_Season/{split}_Season"
 
     def get_tournament_matches(self, tournament_name: str,
                                include_players: bool = True,
