@@ -161,17 +161,19 @@ class DynamicOffsetCalculator:
         # Update offsets
         winner_region = region1 if winner == team1 else region2
         loser_region = region2 if winner == team1 else region1
-        
+
+        # FIXED: Pass only the evidence, not current + evidence
+        # The Bayesian update combines prior (current offset) with observation (evidence)
         new_offset_winner, new_conf_winner = self._bayesian_update(
             winner_region,
-            self.offsets[winner_region] + abs(offset_evidence),
+            abs(offset_evidence),  # FIXED: was self.offsets[winner_region] + abs(offset_evidence)
             total_uncertainty,
             sample_count
         )
-        
+
         new_offset_loser, new_conf_loser = self._bayesian_update(
             loser_region,
-            self.offsets[loser_region] - abs(offset_evidence),
+            -abs(offset_evidence),  # FIXED: was self.offsets[loser_region] - abs(offset_evidence)
             total_uncertainty,
             sample_count
         )
