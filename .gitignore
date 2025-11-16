@@ -34,6 +34,8 @@ data/
 # Database
 db/*.db
 db/*.db-*
+*.db
+*.db-*
 *.sqlite
 *.sqlite3
 
