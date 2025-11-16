@@ -120,18 +120,19 @@ def show():
             # Get recent matches
             query = """
                 SELECT
-                    m.match_date,
-                    t1.team_name as team1,
-                    t2.team_name as team2,
+                    m.date,
+                    t1.name as team1,
+                    t2.name as team2,
                     m.team1_score,
                     m.team2_score,
-                    tw.team_name as winner,
-                    m.tournament
+                    tw.name as winner,
+                    COALESCE(tourn.name, m.stage, '') as tournament
                 FROM matches m
-                JOIN teams t1 ON m.team1_id = t1.team_id
-                JOIN teams t2 ON m.team2_id = t2.team_id
-                JOIN teams tw ON m.winner_id = tw.team_id
-                ORDER BY m.match_date DESC
+                JOIN teams t1 ON m.team1_id = t1.id
+                JOIN teams t2 ON m.team2_id = t2.id
+                JOIN teams tw ON m.winner_id = tw.id
+                LEFT JOIN tournaments tourn ON m.tournament_id = tourn.id
+                ORDER BY m.date DESC
                 LIMIT 10
             """
 

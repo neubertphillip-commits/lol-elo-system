@@ -122,7 +122,7 @@ def show():
                     team_elos[team1]['losses'] += 1
 
             # Get team regions from database
-            cursor.execute("SELECT team_name, region FROM teams")
+            cursor.execute("SELECT name, region FROM teams")
             team_regions = {row[0]: row[1] for row in cursor.fetchall()}
 
             # Create rankings DataFrame
@@ -226,14 +226,12 @@ def show():
                 # Display player data (if available)
                 query = """
                     SELECT
-                        p.player_name,
-                        t.team_name,
+                        p.name,
                         p.role,
                         COUNT(mp.match_id) as matches_played
                     FROM players p
-                    LEFT JOIN teams t ON p.team_id = t.team_id
-                    LEFT JOIN match_players mp ON p.player_id = mp.player_id
-                    GROUP BY p.player_id
+                    LEFT JOIN match_players mp ON p.id = mp.id
+                    GROUP BY p.id
                     ORDER BY matches_played DESC
                     LIMIT 50
                 """
@@ -243,7 +241,7 @@ def show():
 
                 if players:
                     df_players = pd.DataFrame(players, columns=[
-                        'Player', 'Team', 'Role', 'Matches Played'
+                        'Player', 'Role', 'Matches Played'
                     ])
 
                     st.dataframe(
@@ -270,7 +268,7 @@ def show():
 
             # Team selection
             cursor = db.conn.cursor()
-            cursor.execute("SELECT team_name FROM teams ORDER BY team_name")
+            cursor.execute("SELECT name FROM teams ORDER BY name")
             all_teams = [row[0] for row in cursor.fetchall()]
 
             if not all_teams:

@@ -378,12 +378,12 @@ def show():
         # Custom query
         query = '''
             SELECT
-                t.team_name,
-                COUNT(m.match_id) as matches,
-                SUM(CASE WHEN m.winner_id = t.team_id THEN 1 ELSE 0 END) as wins
+                t.name,
+                COUNT(m.id) as matches,
+                SUM(CASE WHEN m.winner_id = t.id THEN 1 ELSE 0 END) as wins
             FROM teams t
-            JOIN matches m ON t.team_id IN (m.team1_id, m.team2_id)
-            GROUP BY t.team_id
+            JOIN matches m ON t.id IN (m.team1_id, m.team2_id)
+            GROUP BY t.id
             ORDER BY wins DESC
             LIMIT 10
         '''

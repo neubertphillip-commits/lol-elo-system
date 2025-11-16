@@ -599,18 +599,18 @@ def show():
             # Custom analysis query
             query = '''
                 SELECT
-                    t.team_name,
+                    t.name,
                     t.region,
-                    COUNT(m.match_id) as total_matches,
-                    SUM(CASE WHEN m.winner_id = t.team_id THEN 1 ELSE 0 END) as wins,
-                    SUM(CASE WHEN m.winner_id != t.team_id THEN 1 ELSE 0 END) as losses,
+                    COUNT(m.id) as total_matches,
+                    SUM(CASE WHEN m.winner_id = t.id THEN 1 ELSE 0 END) as wins,
+                    SUM(CASE WHEN m.winner_id != t.id THEN 1 ELSE 0 END) as losses,
                     ROUND(
-                        100.0 * SUM(CASE WHEN m.winner_id = t.team_id THEN 1 ELSE 0 END) / COUNT(m.match_id),
+                        100.0 * SUM(CASE WHEN m.winner_id = t.id THEN 1 ELSE 0 END) / COUNT(m.id),
                         1
                     ) as win_rate
                 FROM teams t
-                JOIN matches m ON t.team_id IN (m.team1_id, m.team2_id)
-                GROUP BY t.team_id
+                JOIN matches m ON t.id IN (m.team1_id, m.team2_id)
+                GROUP BY t.id
                 HAVING total_matches >= 10
                 ORDER BY win_rate DESC
             '''
