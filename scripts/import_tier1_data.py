@@ -63,12 +63,14 @@ def import_tier1_historical_data(start_year: int = 2013,
             'by_year': {}
         }
 
-        # Get league configuration
-        if league not in loader.TIER1_LEAGUES:
+        # Get league configuration (case-insensitive match)
+        league_upper = league.upper()
+        if league_upper not in loader.TIER1_LEAGUES:
             print(f"  [WARNING] Unknown league: {league}")
+            print(f"  Available leagues: {', '.join(loader.TIER1_LEAGUES.keys())}")
             continue
 
-        config = loader.TIER1_LEAGUES[league]
+        config = loader.TIER1_LEAGUES[league_upper]
         league_start = max(start_year, config['start_year'])
 
         # Import each year and split
@@ -77,10 +79,10 @@ def import_tier1_historical_data(start_year: int = 2013,
 
             for split in config['splits']:
                 try:
-                    print(f"\n  {league} {year} {split}")
+                    print(f"\n  {league_upper} {year} {split}")
 
                     imported = loader.import_league_season(
-                        league=league,
+                        league=league_upper,
                         year=year,
                         split=split,
                         include_playoffs=True,
@@ -99,10 +101,10 @@ def import_tier1_historical_data(start_year: int = 2013,
                 print(f"  [OK] {year} Total: {year_total} matches")
 
         # Update total stats
-        total_stats['by_league'][league] = league_stats['total']
+        total_stats['by_league'][league_upper] = league_stats['total']
         total_stats['total_matches'] += league_stats['total']
 
-        print(f"\n[OK] {league} Complete: {league_stats['total']} matches imported")
+        print(f"\n[OK] {league_upper} Complete: {league_stats['total']} matches imported")
 
     # Final summary
     duration = datetime.now() - total_stats['start_time']
