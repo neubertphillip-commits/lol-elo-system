@@ -109,16 +109,23 @@ class TournamentContextElo(DynamicOffsetCalculator):
         # Get context-appropriate K-factor
         k_factor = self.get_tournament_k_factor(tournament, stage)
 
-        # Temporarily override K-factor
-        original_k = self.k_factor
-        self.k_factor = k_factor
+        # Temporarily override K-factor in base calculator
+        original_k = self.base_calc.K
+        self.base_calc.K = k_factor
 
         try:
-            # Call parent's update_ratings
-            super().update_ratings(team1, team2, score1, score2, **kwargs)
+            # Call parent's update method with match dict
+            match = {
+                'team1': team1,
+                'team2': team2,
+                'score1': score1,
+                'score2': score2,
+                'winner': team1 if score1 > score2 else team2
+            }
+            super().update(match)
         finally:
             # Restore original K-factor
-            self.k_factor = original_k
+            self.base_calc.K = original_k
 
     def get_match_importance(self, tournament: Optional[str], stage: Optional[str]) -> str:
         """
