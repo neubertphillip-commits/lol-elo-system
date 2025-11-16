@@ -72,20 +72,101 @@ class LeaguepediaLoader:
     }
 
     API_ENDPOINT = "https://lol.fandom.com/api.php"
-    RATE_LIMIT_DELAY = 5.0  # seconds between requests (to avoid rate limiting)
+    RATE_LIMIT_DELAY = 3.0  # seconds between requests (increased to avoid rate limiting)
+    MAX_RETRIES = 3  # number of retries for rate-limited requests
 
-    def __init__(self, db: DatabaseManager = None):
+    def __init__(self, db: DatabaseManager = None, bot_username: str = None, bot_password: str = None):
         """
         Initialize Leaguepedia loader
 
         Args:
             db: DatabaseManager instance (creates new if None)
+            bot_username: Bot username from Special:BotPasswords (optional, for higher rate limits)
+            bot_password: Bot password from Special:BotPasswords (optional)
         """
         self.db = db or DatabaseManager()
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'LOL-ELO-System/1.0 (Educational Research)'
         })
+
+        # Bot authentication (optional - reduces rate limiting)
+        self.authenticated = False
+        if bot_username and bot_password:
+            self._login(bot_username, bot_password)
+        else:
+            # Try to get credentials from environment variables
+            import os
+            env_username = os.getenv('LEAGUEPEDIA_BOT_USERNAME')
+            env_password = os.getenv('LEAGUEPEDIA_BOT_PASSWORD')
+            if env_username and env_password:
+                self._login(env_username, env_password)
+            else:
+                print("[INFO] Running without authentication - rate limits may apply")
+                print("[INFO] To authenticate, set LEAGUEPEDIA_BOT_USERNAME and LEAGUEPEDIA_BOT_PASSWORD")
+                print("[INFO] or create bot credentials at: https://lol.fandom.com/wiki/Special:BotPasswords")
+
+    def _login(self, username: str, password: str) -> bool:
+        """
+        Authenticate with Leaguepedia using bot credentials
+
+        Args:
+            username: Bot username (e.g., 'YourName@BotName')
+            password: Bot password from Special:BotPasswords
+
+        Returns:
+            True if authentication successful
+        """
+        try:
+            # Step 1: Get login token
+            token_params = {
+                'action': 'query',
+                'meta': 'tokens',
+                'type': 'login',
+                'format': 'json'
+            }
+
+            response = self.session.get(self.API_ENDPOINT, params=token_params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            if 'query' not in data or 'tokens' not in data['query']:
+                print(f"[ERROR] Failed to get login token: {data}")
+                return False
+
+            login_token = data['query']['tokens']['logintoken']
+
+            # Step 2: Login with credentials
+            login_params = {
+                'action': 'login',
+                'lgname': username,
+                'lgpassword': password,
+                'lgtoken': login_token,
+                'format': 'json'
+            }
+
+            response = self.session.post(self.API_ENDPOINT, data=login_params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            if 'login' in data:
+                result = data['login'].get('result', '')
+                if result == 'Success':
+                    self.authenticated = True
+                    print(f"[OK] Authenticated as {username}")
+                    return True
+                else:
+                    print(f"[ERROR] Login failed: {result}")
+                    if 'reason' in data['login']:
+                        print(f"[ERROR] Reason: {data['login']['reason']}")
+                    return False
+            else:
+                print(f"[ERROR] Unexpected login response: {data}")
+                return False
+
+        except Exception as e:
+            print(f"[ERROR] Authentication failed: {e}")
+            return False
 
     def _query_cargo(self, tables: str, fields: str, where: str = None,
                      join_on: str = None, order_by: str = None,
@@ -120,48 +201,66 @@ class LeaguepediaLoader:
         if order_by:
             params['order_by'] = order_by
 
-        try:
-            if debug:
-                print(f"    DEBUG: Query params: {params}")
+        # Retry logic for rate limiting
+        for attempt in range(self.MAX_RETRIES):
+            try:
+                if debug:
+                    print(f"    DEBUG: Query params: {params}")
 
-            response = self.session.get(self.API_ENDPOINT, params=params, timeout=30)
-            response.raise_for_status()
+                response = self.session.get(self.API_ENDPOINT, params=params, timeout=30)
+                response.raise_for_status()
 
-            data = response.json()
+                data = response.json()
 
-            if debug:
-                print(f"    DEBUG: Response status: {response.status_code}")
-                print(f"    DEBUG: Response keys: {data.keys()}")
+                if debug:
+                    print(f"    DEBUG: Response status: {response.status_code}")
+                    print(f"    DEBUG: Response keys: {data.keys()}")
+                    if 'error' in data:
+                        print(f"    DEBUG ERROR: {data['error']}")
+                    if 'cargoquery' in data:
+                        print(f"    DEBUG: Found {len(data['cargoquery'])} results")
+
+                # Check for API errors (e.g., rate limiting)
                 if 'error' in data:
-                    print(f"    DEBUG ERROR: {data['error']}")
-                if 'cargoquery' in data:
-                    print(f"    DEBUG: Found {len(data['cargoquery'])} results")
+                    error_code = data['error'].get('code', '')
+                    error_info = data['error'].get('info', '')
 
-            # Check for API errors (e.g., rate limiting)
-            if 'error' in data:
-                error_code = data['error'].get('code', '')
-                error_info = data['error'].get('info', '')
-                print(f"    [ERROR] API Error: {error_code} - {error_info}")
-                if error_code == 'ratelimited':
-                    print(f"    [WARNING] Rate limited - waiting longer before next request")
-                    time.sleep(10)  # Extra wait for rate limit
+                    if error_code == 'ratelimited':
+                        if attempt < self.MAX_RETRIES - 1:
+                            # Exponential backoff: wait longer on each retry
+                            wait_time = self.RATE_LIMIT_DELAY * (2 ** attempt)
+                            print(f"    [WARNING] Rate limited - waiting {wait_time}s before retry {attempt + 1}/{self.MAX_RETRIES}")
+                            time.sleep(wait_time)
+                            continue  # Retry
+                        else:
+                            print(f"    [ERROR] Rate limited after {self.MAX_RETRIES} retries - giving up")
+                            return []
+                    else:
+                        print(f"    [ERROR] API Error: {error_code} - {error_info}")
+                        return []
+
+                if 'cargoquery' in data:
+                    results = [item['title'] for item in data['cargoquery']]
+                    if not results and debug:
+                        print(f"    DEBUG: Query returned 0 results (not an error, just no matching data)")
+                    return results
+
                 return []
 
-            if 'cargoquery' in data:
-                results = [item['title'] for item in data['cargoquery']]
-                if not results and debug:
-                    print(f"    DEBUG: Query returned 0 results (not an error, just no matching data)")
-                return results
+            except requests.exceptions.RequestException as e:
+                if attempt < self.MAX_RETRIES - 1:
+                    wait_time = self.RATE_LIMIT_DELAY * (2 ** attempt)
+                    print(f"    [WARNING] Request failed: {e} - retrying in {wait_time}s")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    print(f"    [ERROR] API request failed after {self.MAX_RETRIES} retries: {e}")
+                    return []
 
-            return []
-
-        except requests.exceptions.RequestException as e:
-            print(f"    [ERROR] API request failed: {e}")
-            return []
-
-        finally:
-            # Rate limiting
-            time.sleep(self.RATE_LIMIT_DELAY)
+            finally:
+                # Rate limiting - always wait between requests
+                if attempt == self.MAX_RETRIES - 1 or 'data' in locals():
+                    time.sleep(self.RATE_LIMIT_DELAY)
 
     def _build_tournament_name(self, league: str, year: int, split: str) -> str:
         """
@@ -170,7 +269,7 @@ class LeaguepediaLoader:
         Args:
             league: League name (LEC, LPL, etc.)
             year: Calendar year
-            split: Split (Spring, Summer)
+            split: Split (Spring, Summer, Main Event)
 
         Returns:
             Tournament name for Leaguepedia
@@ -188,9 +287,19 @@ class LeaguepediaLoader:
         elif league == 'LCS' and year < 2018:
             primary_name = 'NA LCS'
 
-        # Leaguepedia uses "Split Season" format with SPACES (not underscores)
-        # Confirmed: "LEC/2024 Season/Summer Season" works
-        return f"{primary_name}/{year} Season/{split} Season"
+        # International tournaments use "YEAR Tournament-Name" format
+        # MSI: "2024 Mid-Season Invitational"
+        # Worlds: "2024 Season World Championship/Main Event"
+        if league in ['MSI', 'WORLDS']:
+            if league == 'WORLDS':
+                # Worlds uses: "YEAR Season World Championship/Main Event"
+                return f"{year} Season {primary_name}/{split}"
+            else:
+                # MSI uses: "YEAR Mid-Season Invitational"
+                return f"{year} {primary_name}"
+        else:
+            # Regional leagues use: "LEC/2024 Season/Summer Season"
+            return f"{primary_name}/{year} Season/{split} Season"
 
     def get_tournament_matches(self, tournament_name: str,
                                include_players: bool = True,
@@ -218,32 +327,35 @@ class LeaguepediaLoader:
             print(f"[WARNING] Using per-game player queries (slow, may cause rate limiting!)")
 
         # Build WHERE clause
-        where_parts = [f"ScoreboardGames.OverviewPage='{tournament_name}'"]
+        # IMPORTANT: Don't use table prefixes in WHERE - causes MWException
+        where_parts = [f"OverviewPage='{tournament_name}'"]
         if stage_filter:
-            where_parts.append(f"ScoreboardGames.Tab='{stage_filter}'")
+            where_parts.append(f"Tab='{stage_filter}'")
 
         where = " AND ".join(where_parts)
 
         # Query ScoreboardGames
+        # IMPORTANT: Don't use table prefixes - causes MWException with WHERE clauses
+        # IMPORTANT: "Tab" field causes MWException - cannot be queried!
         fields = [
-            "ScoreboardGames.GameId",
-            "ScoreboardGames.Team1",
-            "ScoreboardGames.Team2",
-            "ScoreboardGames.Team1Score",
-            "ScoreboardGames.Team2Score",
-            "ScoreboardGames.Winner",
-            "ScoreboardGames.DateTime_UTC",
-            "ScoreboardGames.OverviewPage",
-            "ScoreboardGames.Tab",
-            "ScoreboardGames.Patch",
-            "ScoreboardGames.Gamelength"
+            "GameId",
+            "Team1",
+            "Team2",
+            "Team1Score",
+            "Team2Score",
+            "Winner",
+            "DateTime_UTC",
+            "OverviewPage",
+            # "Tab",  # REMOVED: Causes MWException
+            "Patch",
+            "Gamelength"
         ]
 
         games = self._query_cargo(
             tables="ScoreboardGames",
             fields=", ".join(fields),
             where=where,
-            order_by="ScoreboardGames.DateTime_UTC",
+            order_by="DateTime_UTC",
             limit=500
         )
 
@@ -262,7 +374,9 @@ class LeaguepediaLoader:
                 team2 = game.get('Team2')
                 winner = int(game.get('Winner', 0))
                 date_str = game.get('DateTime UTC')
-                stage = game.get('Tab', 'Regular Season')
+                # Tab field cannot be queried (causes MWException)
+                # Infer stage from tournament_name instead
+                stage = 'Playoffs' if 'Playoff' in tournament_name else 'Regular Season'
                 patch = game.get('Patch')
 
                 # Parse date
@@ -569,7 +683,8 @@ class LeaguepediaLoader:
         total_imported += imported
 
         # Import playoffs if requested
-        if include_playoffs:
+        # International tournaments (MSI, Worlds) don't have separate playoffs
+        if include_playoffs and league not in ['MSI', 'WORLDS']:
             # Playoffs are usually separate pages (e.g., "LEC/2024 Season/Summer Playoffs")
             # Remove " Season" suffix and add " Playoffs"
             if " Season" in tournament_name:
