@@ -138,7 +138,7 @@ class LeaguepediaLoader:
             if 'error' in data:
                 error_code = data['error'].get('code', '')
                 if error_code == 'ratelimited':
-                    print(f"    ⚠️  Rate limited - waiting longer before next request")
+                    print(f"    [WARNING] Rate limited - waiting longer before next request")
                     time.sleep(10)  # Extra wait for rate limit
                 return []
 
@@ -197,7 +197,7 @@ class LeaguepediaLoader:
         Returns:
             Number of matches imported
         """
-        print(f"\n📥 Fetching matches from: {tournament_name}")
+        print(f"\n[LOADING] Fetching matches from: {tournament_name}")
 
         # Build WHERE clause
         where_parts = [f"ScoreboardGames.OverviewPage='{tournament_name}'"]
@@ -255,7 +255,7 @@ class LeaguepediaLoader:
                         # Try alternative format
                         date = datetime.strptime(date_str, "%Y-%m-%d")
                 else:
-                    print(f"  ⚠️  Skipping game {game_id}: no date")
+                    print(f"  [WARNING] Skipping game {game_id}: no date")
                     continue
 
                 # Extract match ID (games are part of matches)
@@ -295,7 +295,7 @@ class LeaguepediaLoader:
                 })
 
             except Exception as e:
-                print(f"  ⚠️  Error processing game: {e}")
+                print(f"  [WARNING] Error processing game: {e}")
                 continue
 
         print(f"  Aggregated into {len(matches_by_id)} matches")
@@ -337,12 +337,12 @@ class LeaguepediaLoader:
                     skipped_count += 1
 
             except Exception as e:
-                print(f"  ⚠️  Error inserting match {match_id}: {e}")
+                print(f"  [WARNING] Error inserting match {match_id}: {e}")
                 continue
 
-        print(f"  ✓ Imported: {imported_count} matches")
+        print(f"  [OK] Imported: {imported_count} matches")
         if skipped_count > 0:
-            print(f"  ⊘ Skipped (duplicates): {skipped_count} matches")
+            print(f"  [SKIP] Skipped (duplicates): {skipped_count} matches")
 
         return imported_count
 
@@ -407,7 +407,7 @@ class LeaguepediaLoader:
                     won=player_data.get('PlayerWin') == 'Yes'
                 )
             except Exception as e:
-                print(f"    ⚠️  Error inserting player {player_data.get('Link')}: {e}")
+                print(f"    [WARNING] Error inserting player {player_data.get('Link')}: {e}")
 
     def import_league_season(self, league: str, year: int, split: str,
                             include_playoffs: bool = True,
@@ -429,7 +429,7 @@ class LeaguepediaLoader:
         total_imported = 0
 
         # Import regular season
-        print(f"\n🏆 Importing {league} {year} {split}")
+        print(f"\n[LEAGUE] Importing {league} {year} {split}")
         imported = self.get_tournament_matches(
             tournament_name=tournament_name,
             include_players=include_players
@@ -453,7 +453,7 @@ class LeaguepediaLoader:
                 total_imported += imported
             except Exception as e:
                 # Some tournaments might not have separate playoffs page
-                print(f"  ⓘ No separate playoffs found ({e})")
+                print(f"  [INFO] No separate playoffs found ({e})")
                 pass
 
         return total_imported
@@ -479,7 +479,7 @@ class LeaguepediaLoader:
             'by_league': {}
         }
 
-        print(f"\n🚀 Starting Tier 1 import: {start_year}-{end_year}")
+        print(f"\n[START] Starting Tier 1 import: {start_year}-{end_year}")
 
         for league, config in self.TIER1_LEAGUES.items():
             league_start = max(start_year, config['start_year'])
@@ -497,7 +497,7 @@ class LeaguepediaLoader:
                         league_total += imported
 
                     except Exception as e:
-                        print(f"  ⚠️  Error importing {league} {year} {split}: {e}")
+                        print(f"  [WARNING] Error importing {league} {year} {split}: {e}")
                         continue
 
             stats['by_league'][league] = league_total
@@ -529,7 +529,7 @@ if __name__ == "__main__":
 
     # Show stats
     stats = loader.db.get_stats()
-    print(f"\n📊 Database Stats:")
+    print(f"\n[STATS] Database Stats:")
     print(f"  Total Matches: {stats['total_matches']}")
     print(f"  Total Teams: {stats['total_teams']}")
     print(f"  Total Players: {stats['total_players']}")

@@ -223,48 +223,48 @@ def analyze_results(df: pd.DataFrame):
     
     # Best overall
     best = df.iloc[0]
-    print(f"🏆 BEST CONFIGURATION:")
+    print(f"[BEST] BEST CONFIGURATION:")
     print(f"   prior_std: {best['prior_std']}")
     print(f"   max_offset: {best['max_offset']}")
     print(f"   min_samples: {best['min_samples']}")
     print(f"   Cross-Regional Accuracy: {best['cross_regional_accuracy']:.4f}")
     print(f"   Improvement vs Baseline: +{best['cross_improvement']*100:.2f}pp")
-    
+
     # Best by prior_std
     best_prior = df.groupby('prior_std')['cross_regional_accuracy'].mean().idxmax()
-    print(f"\n📊 BEST PRIOR_STD (averaged): {best_prior}")
+    print(f"\n[STATS] BEST PRIOR_STD (averaged): {best_prior}")
     print(f"   Mean Cross-Regional: {df.groupby('prior_std')['cross_regional_accuracy'].mean()[best_prior]:.4f}")
-    
+
     # Best by max_offset
     best_max = df.groupby('max_offset')['cross_regional_accuracy'].mean().idxmax()
-    print(f"📊 BEST MAX_OFFSET (averaged): {best_max}")
+    print(f"[STATS] BEST MAX_OFFSET (averaged): {best_max}")
     print(f"   Mean Cross-Regional: {df.groupby('max_offset')['cross_regional_accuracy'].mean()[best_max]:.4f}")
-    
+
     # Best by min_samples
     best_min = df.groupby('min_samples')['cross_regional_accuracy'].mean().idxmax()
-    print(f"📊 BEST MIN_SAMPLES (averaged): {best_min}")
+    print(f"[STATS] BEST MIN_SAMPLES (averaged): {best_min}")
     print(f"   Mean Cross-Regional: {df.groupby('min_samples')['cross_regional_accuracy'].mean()[best_min]:.4f}")
     
     # Check if results are stable
     top_5 = df.head(5)
     std_dev = top_5['cross_regional_accuracy'].std()
     
-    print(f"\n📈 STABILITY CHECK:")
+    print(f"\n[CHECK] STABILITY CHECK:")
     print(f"   Top 5 std dev: {std_dev:.4f}")
-    
+
     if std_dev < 0.01:
-        print(f"   ✅ Results are very stable - clear winner")
+        print(f"   [OK] Results are very stable - clear winner")
     elif std_dev < 0.02:
-        print(f"   ⚠️  Moderate variance - several good options")
+        print(f"   [WARNING] Moderate variance - several good options")
     else:
-        print(f"   ❌ High variance - results may be noisy")
+        print(f"   [ERROR] High variance - results may be noisy")
         print(f"      Consider: More data or simpler model")
 
 
 def save_results(df: pd.DataFrame, filename: str = "offset_optimization_results.csv"):
     """Save results to CSV"""
     df.to_csv(filename, index=False)
-    print(f"\n💾 Results saved to: {filename}")
+    print(f"\n[SAVED] Results saved to: {filename}")
 
 
 # ============================================================================
@@ -276,7 +276,7 @@ def main():
     print("Loading matches...")
     loader = MatchDataLoader()
     matches = loader.get_matches_as_dicts()
-    print(f"✓ Loaded {len(matches)} matches\n")
+    print(f"[OK] Loaded {len(matches)} matches\n")
     
     # Choose search type
     print("Search options:")
