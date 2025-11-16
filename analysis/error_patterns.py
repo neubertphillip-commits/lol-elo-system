@@ -75,8 +75,8 @@ def analyze_error_patterns(df: pd.DataFrame, train_split: float = 0.7) -> Dict:
     print(f"\n🔄 Training on {len(train_df)} matches...")
     for _, row in train_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
 
             score_parts = score.split('-')
@@ -100,8 +100,8 @@ def analyze_error_patterns(df: pd.DataFrame, train_split: float = 0.7) -> Dict:
 
     for _, row in test_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
             tournament = row.get('tournament', 'Unknown')
             stage = row.get('stage', 'Unknown')

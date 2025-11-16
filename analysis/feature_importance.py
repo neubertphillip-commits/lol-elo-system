@@ -79,8 +79,8 @@ def evaluate_configuration(df: pd.DataFrame, config_obj: FeatureConfig,
     # Train on training data
     for _, row in train_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
             tournament = row.get('tournament', '')
             stage = row.get('stage', '')
@@ -110,8 +110,8 @@ def evaluate_configuration(df: pd.DataFrame, config_obj: FeatureConfig,
     # Test set evaluation
     for _, row in test_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
 
             score_parts = score.split('-')
@@ -158,8 +158,8 @@ def evaluate_configuration(df: pd.DataFrame, config_obj: FeatureConfig,
 
     for _, row in train_df.iterrows():
         try:
-            team1 = row['Team 1']
-            team2 = row['team 2']
+            team1 = row['team1']
+            team2 = row['team2']
             score = row['score']
 
             score_parts = score.split('-')
