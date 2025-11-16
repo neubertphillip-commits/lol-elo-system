@@ -72,7 +72,7 @@ class LeaguepediaLoader:
     }
 
     API_ENDPOINT = "https://lol.fandom.com/api.php"
-    RATE_LIMIT_DELAY = 3.0  # seconds between requests (increased for stability)
+    RATE_LIMIT_DELAY = 5.0  # seconds between requests (to avoid rate limiting)
 
     def __init__(self, db: DatabaseManager = None):
         """
@@ -188,9 +188,9 @@ class LeaguepediaLoader:
         elif league == 'LCS' and year < 2018:
             primary_name = 'NA LCS'
 
-        # Leaguepedia uses "Split Season" format (e.g., "Summer Season")
-        # Note: OverviewPage field might use underscores instead of spaces
-        return f"{primary_name}/{year}_Season/{split}_Season"
+        # Leaguepedia uses "Split Season" format with SPACES (not underscores)
+        # Confirmed: "LEC/2024 Season/Summer Season" works
+        return f"{primary_name}/{year} Season/{split} Season"
 
     def get_tournament_matches(self, tournament_name: str,
                                include_players: bool = True,
