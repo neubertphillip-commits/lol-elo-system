@@ -268,4 +268,4 @@ if __name__ == "__main__":
 
     report_file = generate_comprehensive_report(output_file=args.output)
 
-    print(f"\n📄 View report: {report_file}")
+    print(f"\n[REPORT] View report: {report_file}")
