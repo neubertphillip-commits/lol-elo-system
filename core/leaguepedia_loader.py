@@ -15,6 +15,15 @@ class LeaguepediaLoader:
     """
     Loads match data from Leaguepedia API
     Supports LEC, LPL, LCK, LCS and international tournaments
+
+    Implementation follows Leaguepedia API best practices:
+    - Uses 3 second delay between requests (recommended: 1-2s)
+    - Limits queries to 500 results (API maximum for non-admins)
+    - Uses ScoreboardGames/ScoreboardPlayers tables (not Players directly)
+    - Uses GameId for joins (not row IDs which change on Cargo rebuild)
+    - Uses __full suffix for list-type fields (e.g., Items__full)
+
+    See: https://lol.fandom.com/wiki/Help:Leaguepedia_API
     """
 
     # Tier 1 League configurations (2013-present)
@@ -124,6 +133,14 @@ class LeaguepediaLoader:
                 print(f"    DEBUG: Response keys: {data.keys()}")
                 if 'error' in data:
                     print(f"    DEBUG ERROR: {data['error']}")
+
+            # Check for API errors (e.g., rate limiting)
+            if 'error' in data:
+                error_code = data['error'].get('code', '')
+                if error_code == 'ratelimited':
+                    print(f"    ⚠️  Rate limited - waiting longer before next request")
+                    time.sleep(10)  # Extra wait for rate limit
+                return []
 
             if 'cargoquery' in data:
                 return [item['title'] for item in data['cargoquery']]
@@ -334,6 +351,13 @@ class LeaguepediaLoader:
         """
         Fetch player data for a specific game
 
+        Note: We query ScoreboardPlayers.Link (not Players table directly)
+        as recommended by Leaguepedia API docs. The Link field handles
+        player name disambiguation automatically.
+
+        For advanced player tracking with renames, would need to join:
+        ScoreboardPlayers -> PlayerRedirects -> Players
+
         Args:
             match_id: Database match ID
             game_id: Leaguepedia game ID
@@ -352,7 +376,7 @@ class LeaguepediaLoader:
             "ScoreboardPlayers.CS",
             "ScoreboardPlayers.DamageToChampions",
             "ScoreboardPlayers.VisionScore",
-            "ScoreboardPlayers.Items",
+            "ScoreboardPlayers.Items__full",  # Use __full suffix for list fields
             "ScoreboardPlayers.PlayerWin"
         ]
 
@@ -378,7 +402,8 @@ class LeaguepediaLoader:
                     cs=int(player_data.get('CS', 0)) if player_data.get('CS') else None,
                     damage_to_champions=int(player_data.get('DamageToChampions', 0)) if player_data.get('DamageToChampions') else None,
                     vision_score=int(player_data.get('VisionScore', 0)) if player_data.get('VisionScore') else None,
-                    items=player_data.get('Items', '').split(';') if player_data.get('Items') else None,
+                    # Items__full returns as "Items full" in response
+                    items=player_data.get('Items full', '').split(';') if player_data.get('Items full') else None,
                     won=player_data.get('PlayerWin') == 'Yes'
                 )
             except Exception as e:
