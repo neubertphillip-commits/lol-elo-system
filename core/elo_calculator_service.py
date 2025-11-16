@@ -256,9 +256,39 @@ class EloCalculatorService:
 
         # Build final ratings dict (latest ELO for each team)
         final_ratings = {}
+
+        # Get regional offsets if using any variant with offsets
+        # Note: dynamic_offset and tournament_context always use offsets
+        # base and scale_factor can optionally use offsets
+        using_offsets = (variant in ['dynamic_offset', 'tournament_context']) or use_regional_offsets
+
+        regional_offsets = {}
+        team_regions = {}
+        if using_offsets and hasattr(elo, 'calculator'):
+            # Get offsets from the calculator
+            regional_offsets = dict(elo.calculator.offsets)
+            # Map teams to regions
+            from core.region_mapper import RegionMapper
+            mapper = RegionMapper()
+            for team in team_stats.keys():
+                team_regions[team] = mapper.get_region(team, detailed=False)
+
         for team, stats in team_stats.items():
+            base_elo = elo.get_rating(team)
+
+            # Apply regional offset if using offsets
+            if using_offsets and team in team_regions:
+                region = team_regions[team]
+                offset = regional_offsets.get(region, 0.0)
+                final_elo = base_elo + offset
+            else:
+                final_elo = base_elo
+
             final_ratings[team] = {
-                'elo': elo.get_rating(team),
+                'elo': final_elo,
+                'base_elo': base_elo if using_offsets else None,
+                'regional_offset': regional_offsets.get(team_regions.get(team), 0.0) if using_offsets else None,
+                'region': team_regions.get(team) if using_offsets else None,
                 'matches': stats['matches'],
                 'wins': stats['wins'],
                 'losses': stats['losses']

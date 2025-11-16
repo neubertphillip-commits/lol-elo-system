@@ -130,25 +130,33 @@ class LeaguepediaLoader:
             data = response.json()
 
             if debug:
+                print(f"    DEBUG: Response status: {response.status_code}")
                 print(f"    DEBUG: Response keys: {data.keys()}")
                 if 'error' in data:
                     print(f"    DEBUG ERROR: {data['error']}")
+                if 'cargoquery' in data:
+                    print(f"    DEBUG: Found {len(data['cargoquery'])} results")
 
             # Check for API errors (e.g., rate limiting)
             if 'error' in data:
                 error_code = data['error'].get('code', '')
+                error_info = data['error'].get('info', '')
+                print(f"    [ERROR] API Error: {error_code} - {error_info}")
                 if error_code == 'ratelimited':
                     print(f"    [WARNING] Rate limited - waiting longer before next request")
                     time.sleep(10)  # Extra wait for rate limit
                 return []
 
             if 'cargoquery' in data:
-                return [item['title'] for item in data['cargoquery']]
+                results = [item['title'] for item in data['cargoquery']]
+                if not results and debug:
+                    print(f"    DEBUG: Query returned 0 results (not an error, just no matching data)")
+                return results
 
             return []
 
         except requests.exceptions.RequestException as e:
-            print(f"    API request failed: {e}")
+            print(f"    [ERROR] API request failed: {e}")
             return []
 
         finally:
@@ -161,7 +169,7 @@ class LeaguepediaLoader:
 
         Args:
             league: League name (LEC, LPL, etc.)
-            year: Year
+            year: Calendar year
             split: Split (Spring, Summer)
 
         Returns:
@@ -174,14 +182,15 @@ class LeaguepediaLoader:
         # Handle name variations
         primary_name = config['names'][0]
 
-        # Special cases
+        # Special cases for league rebranding
         if league == 'LEC' and year < 2019:
             primary_name = 'EU LCS'
         elif league == 'LCS' and year < 2018:
             primary_name = 'NA LCS'
 
         # Leaguepedia uses "Split Season" format (e.g., "Summer Season")
-        return f"{primary_name}/{year} Season/{split} Season"
+        # Note: OverviewPage field might use underscores instead of spaces
+        return f"{primary_name}/{year}_Season/{split}_Season"
 
     def get_tournament_matches(self, tournament_name: str,
                                include_players: bool = True,
