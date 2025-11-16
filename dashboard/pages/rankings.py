@@ -139,6 +139,17 @@ def show():
 
             st.success(f"Loaded {len(team_elos)} teams")
 
+            # Show explanation if using regional offsets
+            if (variant in ['dynamic_offset', 'tournament_context']) or use_regional_offsets:
+                st.info("""
+                **Regional Offsets Active:** ELO values shown include regional strength adjustments.
+                - **ELO**: Final rating (Base ELO + Regional Offset)
+                - **Base ELO**: Raw ELO without regional adjustment
+                - **Regional Offset**: Points added/subtracted based on regional strength
+
+                Example: LCK team with Base ELO 1500 + LCK Offset +83 = Final ELO 1583
+                """)
+
             # Filters
             st.markdown("---")
             col1, col2, col3 = st.columns(3)
@@ -167,10 +178,13 @@ def show():
             cursor.execute("SELECT name, region FROM teams")
             team_regions = {row[0]: row[1] for row in cursor.fetchall()}
 
+            # Check if this variant uses regional offsets
+            using_offsets = (variant in ['dynamic_offset', 'tournament_context']) or use_regional_offsets
+
             # Create rankings DataFrame
             rankings_data = []
             for team, stats in team_elos.items():
-                rankings_data.append({
+                row = {
                     'Team': team,
                     'ELO': int(stats['elo']),
                     'Region': team_regions.get(team, 'Unknown'),
@@ -178,7 +192,14 @@ def show():
                     'Wins': stats['wins'],
                     'Losses': stats['losses'],
                     'Win Rate': f"{stats['wins'] / max(stats['matches'], 1) * 100:.1f}%"
-                })
+                }
+
+                # Add offset columns if regional offsets are enabled
+                if using_offsets and stats.get('base_elo') is not None:
+                    row['Base ELO'] = int(stats['base_elo'])
+                    row['Regional Offset'] = f"{stats.get('regional_offset', 0):+.1f}"
+
+                rankings_data.append(row)
 
             rankings_df = pd.DataFrame(rankings_data)
 
