@@ -35,7 +35,7 @@ def show():
 
             # ELO Configuration Selection
             st.markdown("---")
-            col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+            col1, col2, col3, col4, col5 = st.columns([2, 1, 1, 1, 1])
 
             with col1:
                 variant = st.selectbox(
@@ -56,6 +56,16 @@ def show():
                 use_scale_factors = st.checkbox("Scale Factors", value=True)
 
             with col4:
+                # Regional Offsets checkbox (disabled for variants that always use it)
+                regional_offsets_disabled = variant in ['dynamic_offset', 'tournament_context']
+                use_regional_offsets = st.checkbox(
+                    "Regional Offsets",
+                    value=regional_offsets_disabled,
+                    disabled=regional_offsets_disabled,
+                    help="Adjust ratings based on regional strength (always enabled for Dynamic Offset and Tournament Context)"
+                )
+
+            with col5:
                 if st.button("Recalculate", type="primary"):
                     st.session_state['force_recalc'] = True
 
@@ -119,6 +129,7 @@ def show():
                     variant=variant,
                     k_factor=k_factor,
                     use_scale_factors=use_scale_factors,
+                    use_regional_offsets=use_regional_offsets,
                     force_recalculate=force_recalc
                 )
 

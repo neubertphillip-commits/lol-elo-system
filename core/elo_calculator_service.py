@@ -38,6 +38,7 @@ class EloCalculatorService:
                                 variant: str = 'tournament_context',
                                 k_factor: float = 24,
                                 use_scale_factors: bool = True,
+                                use_regional_offsets: bool = False,
                                 scale_factors: Dict = None,
                                 force_recalculate: bool = False) -> Tuple[int, Dict]:
         """
@@ -47,6 +48,7 @@ class EloCalculatorService:
             variant: ELO variant ('base', 'scale_factor', 'dynamic_offset', 'tournament_context')
             k_factor: K-factor
             use_scale_factors: Whether to use scale factors
+            use_regional_offsets: Whether to apply regional offsets to the base variant
             scale_factors: Scale factor configuration
             force_recalculate: If True, recalculate even if cached
 
@@ -67,6 +69,7 @@ class EloCalculatorService:
             'variant': variant,
             'k_factor': k_factor,
             'use_scale_factors': use_scale_factors,
+            'use_regional_offsets': use_regional_offsets,
             'scale_factors': scale_factors if use_scale_factors else None
         }
 
@@ -143,18 +146,39 @@ class EloCalculatorService:
         """Calculate ELO ratings for all matches"""
         # Import ELO variant
         variant = config['variant']
+        use_regional_offsets = config.get('use_regional_offsets', False)
 
+        # Choose base variant
         if variant == 'base':
-            from variants.base_elo import BaseElo
-            elo = BaseElo(k_factor=config['k_factor'])
+            if use_regional_offsets:
+                # Base + Regional Offsets = DynamicOffsetElo without scale factors
+                from variants.with_dynamic_offsets import DynamicOffsetElo
+                elo = DynamicOffsetElo(
+                    k_factor=config['k_factor'],
+                    use_scale_factors=False,
+                    scale_factors=None
+                )
+            else:
+                from variants.base_elo import BaseElo
+                elo = BaseElo(k_factor=config['k_factor'])
         elif variant == 'scale_factor':
-            from variants.with_scale_factor import ScaleFactorElo
-            elo = ScaleFactorElo(
-                k_factor=config['k_factor'],
-                use_scale_factors=config['use_scale_factors'],
-                scale_factors=config['scale_factors']
-            )
+            if use_regional_offsets:
+                # Scale Factor + Regional Offsets = DynamicOffsetElo (already uses scale factors)
+                from variants.with_dynamic_offsets import DynamicOffsetElo
+                elo = DynamicOffsetElo(
+                    k_factor=config['k_factor'],
+                    use_scale_factors=config['use_scale_factors'],
+                    scale_factors=config['scale_factors']
+                )
+            else:
+                from variants.with_scale_factor import ScaleFactorElo
+                elo = ScaleFactorElo(
+                    k_factor=config['k_factor'],
+                    use_scale_factors=config['use_scale_factors'],
+                    scale_factors=config['scale_factors']
+                )
         elif variant == 'dynamic_offset':
+            # Always includes regional offsets
             from variants.with_dynamic_offsets import DynamicOffsetElo
             elo = DynamicOffsetElo(
                 k_factor=config['k_factor'],
@@ -162,6 +186,7 @@ class EloCalculatorService:
                 scale_factors=config['scale_factors']
             )
         elif variant == 'tournament_context':
+            # Always includes regional offsets (extends DynamicOffsetElo)
             from variants.with_tournament_context import TournamentContextElo
             elo = TournamentContextElo(
                 k_factor=config['k_factor'],
