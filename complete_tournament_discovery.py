@@ -84,7 +84,7 @@ def main():
     print("KESPA CUP (2015-2025)")
     print("="*80)
 
-    for year in [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2024, 2025]:
+    for year in [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]:
         # Try underscore pattern first
         name = f"KeSPA Cup {year}"
         url = f"{year}_LoL_KeSPA_Cup"
