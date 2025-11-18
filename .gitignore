@@ -61,3 +61,4 @@ discovery_summary.md
 discovery_regional_minor.py
 regional_minor_results.json
 regional_minor.log
+test_missing_msi.py
