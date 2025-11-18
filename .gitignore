@@ -54,3 +54,6 @@ discovery_output.log
 remaining_discovery.log
 unknown_teams.txt
 import_log.json
+discovery_iem_riftrivals.py
+iem_riftrivals_results.json
+iem_riftrivals.log
