@@ -68,3 +68,7 @@ lcs_missing_summary.md
 test_lcs_2021_2022.py
 test_lcs_scoreboards.py
 test_match_history.py
+test_matchschedule.py
+test_matchschedule_raw.py
+test_matchschedule_spaces.py
+complete_discovery.log
