@@ -72,22 +72,10 @@ def main():
     }
 
     # ========================================================================
-    # CHAMPIONS (2012-2015) - 4 Stufen × 3 Splits
+    # CHAMPIONS/OGN (2012-2015) - SKIPPED
+    # These tournaments are not in the Cargo database (too old, not migrated)
+    # Will need manual scraping from wiki pages if needed
     # ========================================================================
-    print("\n" + "="*80)
-    print("CHAMPIONS (2012-2015)")
-    print("="*80)
-
-    for year in [2012, 2013, 2014, 2015]:
-        for split in ["Spring", "Summer", "Winter"]:
-            for stage in ["Qualifiers", "Preseason", "Season", "Playoffs"]:
-                name = f"Champions {year} {split} {stage}"
-                url = f"Champions/{year}_Season/{split}_{stage}"
-                if test_tournament(loader, name, url, results, "Champions"):
-                    stats["found"] += 1
-                else:
-                    stats["not_found"] += 1
-                stats["total"] += 1
 
     # ========================================================================
     # KESPA CUP (2015-2025)
