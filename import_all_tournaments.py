@@ -64,6 +64,9 @@ def aggregate_games_to_matches(games):
         # Use data from first game for shared fields
         first_game = match_games[0]
 
+        # Collect all GameIds for this match (for player data lookup)
+        game_ids = [g.get('GameId', '') for g in match_games if g.get('GameId')]
+
         match = {
             'team1': team1,
             'team2': team2,
@@ -76,6 +79,7 @@ def aggregate_games_to_matches(games):
             'tab': tab,
             'overview_page': first_game.get('OverviewPage', ''),
             'num_games': len(match_games),
+            'game_ids': game_ids,  # For player data lookup
             'external_id': f"{first_game.get('OverviewPage', '')}_{tab}_{game_date}_{team1}_{team2}"
         }
 
@@ -83,7 +87,7 @@ def aggregate_games_to_matches(games):
 
     return matches
 
-def import_tournament(loader, db, team_resolver, name, url, stats, include_players=False):
+def import_tournament(loader, db, team_resolver, name, url, stats, include_players=True):
     """
     Import all games for a single tournament
 
@@ -94,7 +98,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         name: Tournament name
         url: Tournament URL
         stats: Statistics dictionary
-        include_players: Whether to fetch player data (default: False to avoid query limits)
+        include_players: Whether to fetch player data (default: True, only fetches Link and Role)
     """
     print(f"\nImporting: {name}")
     print(f"  URL: {url}")
@@ -117,6 +121,27 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
 
         print(f"  📊 Found {len(games)} games")
 
+        # Query player data if requested (only Link and Role to keep it lightweight)
+        players_by_game = {}
+        if include_players:
+            time.sleep(2)  # Rate limit delay
+            players = loader._query_cargo(
+                tables="ScoreboardPlayers",
+                fields="GameId,Link,Role,Team",
+                where=f"OverviewPage='{url}'",
+                limit=500,  # 500 per request
+                order_by="DateTime_UTC ASC"
+            )
+
+            # Group players by GameId for easy lookup
+            for player in players:
+                game_id = player.get('GameId', '')
+                if game_id not in players_by_game:
+                    players_by_game[game_id] = []
+                players_by_game[game_id].append(player)
+
+            print(f"  👤 Found {len(players)} player records")
+
         # Aggregate games into matches
         matches = aggregate_games_to_matches(games)
         print(f"  📊 Aggregated into {len(matches)} matches")
@@ -124,6 +149,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         # Import each match into database
         imported = 0
         duplicates = 0
+        players_imported = 0
 
         for match in matches:
             # Resolve team names using TeamResolver
@@ -160,16 +186,54 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
             if match_id:
                 imported += 1
 
-                # TODO: Optionally fetch player data if include_players=True
-                # This would require additional Cargo queries to ScoreboardPlayers
-                # Left disabled by default to avoid query limits
+                # Insert player data if available
+                if include_players and players_by_game:
+                    # Collect all players from all games in this match
+                    match_players = []
+                    for game_id in match.get('game_ids', []):
+                        if game_id in players_by_game:
+                            match_players.extend(players_by_game[game_id])
+
+                    # Insert each unique player (deduplicate by name+role)
+                    unique_players = {}
+                    for player in match_players:
+                        player_name = player.get('Link', '').strip()
+                        role = player.get('Role', '').strip()
+                        team = player.get('Team', '').strip()
+
+                        if not player_name:
+                            continue
+
+                        # Resolve team name
+                        team_resolved = team_resolver.resolve(team, match['date'])
+
+                        # Use (name, role) as unique key to avoid duplicates
+                        key = (player_name, role)
+                        if key not in unique_players:
+                            unique_players[key] = (player_name, role, team_resolved)
+
+                    # Insert into database
+                    for player_name, role, team_name in unique_players.values():
+                        result = db.insert_match_player(
+                            match_id=match_id,
+                            player_name=player_name,
+                            team_name=team_name,
+                            role=role
+                        )
+                        if result:
+                            players_imported += 1
 
             else:
                 duplicates += 1
 
-        print(f"  ✅ Imported {imported} matches ({duplicates} duplicates skipped)")
+        if include_players and players_imported > 0:
+            print(f"  ✅ Imported {imported} matches, {players_imported} player records ({duplicates} duplicates skipped)")
+        else:
+            print(f"  ✅ Imported {imported} matches ({duplicates} duplicates skipped)")
+
         stats["imported"] += imported
         stats["duplicates"] += duplicates
+        stats["players_imported"] = stats.get("players_imported", 0) + players_imported
         stats["tournaments_imported"] += 1
         return True
 
@@ -217,6 +281,7 @@ def main():
     stats = {
         "imported": 0,
         "duplicates": 0,
+        "players_imported": 0,
         "tournaments_imported": 0,
         "skipped": 0,
         "errors": 0
@@ -236,11 +301,12 @@ def main():
     print("\n" + "="*80)
     print("IMPORT COMPLETE")
     print("="*80)
-    print(f"\n✅ Tournaments imported:  {stats['tournaments_imported']:4d}")
+    print(f"\n✅ Tournaments imported:   {stats['tournaments_imported']:4d}")
     print(f"📊 Total matches imported: {stats['imported']:4d}")
-    print(f"🔄 Duplicates skipped:    {stats['duplicates']:4d}")
-    print(f"⚠️  Skipped:              {stats['skipped']:4d}")
-    print(f"❌ Errors:               {stats['errors']:4d}")
+    print(f"👤 Player records imported: {stats['players_imported']:4d}")
+    print(f"🔄 Duplicates skipped:     {stats['duplicates']:4d}")
+    print(f"⚠️  Skipped:               {stats['skipped']:4d}")
+    print(f"❌ Errors:                {stats['errors']:4d}")
 
     # Save unknown teams for manual review
     unknown_teams = team_resolver.get_unknown_teams()
