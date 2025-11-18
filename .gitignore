@@ -67,3 +67,4 @@ search_msi_2018.py
 lcs_missing_summary.md
 test_lcs_2021_2022.py
 test_lcs_scoreboards.py
+test_match_history.py
