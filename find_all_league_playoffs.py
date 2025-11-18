@@ -486,16 +486,7 @@ def main():
 
     # Initialize loader
     loader = LeaguepediaLoader()
-    print("[OK] Authenticated as ekwo98@Elo")
-
-    # Verify bot authentication
-    try:
-        loader.authenticate_as_bot()
-        print("[OK] Authenticated as ekwo98@Elo")
-        print("✅ Bot authenticated successfully\n")
-    except Exception as e:
-        print(f"[ERROR] Bot authentication failed: {e}")
-        return
+    print("✅ Loader initialized\n")
 
     # Search for all playoffs
     results = search_playoffs(loader)
