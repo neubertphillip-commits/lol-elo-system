@@ -58,3 +58,6 @@ discovery_iem_riftrivals.py
 iem_riftrivals_results.json
 iem_riftrivals.log
 discovery_summary.md
+discovery_regional_minor.py
+regional_minor_results.json
+regional_minor.log
