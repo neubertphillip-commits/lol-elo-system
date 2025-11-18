@@ -36,14 +36,16 @@ def exponential_backoff_query(loader, url, max_retries=10):
                 where=f"OverviewPage='{url}'",
                 limit=5
             )
+            if retry > 0:
+                print(f" [Succeeded after {retry} retries]", end="")
             return games
         except Exception as e:
             if retry < max_retries - 1:
                 delay = 3 * (2 ** retry)
-                print(f"    [RETRY {retry+1}/{max_retries}]", end="\r")
+                print(f" [RETRY {retry+1}/{max_retries}, waiting {delay}s]", end="")
                 time.sleep(delay)
             else:
-                print(f"    [FAILED after {max_retries} retries]")
+                print(f" [FAILED after {max_retries} retries]", end="")
                 return None
     return None
 
@@ -544,6 +546,46 @@ def main():
 
     for category in sorted(categories.keys()):
         print(f"\n{category}: {len(categories[category])} tournaments found")
+
+    # NOT FOUND LIST - for user to find links
+    print("\n" + "="*80)
+    print("NOT FOUND - Bitte Links suchen für:")
+    print("="*80)
+
+    not_found_by_category = {}
+    for name, data in results.items():
+        if data["status"] == "not_found":
+            cat = data["category"]
+            if cat not in not_found_by_category:
+                not_found_by_category[cat] = []
+            not_found_by_category[cat].append({
+                "name": name,
+                "url": data["url"]
+            })
+
+    for category in sorted(not_found_by_category.keys()):
+        items = not_found_by_category[category]
+        print(f"\n{category}: {len(items)} NOT FOUND")
+        print("-" * 80)
+        for item in items:
+            print(f"  ❌ {item['name']}")
+            print(f"     Tested URL: {item['url']}")
+
+    # Save not found list to separate file
+    not_found_file = Path(__file__).parent / "not_found_tournaments.txt"
+    with open(not_found_file, "w", encoding="utf-8") as f:
+        f.write("NOT FOUND TOURNAMENTS - Bitte Links suchen\n")
+        f.write("="*80 + "\n\n")
+        for category in sorted(not_found_by_category.keys()):
+            items = not_found_by_category[category]
+            f.write(f"{category}: {len(items)} NOT FOUND\n")
+            f.write("-"*80 + "\n")
+            for item in items:
+                f.write(f"❌ {item['name']}\n")
+                f.write(f"   Tested URL: {item['url']}\n\n")
+            f.write("\n")
+
+    print(f"\n📄 Not found list saved to: {not_found_file}")
 
 if __name__ == "__main__":
     main()
