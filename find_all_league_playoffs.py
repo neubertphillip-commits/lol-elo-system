@@ -5,13 +5,14 @@ Systematische Suche nach ALLEN League Playoffs mit 10 Retries
 
 import json
 import time
+import os
+import sys
 from pathlib import Path
 
 # Add parent directory to path for imports
-import sys
-sys.path.append(str(Path(__file__).parent))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from importer.leaguepedia_loader import LeaguepediaLoader
+from core.leaguepedia_loader import LeaguepediaLoader
 
 def exponential_backoff_query(loader, where_clause, max_retries=10):
     """
