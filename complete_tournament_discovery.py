@@ -1,0 +1,549 @@
+#!/usr/bin/env python3
+"""
+COMPLETE TOURNAMENT DISCOVERY - WIRKLICH ALLES
+Testet JEDEN Split, JEDES Playoff, JEDE Region, ALLE Jahre
+
+Das umfasst:
+- Champions 2012-2015 (alle 4 Stufen × 3 Splits)
+- KeSPA Cup 2015-2025
+- Demacia Cup 2017-2024
+- MSI 2015-2024
+- Worlds 2013-2024 (Play-In + Main Event)
+- LPL 2013-2024 (Spring + Summer + Playoffs)
+- LCK 2016-2024 (Spring + Summer + Playoffs)
+- LEC/EU LCS 2013-2024 (Spring + Summer + Playoffs)
+- LCS/NA LCS 2013-2024 (Spring + Summer + Playoffs)
+- CBLOL 2015-2024 (Split 1 + Split 2 + Playoffs)
+- PCS, VCS, LJL, TCL, LLA 2020-2024 (beide Splits + Playoffs)
+"""
+
+import json
+import time
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from core.leaguepedia_loader import LeaguepediaLoader
+
+def exponential_backoff_query(loader, url, max_retries=10):
+    """Query with exponential backoff - 10 retries"""
+    for retry in range(max_retries):
+        try:
+            games = loader._query_cargo(
+                tables="ScoreboardGames",
+                fields="Team1,Team2,Winner,DateTime_UTC,GameId,OverviewPage",
+                where=f"OverviewPage='{url}'",
+                limit=5
+            )
+            return games
+        except Exception as e:
+            if retry < max_retries - 1:
+                delay = 3 * (2 ** retry)
+                print(f"    [RETRY {retry+1}/{max_retries}]", end="\r")
+                time.sleep(delay)
+            else:
+                print(f"    [FAILED after {max_retries} retries]")
+                return None
+    return None
+
+def test_tournament(loader, name, url, results, category):
+    """Test a single tournament URL"""
+    print(f"Testing: {name:<60}", end="")
+
+    time.sleep(4)  # Base delay
+    games = exponential_backoff_query(loader, url, max_retries=10)
+
+    if games and len(games) > 0:
+        print(f" ✅ FOUND ({len(games)} games)")
+        results[name] = {
+            "url": url,
+            "count": len(games),
+            "category": category,
+            "status": "found"
+        }
+        return True
+    else:
+        print(f" ❌ NOT FOUND")
+        results[name] = {
+            "url": url,
+            "category": category,
+            "status": "not_found"
+        }
+        return False
+
+def main():
+    print("="*80)
+    print("COMPLETE TOURNAMENT DISCOVERY - WIRKLICH ALLES")
+    print("="*80)
+    print("Testet JEDEN Split, JEDES Playoff, ALLE Jahre, ALLE Regionen")
+    print("="*80)
+
+    loader = LeaguepediaLoader()
+    results = {}
+    stats = {
+        "found": 0,
+        "not_found": 0,
+        "total": 0
+    }
+
+    # ========================================================================
+    # CHAMPIONS (2012-2015) - 4 Stufen × 3 Splits
+    # ========================================================================
+    print("\n" + "="*80)
+    print("CHAMPIONS (2012-2015)")
+    print("="*80)
+
+    for year in [2012, 2013, 2014, 2015]:
+        for split in ["Spring", "Summer", "Winter"]:
+            for stage in ["Qualifiers", "Preseason", "Season", "Playoffs"]:
+                name = f"Champions {year} {split} {stage}"
+                url = f"Champions/{year}_Season/{split}_{stage}"
+                if test_tournament(loader, name, url, results, "Champions"):
+                    stats["found"] += 1
+                else:
+                    stats["not_found"] += 1
+                stats["total"] += 1
+
+    # ========================================================================
+    # KESPA CUP (2015-2025)
+    # ========================================================================
+    print("\n" + "="*80)
+    print("KESPA CUP (2015-2025)")
+    print("="*80)
+
+    for year in [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2024, 2025]:
+        # Try underscore pattern first
+        name = f"KeSPA Cup {year}"
+        url = f"{year}_LoL_KeSPA_Cup"
+        if test_tournament(loader, name, url, results, "KeSPA Cup"):
+            stats["found"] += 1
+        else:
+            # Try space pattern
+            url = f"{year} LoL KeSPA Cup"
+            if test_tournament(loader, name + " (space)", url, results, "KeSPA Cup"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+        stats["total"] += 1
+
+    # ========================================================================
+    # DEMACIA CUP (2017-2024)
+    # ========================================================================
+    print("\n" + "="*80)
+    print("DEMACIA CUP (2017-2024)")
+    print("="*80)
+
+    for year in [2017, 2018, 2019, 2020, 2021, 2024]:
+        name = f"Demacia Cup {year}"
+        url = f"Demacia_Championship/{year}_Season"
+        if test_tournament(loader, name, url, results, "Demacia Cup"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # ========================================================================
+    # MSI (2015-2024)
+    # ========================================================================
+    print("\n" + "="*80)
+    print("MSI (2015-2024)")
+    print("="*80)
+
+    for year in range(2015, 2025):
+        if year == 2020:  # MSI 2020 was cancelled
+            continue
+        name = f"MSI {year}"
+        url = f"{year} Mid-Season Invitational"
+        if test_tournament(loader, name, url, results, "MSI"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # ========================================================================
+    # WORLDS (2013-2024)
+    # ========================================================================
+    print("\n" + "="*80)
+    print("WORLDS (2013-2024)")
+    print("="*80)
+
+    for year in range(2013, 2025):
+        # Play-In (started 2017)
+        if year >= 2017:
+            name = f"Worlds {year} Play-In"
+            url = f"{year} Season World Championship/Play-In"
+            if test_tournament(loader, name, url, results, "Worlds"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+        # Main Event
+        if year >= 2017:
+            name = f"Worlds {year} Main Event"
+            url = f"{year} Season World Championship/Main Event"
+        else:
+            name = f"Worlds {year}"
+            url = f"{year} Season World Championship"
+
+        if test_tournament(loader, name, url, results, "Worlds"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # ========================================================================
+    # LPL (2013-2024) - Spring + Summer + Playoffs
+    # ========================================================================
+    print("\n" + "="*80)
+    print("LPL (2013-2024) - Spring + Summer + Playoffs")
+    print("="*80)
+
+    for year in range(2013, 2025):
+        for split in ["Spring", "Summer"]:
+            # Regular Season
+            name = f"LPL {year} {split}"
+            url = f"LPL/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LPL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            # Playoffs
+            name = f"LPL {year} {split} Playoffs"
+            url = f"LPL/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LPL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # ========================================================================
+    # LCK (2016-2024) - Spring + Summer + Playoffs
+    # ========================================================================
+    print("\n" + "="*80)
+    print("LCK (2016-2024) - Spring + Summer + Playoffs")
+    print("="*80)
+
+    for year in range(2016, 2025):
+        for split in ["Spring", "Summer"]:
+            # Regular Season
+            name = f"LCK {year} {split}"
+            url = f"LCK/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LCK"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            # Playoffs
+            name = f"LCK {year} {split} Playoffs"
+            url = f"LCK/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LCK"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # ========================================================================
+    # EU LCS / LEC (2013-2024) - Spring + Summer + Playoffs
+    # ========================================================================
+    print("\n" + "="*80)
+    print("EU LCS / LEC (2013-2024) - Spring + Summer + Playoffs")
+    print("="*80)
+
+    # Season 3 (2013)
+    for split in ["Spring", "Summer"]:
+        name = f"EU LCS Season 3 {split}"
+        url = f"EU LCS/Season 3/{split} Season"
+        if test_tournament(loader, name, url, results, "LEC/EU LCS"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+        name = f"EU LCS Season 3 {split} Playoffs"
+        url = f"EU LCS/Season 3/{split} Playoffs"
+        if test_tournament(loader, name, url, results, "LEC/EU LCS"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # EU LCS (2014-2018)
+    for year in range(2014, 2019):
+        for split in ["Spring", "Summer"]:
+            name = f"EU LCS {year} {split}"
+            url = f"EU LCS/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LEC/EU LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"EU LCS {year} {split} Playoffs"
+            url = f"EU LCS/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LEC/EU LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # LEC (2019-2024)
+    for year in range(2019, 2025):
+        for split in ["Spring", "Summer"]:
+            name = f"LEC {year} {split}"
+            url = f"LEC/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LEC/EU LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"LEC {year} {split} Playoffs"
+            url = f"LEC/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LEC/EU LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # ========================================================================
+    # NA LCS / LCS (2013-2024) - Spring + Summer + Playoffs
+    # ========================================================================
+    print("\n" + "="*80)
+    print("NA LCS / LCS (2013-2024) - Spring + Summer + Playoffs")
+    print("="*80)
+
+    # Season 3 (2013)
+    for split in ["Spring", "Summer"]:
+        name = f"NA LCS Season 3 {split}"
+        url = f"NA LCS/Season 3/{split} Season"
+        if test_tournament(loader, name, url, results, "LCS/NA LCS"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+        name = f"NA LCS Season 3 {split} Playoffs"
+        url = f"NA LCS/Season 3/{split} Playoffs"
+        if test_tournament(loader, name, url, results, "LCS/NA LCS"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # NA LCS (2014-2018)
+    for year in range(2014, 2019):
+        for split in ["Spring", "Summer"]:
+            name = f"NA LCS {year} {split}"
+            url = f"NA LCS/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LCS/NA LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"NA LCS {year} {split} Playoffs"
+            url = f"NA LCS/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LCS/NA LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # LCS (2019-2024)
+    for year in range(2019, 2025):
+        for split in ["Spring", "Summer"]:
+            name = f"LCS {year} {split}"
+            url = f"LCS/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LCS/NA LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"LCS {year} {split} Playoffs"
+            url = f"LCS/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LCS/NA LCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # ========================================================================
+    # CBLOL (2015-2024) - Split 1 + Split 2 + Playoffs
+    # ========================================================================
+    print("\n" + "="*80)
+    print("CBLOL (2015-2024) - Split 1 + Split 2 + Playoffs")
+    print("="*80)
+
+    for year in range(2015, 2025):
+        for split in [1, 2]:
+            name = f"CBLOL {year} Split {split}"
+            url = f"CBLOL/{year} Split {split}"
+            if test_tournament(loader, name, url, results, "CBLOL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"CBLOL {year} Split {split} Playoffs"
+            url = f"CBLOL/{year} Split {split}/Playoffs"
+            if test_tournament(loader, name, url, results, "CBLOL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # ========================================================================
+    # KLEINERE REGIONEN (2020-2024) - Beide Splits + Playoffs
+    # ========================================================================
+    print("\n" + "="*80)
+    print("PCS (2020-2024) - Spring + Summer + Playoffs")
+    print("="*80)
+
+    for year in range(2020, 2025):
+        for split in ["Spring", "Summer"]:
+            name = f"PCS {year} {split}"
+            url = f"PCS/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "PCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"PCS {year} {split} Playoffs"
+            url = f"PCS/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "PCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    print("\n" + "="*80)
+    print("VCS (2020-2024) - Spring + Summer + Playoffs")
+    print("="*80)
+
+    for year in range(2020, 2025):
+        for split in ["Spring", "Summer"]:
+            name = f"VCS {year} {split}"
+            url = f"VCS/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "VCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"VCS {year} {split} Playoffs"
+            url = f"VCS/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "VCS"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    print("\n" + "="*80)
+    print("LJL (2020-2024) - Spring + Summer + Playoffs")
+    print("="*80)
+
+    for year in range(2020, 2025):
+        for split in ["Spring", "Summer"]:
+            name = f"LJL {year} {split}"
+            url = f"LJL/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LJL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"LJL {year} {split} Playoffs"
+            url = f"LJL/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LJL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    print("\n" + "="*80)
+    print("TCL (2020-2024) - Winter + Summer + Playoffs")
+    print("="*80)
+
+    for year in range(2020, 2025):
+        for split in ["Winter", "Summer"]:
+            name = f"TCL {year} {split}"
+            url = f"TCL/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "TCL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"TCL {year} {split} Playoffs"
+            url = f"TCL/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "TCL"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    print("\n" + "="*80)
+    print("LLA (2020-2024) - Opening + Closing + Playoffs")
+    print("="*80)
+
+    for year in range(2020, 2025):
+        for split in ["Opening", "Closing"]:
+            name = f"LLA {year} {split}"
+            url = f"LLA/{year} Season/{split} Season"
+            if test_tournament(loader, name, url, results, "LLA"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+            name = f"LLA {year} {split} Playoffs"
+            url = f"LLA/{year} Season/{split} Playoffs"
+            if test_tournament(loader, name, url, results, "LLA"):
+                stats["found"] += 1
+            else:
+                stats["not_found"] += 1
+            stats["total"] += 1
+
+    # ========================================================================
+    # SUMMARY
+    # ========================================================================
+    print("\n" + "="*80)
+    print("COMPLETE DISCOVERY FINISHED")
+    print("="*80)
+    print(f"\n✅ Found:     {stats['found']:4d} tournaments")
+    print(f"❌ Not Found: {stats['not_found']:4d} tournaments")
+    print(f"📊 Total:     {stats['total']:4d} tournaments tested")
+    print(f"📈 Success:   {stats['found']/stats['total']*100:.1f}%")
+
+    # Save results
+    output_file = Path(__file__).parent / "complete_tournament_discovery_results.json"
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+
+    print(f"\n📄 Results saved to: {output_file}")
+
+    # Category summary
+    print("\n" + "="*80)
+    print("FOUND TOURNAMENTS BY CATEGORY")
+    print("="*80)
+
+    categories = {}
+    for name, data in results.items():
+        if data["status"] == "found":
+            cat = data["category"]
+            if cat not in categories:
+                categories[cat] = []
+            categories[cat].append(name)
+
+    for category in sorted(categories.keys()):
+        print(f"\n{category}: {len(categories[category])} tournaments found")
+
+if __name__ == "__main__":
+    main()
