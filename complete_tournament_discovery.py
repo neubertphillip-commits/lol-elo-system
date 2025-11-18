@@ -496,6 +496,115 @@ def main():
             stats["total"] += 1
 
     # ========================================================================
+    # REGIONAL FINALS (2015-2024) - Alle Regionen
+    # ========================================================================
+    print("\n" + "="*80)
+    print("REGIONAL FINALS (2015-2024) - Alle Regionen")
+    print("="*80)
+
+    # EU LCS/LEC Regional Finals (2015-2024)
+    for year in range(2015, 2025):
+        league = "EU_LCS" if year <= 2018 else "LEC"
+        name = f"{league.replace('_', ' ')} {year} Regional Finals"
+        url = f"{league}/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # NA LCS/LCS Regional Finals (2015-2024)
+    for year in range(2015, 2025):
+        league = "NA_LCS" if year <= 2017 else "LCS"
+        name = f"{league.replace('_', ' ')} {year} Regional Finals"
+        url = f"{league}/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # LPL Regional Finals (2015-2024)
+    for year in range(2015, 2025):
+        name = f"LPL {year} Regional Finals"
+        url = f"LPL/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # LCK Regional Finals (2016-2024)
+    for year in range(2016, 2025):
+        name = f"LCK {year} Regional Finals"
+        url = f"LCK/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # CBLOL Regional Finals (2015-2024)
+    for year in range(2015, 2025):
+        name = f"CBLOL {year} Regional Finals"
+        url = f"CBLOL/{year}/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # PCS Regional Finals (2020-2024)
+    for year in range(2020, 2025):
+        name = f"PCS {year} Regional Finals"
+        url = f"PCS/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # VCS Regional Finals (2020-2024)
+    for year in range(2020, 2025):
+        name = f"VCS {year} Regional Finals"
+        url = f"VCS/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # LJL Regional Finals (2020-2024)
+    for year in range(2020, 2025):
+        name = f"LJL {year} Regional Finals"
+        url = f"LJL/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # TCL Regional Finals (2020-2024)
+    for year in range(2020, 2025):
+        name = f"TCL {year} Regional Finals"
+        url = f"TCL/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # LLA Regional Finals (2020-2024)
+    for year in range(2020, 2025):
+        name = f"LLA {year} Regional Finals"
+        url = f"LLA/{year}_Season/Regional_Finals"
+        if test_tournament(loader, name, url, results, "Regional Finals"):
+            stats["found"] += 1
+        else:
+            stats["not_found"] += 1
+        stats["total"] += 1
+
+    # ========================================================================
     # SUMMARY
     # ========================================================================
     print("\n" + "="*80)
