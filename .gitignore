@@ -65,3 +65,4 @@ test_missing_msi.py
 check_msi_exact.py
 search_msi_2018.py
 lcs_missing_summary.md
+test_lcs_2021_2022.py
