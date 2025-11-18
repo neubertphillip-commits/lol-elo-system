@@ -46,3 +46,11 @@ db/*.db-*
 # Import logs
 import_log.txt
 nohup.out
+
+# Temporary discovery scripts and results
+discovery_remaining.py
+remaining_discovery_results.json
+discovery_output.log
+remaining_discovery.log
+unknown_teams.txt
+import_log.json
