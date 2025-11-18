@@ -26,35 +26,17 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core.leaguepedia_loader import LeaguepediaLoader
 
-def exponential_backoff_query(loader, url, max_retries=10):
-    """Query with exponential backoff - 10 retries"""
-    for retry in range(max_retries):
-        try:
-            games = loader._query_cargo(
-                tables="ScoreboardGames",
-                fields="Team1,Team2,Winner,DateTime_UTC,GameId,OverviewPage",
-                where=f"OverviewPage='{url}'",
-                limit=5
-            )
-            if retry > 0:
-                print(f" [Succeeded after {retry} retries]", end="")
-            return games
-        except Exception as e:
-            if retry < max_retries - 1:
-                delay = 3 * (2 ** retry)
-                print(f" [RETRY {retry+1}/{max_retries}, waiting {delay}s]", end="")
-                time.sleep(delay)
-            else:
-                print(f" [FAILED after {max_retries} retries]", end="")
-                return None
-    return None
-
 def test_tournament(loader, name, url, results, category):
     """Test a single tournament URL"""
     print(f"Testing: {name:<60}", end="")
 
-    time.sleep(4)  # Base delay
-    games = exponential_backoff_query(loader, url, max_retries=10)
+    time.sleep(4)  # Base delay between queries
+    games = loader._query_cargo(
+        tables="ScoreboardGames",
+        fields="Team1,Team2,Winner,DateTime_UTC,GameId,OverviewPage",
+        where=f"OverviewPage='{url}'",
+        limit=5
+    )
 
     if games and len(games) > 0:
         print(f" ✅ FOUND ({len(games)} games)")
