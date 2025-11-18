@@ -1,0 +1,87 @@
+{
+  "MSI 2024 Main Event": {
+    "url": "2024 Mid-Season Invitational",
+    "sample": "Bilibili Gaming vs Gen.G",
+    "date": "2024-05-19 11:11:00"
+  },
+  "MSI 2023 Main Event": {
+    "url": "2023 Mid-Season Invitational",
+    "sample": "Bilibili Gaming vs Cloud9",
+    "date": "2023-05-11 14:02:00"
+  },
+  "MSI 2021": {
+    "url": "2021 Mid-Season Invitational",
+    "sample": "Cloud9 vs DetonatioN FocusMe",
+    "date": "2021-05-11 15:57:00"
+  },
+  "LCK 2017 Spring Season": {
+    "url": "LCK/2017 Season/Spring Season",
+    "sample": "Afreeca Freecs vs bbq Olivers",
+    "date": "2017-03-23 10:48:00"
+  },
+  "LCK 2015 Spring Season": {
+    "url": null,
+    "sample": null,
+    "date": null
+  },
+  "Champions 2014 Summer": {
+    "url": null,
+    "sample": null,
+    "date": null
+  },
+  "Champions 2013 Summer": {
+    "url": null,
+    "sample": null,
+    "date": null
+  },
+  "LPL 2024 Spring Regular Season": {
+    "url": "LPL/2024 Season/Spring Season",
+    "sample": "Anyone's Legend vs EDward Gaming",
+    "date": "2024-02-25 08:16:00"
+  },
+  "LPL 2020 Spring Regular Season": {
+    "url": "LPL/2020 Season/Spring Season",
+    "sample": "Bilibili Gaming vs Dominus Esports",
+    "date": "2020-04-07 06:13:00"
+  },
+  "LPL 2018 Summer Regular Season": {
+    "url": "LPL/2018 Season/Summer Season",
+    "sample": "Bilibili Gaming vs FunPlus Phoenix",
+    "date": "2018-07-30 10:34:00"
+  },
+  "PCS 2024 Spring": {
+    "url": "PCS/2024 Season/Spring Season",
+    "sample": "Beyond Gaming vs CTBC Flying Oyster",
+    "date": "2024-01-19 09:11:00"
+  },
+  "VCS 2024 Spring": {
+    "url": "VCS/2024 Season/Spring Season",
+    "sample": "CERBERUS Esports (Vietnamese Team) vs GAM Esports",
+    "date": "2024-02-01 13:02:00"
+  },
+  "LJL 2024 Spring": {
+    "url": "LJL/2024 Season/Spring Season",
+    "sample": "AXIZ CREST vs Burning Core Toyama",
+    "date": "2024-01-28 13:05:00"
+  },
+  "TCL 2024 Winter": {
+    "url": "TCL/2024 Season/Winter Season",
+    "sample": "Be\u015fikta\u015f Esports vs Dark Passage",
+    "date": "2024-02-15 18:05:00"
+  },
+  "LLA 2024 Opening": {
+    "url": "LLA/2024 Season/Opening Season",
+    "sample": "All Knights vs Estral Esports",
+    "date": "2024-01-31 23:00:00"
+  },
+  "Kespa Cup 2024": {
+    "url": null,
+    "sample": null,
+    "date": null
+  },
+  "Demacia Cup 2024 Winter": {
+    "url": null,
+    "sample": null,
+    "date": null
+  }
+}
