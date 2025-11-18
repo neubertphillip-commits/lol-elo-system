@@ -62,3 +62,5 @@ discovery_regional_minor.py
 regional_minor_results.json
 regional_minor.log
 test_missing_msi.py
+check_msi_exact.py
+search_msi_2018.py
