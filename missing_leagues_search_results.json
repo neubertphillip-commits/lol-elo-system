@@ -1,0 +1,289 @@
+{
+  "LCK 2015 Spring": null,
+  "Champions 2014 Summer": null,
+  "Champions 2014 Spring": null,
+  "Champions 2014 Winter": null,
+  "Champions 2013 Summer": null,
+  "Champions 2013 Spring": null,
+  "Champions 2013 Winter": null,
+  "LPL 2017 Spring": {
+    "url": "LPL/2017 Season/Spring Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "EDward Gaming",
+        "team2": "Game Talents",
+        "date": "2017-02-10 11:36:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Game Talents",
+        "date": "2017-03-31 11:25:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Game Talents",
+        "date": "2017-03-31 12:17:00"
+      }
+    ]
+  },
+  "LPL 2016 Spring": {
+    "url": "LPL/2016 Season/Spring Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "EDward Gaming",
+        "team2": "Energy Pacemaker.All",
+        "date": "2016-03-20 07:00:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Hyper Youth Gaming",
+        "date": "2016-01-28 13:00:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Hyper Youth Gaming",
+        "date": "2016-03-24 10:00:00"
+      }
+    ]
+  },
+  "LPL 2015 Spring": {
+    "url": "LPL/2015 Season/Spring Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "EDward Gaming",
+        "team2": "Energy Pacemaker",
+        "date": "2015-02-13 05:00:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Energy Pacemaker",
+        "date": "2015-04-11 12:00:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Gamtee",
+        "date": "2015-02-07 09:00:00"
+      }
+    ]
+  },
+  "LPL 2014 Spring": {
+    "url": "LPL/2014 Season/Spring Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "EDward Gaming",
+        "team2": "Energy Pacemaker.HK",
+        "date": "2014-03-07 09:00:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Energy Pacemaker.HK",
+        "date": "2014-04-06 08:00:00"
+      },
+      {
+        "team1": "EDward Gaming",
+        "team2": "Invictus Gaming",
+        "date": "2014-02-22 08:00:00"
+      }
+    ]
+  },
+  "LPL 2013 Spring": {
+    "url": "LPL/2013 Season/Spring Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "Invictus Gaming",
+        "team2": "Oh My God",
+        "date": "2013-05-17 09:00:00"
+      },
+      {
+        "team1": "Invictus Gaming",
+        "team2": "Oh My God",
+        "date": "2013-04-28 09:00:00"
+      },
+      {
+        "team1": "Invictus Gaming",
+        "team2": "Positive Energy",
+        "date": "2013-04-19 08:00:00"
+      }
+    ]
+  },
+  "PCS 2020 Spring": null,
+  "VCS 2020 Spring": {
+    "url": "VCS/2020 Season/Spring Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "CERBERUS Esports (Vietnamese Team)",
+        "team2": "Dashing Buffalo",
+        "date": "2020-02-16 10:43:00"
+      },
+      {
+        "team1": "CERBERUS Esports (Vietnamese Team)",
+        "team2": "Dashing Buffalo",
+        "date": "2020-03-28 07:42:00"
+      },
+      {
+        "team1": "CERBERUS Esports (Vietnamese Team)",
+        "team2": "EVOS Esports",
+        "date": "2020-02-29 09:49:00"
+      }
+    ]
+  },
+  "LJL 2020 Spring": {
+    "url": "LJL/2020 Season/Spring Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "AXIZ",
+        "team2": "Burning Core",
+        "date": "2020-03-07 10:02:00"
+      },
+      {
+        "team1": "AXIZ",
+        "team2": "Fukuoka SoftBank HAWKS gaming",
+        "date": "2020-02-23 03:56:00"
+      },
+      {
+        "team1": "AXIZ",
+        "team2": "Rascal Jester",
+        "date": "2020-02-15 03:48:00"
+      }
+    ]
+  },
+  "TCL 2020 Winter": {
+    "url": "TCL/2020 Season/Winter Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "5 Ronin",
+        "team2": "Be\u015fikta\u015f Esports",
+        "date": "2020-02-29 11:31:00"
+      },
+      {
+        "team1": "5 Ronin",
+        "team2": "Dark Passage",
+        "date": "2020-02-02 10:12:00"
+      },
+      {
+        "team1": "5 Ronin",
+        "team2": "Dark Passage",
+        "date": "2020-03-14 11:42:00"
+      }
+    ]
+  },
+  "LLA 2020 Opening": {
+    "url": "LLA/2020 Season/Opening Season",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "All Knights",
+        "team2": "Azules Esports",
+        "date": "2020-03-01 22:35:00"
+      },
+      {
+        "team1": "All Knights",
+        "team2": "Furious Gaming",
+        "date": "2020-03-08 23:52:00"
+      },
+      {
+        "team1": "All Knights",
+        "team2": "INFINITY",
+        "date": "2020-02-22 20:54:00"
+      }
+    ]
+  },
+  "Kespa Cup 2024": null,
+  "Kespa Cup 2021": null,
+  "Kespa Cup 2019": null,
+  "Demacia Cup 2024 Winter": null,
+  "Demacia Cup 2020 Winter": null,
+  "Worlds 2017 Groups": {
+    "url": "2017 Season World Championship/Main Event",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "ahq eSports Club",
+        "team2": "Cloud9",
+        "date": "2017-10-06 11:19:00"
+      },
+      {
+        "team1": "ahq eSports Club",
+        "team2": "EDward Gaming",
+        "date": "2017-10-15 05:56:00"
+      },
+      {
+        "team1": "ahq eSports Club",
+        "team2": "SK Telecom T1",
+        "date": "2017-10-15 03:54:00"
+      }
+    ]
+  },
+  "Worlds 2016 Groups": {
+    "url": "2016 Season World Championship",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "ahq eSports Club",
+        "team2": "EDward Gaming",
+        "date": "2016-10-08 03:56:00"
+      },
+      {
+        "team1": "ahq eSports Club",
+        "team2": "H2k-Gaming",
+        "date": "2016-10-07 23:58:00"
+      },
+      {
+        "team1": "ahq eSports Club",
+        "team2": "INTZ",
+        "date": "2016-10-02 21:59:00"
+      }
+    ]
+  },
+  "Worlds 2015 Groups": {
+    "url": "2015 Season World Championship",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "ahq eSports Club",
+        "team2": "Cloud9",
+        "date": "2015-10-11 09:58:00"
+      },
+      {
+        "team1": "ahq eSports Club",
+        "team2": "Fnatic",
+        "date": "2015-10-03 17:33:00"
+      },
+      {
+        "team1": "ahq eSports Club",
+        "team2": "Invictus Gaming",
+        "date": "2015-10-11 07:51:00"
+      }
+    ]
+  },
+  "Worlds 2024 Main Event": {
+    "url": "2024 Season World Championship/Main Event",
+    "count": 3,
+    "sample_games": [
+      {
+        "team1": "Bilibili Gaming",
+        "team2": "G2 Esports",
+        "date": "2024-10-13 16:49:00"
+      },
+      {
+        "team1": "Bilibili Gaming",
+        "team2": "Hanwha Life Esports",
+        "date": "2024-10-18 13:10:00"
+      },
+      {
+        "team1": "Bilibili Gaming",
+        "team2": "LNG Esports",
+        "date": "2024-10-04 12:13:00"
+      }
+    ]
+  },
+  "Worlds 2023 Quarterfinals": null
+}
