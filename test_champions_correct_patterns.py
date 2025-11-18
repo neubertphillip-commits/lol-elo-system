@@ -93,6 +93,14 @@ def main():
         print(f"{'='*80}")
 
         for split in splits:
+            # Test Qualifiers
+            name = f"Champions {year} {split} Qualifiers"
+            url = f"Champions/{year}_Season/{split}_Qualifiers"
+            if test_tournament(loader, name, url, results):
+                found += 1
+            else:
+                not_found += 1
+
             # Test Preseason
             name = f"Champions {year} {split} Preseason"
             url = f"Champions/{year}_Season/{split}_Preseason"
