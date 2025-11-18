@@ -30,7 +30,7 @@ def test_tournament(loader, name, url, results, category):
     """Test a single tournament URL"""
     print(f"Testing: {name:<60}", end="")
 
-    time.sleep(4)  # Base delay between queries
+    time.sleep(2)  # Base delay between queries (with bot auth)
     games = loader._query_cargo(
         tables="ScoreboardGames",
         fields="Team1,Team2,Winner,DateTime_UTC,GameId,OverviewPage",
