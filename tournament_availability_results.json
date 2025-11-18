@@ -1,0 +1,706 @@
+{
+  "metadata": {
+    "test_time": "2025-11-18T10:37:09.860520",
+    "total_tests": 85,
+    "success": 42,
+    "no_data": 43,
+    "errors": 0,
+    "bot_authenticated": true
+  },
+  "results": [
+    {
+      "category": "Worlds",
+      "name": "Worlds 2024 Play-In",
+      "path": "2024 Season World Championship/Play-In",
+      "status": "SUCCESS",
+      "sample": "100 Thieves vs Movistar R7",
+      "date": "2024-09-26 13:48:00"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2024 Swiss Stage",
+      "path": "2024 Season World Championship/Swiss Stage",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2024 Knockout",
+      "path": "2024 Season World Championship/Knockout Stage",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2023 Play-In",
+      "path": "2023 Season World Championship/Play-In",
+      "status": "SUCCESS",
+      "sample": "CTBC Flying Oyster vs DetonatioN FocusMe",
+      "date": "2023-10-11 08:09:00"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2023 Main Event",
+      "path": "2023 Season World Championship/Main Event",
+      "status": "SUCCESS",
+      "sample": "Bilibili Gaming vs Fnatic",
+      "date": "2023-10-22 09:09:00"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2023 Knockout",
+      "path": "2023 Season World Championship/Knockout Stage",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2020 Play-In",
+      "path": "2020 Season World Championship/Play-In",
+      "status": "SUCCESS",
+      "sample": "INTZ vs Papara SuperMassive",
+      "date": "2020-09-26 08:50:00"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2020 Main Event",
+      "path": "2020 Season World Championship/Main Event",
+      "status": "SUCCESS",
+      "sample": "DAMWON Gaming vs DRX",
+      "date": "2020-10-15 08:52:00"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2017 Play-In",
+      "path": "2017 Season World Championship/Play-In",
+      "status": "SUCCESS",
+      "sample": "Cloud9 vs Dire Wolves",
+      "date": "2017-09-24 06:50:00"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2017 Group Stage",
+      "path": "2017 Season World Championship/Group Stage",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2016 Group Stage",
+      "path": "2016 Season World Championship/Group Stage",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2015 Group Stage",
+      "path": "2015 Season World Championship/Group Stage",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2014",
+      "path": "2014 Season World Championship",
+      "status": "SUCCESS",
+      "sample": "ahq eSports Club vs Dark Passage",
+      "date": "2014-09-21 10:21:00"
+    },
+    {
+      "category": "Worlds",
+      "name": "Worlds 2013",
+      "path": "Season 3 World Championship",
+      "status": "SUCCESS",
+      "sample": "Cloud9 vs Fnatic",
+      "date": "2013-09-23 20:00:00"
+    },
+    {
+      "category": "MSI",
+      "name": "MSI 2024 Play-In",
+      "path": "2024 Mid-Season Invitational/Play-In",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "MSI",
+      "name": "MSI 2024 Bracket",
+      "path": "2024 Mid-Season Invitational/Bracket Stage",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "MSI",
+      "name": "MSI 2023 Play-In",
+      "path": "2023 Mid-Season Invitational/Play-In",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "MSI",
+      "name": "MSI 2021",
+      "path": "2021 Mid-Season Invitational",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "MSI",
+      "name": "MSI 2019 Play-In",
+      "path": "2019 Mid-Season Invitational/Play-In",
+      "status": "SUCCESS",
+      "sample": "Bombers vs Fenerbah\u00e7e Esports",
+      "date": "2019-05-02 09:41:00"
+    },
+    {
+      "category": "MSI",
+      "name": "MSI 2017 Play-In",
+      "path": "2017 Mid-Season Invitational/Play-In",
+      "status": "SUCCESS",
+      "sample": "Dire Wolves vs Rampage",
+      "date": "2017-04-28 22:33:00"
+    },
+    {
+      "category": "MSI",
+      "name": "MSI 2015",
+      "path": "2015 Mid-Season Invitational",
+      "status": "SUCCESS",
+      "sample": "ahq eSports Club vs Be\u015fikta\u015f Esports",
+      "date": "2015-05-09 02:26:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2024 Winter Season",
+      "path": "LEC/2024 Season/Winter Season",
+      "status": "SUCCESS",
+      "sample": "Fnatic vs G2 Esports",
+      "date": "2024-01-28 18:28:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2024 Winter Playoffs",
+      "path": "LEC/2024 Season/Winter Playoffs",
+      "status": "SUCCESS",
+      "sample": "Fnatic vs G2 Esports",
+      "date": "2024-02-05 18:43:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2024 Spring Season",
+      "path": "LEC/2024 Season/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2024 Spring Playoffs",
+      "path": "LEC/2024 Season/Spring Playoffs",
+      "status": "SUCCESS",
+      "sample": "Fnatic vs G2 Esports",
+      "date": "2024-04-01 17:42:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2023 Winter Season",
+      "path": "LEC/2023 Season/Winter Season",
+      "status": "SUCCESS",
+      "sample": "Astralis vs Fnatic",
+      "date": "2023-02-05 20:29:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2023 Spring Season",
+      "path": "LEC/2023 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Astralis vs Fnatic",
+      "date": "2023-03-27 17:02:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2020 Spring Season",
+      "path": "LEC/2020 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Excel Esports vs FC Schalke 04 Esports",
+      "date": "2020-01-24 20:11:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "LEC 2019 Spring Season",
+      "path": "LEC/2019 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Excel Esports vs FC Schalke 04 Esports",
+      "date": "2019-02-02 16:51:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2018 Spring Season",
+      "path": "EU LCS/2018 Season/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2018 Spring Playoffs",
+      "path": "EU LCS/2018 Season/Spring Playoffs",
+      "status": "SUCCESS",
+      "sample": "Fnatic vs G2 Esports",
+      "date": "2018-04-08 15:38:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2017 Summer Season",
+      "path": "EU LCS/2017 Season/Summer Season",
+      "status": "SUCCESS",
+      "sample": "Fnatic vs G2 Esports",
+      "date": "2017-08-12 16:31:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2016 Spring Season",
+      "path": "EU LCS/2016 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Elements vs Fnatic",
+      "date": "2016-03-17 17:43:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2015 Spring Season",
+      "path": "EU LCS/2015 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Copenhagen Wolves vs Elements",
+      "date": "2015-03-05 19:23:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2014 Summer Season",
+      "path": "EU LCS/2014 Season/Summer Season",
+      "status": "SUCCESS",
+      "sample": "Alliance vs Copenhagen Wolves",
+      "date": "2014-06-22 19:00:00"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2013 Spring (S3)",
+      "path": "EU LCS/Season 3/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LEC/EU LCS",
+      "name": "EU LCS 2013 Summer (S3)",
+      "path": "EU LCS/Season 3/Summer Season",
+      "status": "SUCCESS",
+      "sample": "Evil Geniuses.EU vs Fnatic",
+      "date": "2013-06-16 10:30:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "LCS 2024 Spring Season",
+      "path": "LCS/2024 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "100 Thieves vs Cloud9",
+      "date": "2024-02-11 21:08:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "LCS 2024 Spring Playoffs",
+      "path": "LCS/2024 Season/Spring Playoffs",
+      "status": "SUCCESS",
+      "sample": "100 Thieves vs Cloud9",
+      "date": "2024-03-14 20:08:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "LCS 2020 Spring Season",
+      "path": "LCS/2020 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "100 Thieves vs Cloud9",
+      "date": "2020-02-02 21:43:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "LCS 2019 Summer Season",
+      "path": "LCS/2019 Season/Summer Season",
+      "status": "SUCCESS",
+      "sample": "100 Thieves vs Cloud9",
+      "date": "2019-06-22 22:54:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2018 Spring Season",
+      "path": "NA LCS/2018 Season/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2018 Spring Playoffs",
+      "path": "NA LCS/2018 Season/Spring Playoffs",
+      "status": "SUCCESS",
+      "sample": "100 Thieves vs Clutch Gaming",
+      "date": "2018-04-01 19:53:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2017 Summer Season",
+      "path": "NA LCS/2017 Season/Summer Season",
+      "status": "SUCCESS",
+      "sample": "Cloud9 vs Counter Logic Gaming",
+      "date": "2017-06-02 21:16:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2016 Spring Season",
+      "path": "NA LCS/2016 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Cloud9 vs Counter Logic Gaming",
+      "date": "2016-02-28 21:01:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2015 Spring Season",
+      "path": "NA LCS/2015 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Cloud9 vs Counter Logic Gaming",
+      "date": "2015-02-22 20:00:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2014 Summer Season",
+      "path": "NA LCS/2014 Season/Summer Season",
+      "status": "SUCCESS",
+      "sample": "Cloud9 vs compLexity Gaming",
+      "date": "2014-07-19 22:04:00"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2013 Spring (S3)",
+      "path": "NA LCS/Season 3/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LCS/NA LCS",
+      "name": "NA LCS 2013 Summer (S3)",
+      "path": "NA LCS/Season 3/Summer Season",
+      "status": "SUCCESS",
+      "sample": "Cloud9 vs Counter Logic Gaming",
+      "date": "2013-07-11 21:00:00"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "LCK 2024 Spring Season",
+      "path": "LCK/2024 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Dplus KIA vs DRX",
+      "date": "2024-02-17 08:46:00"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "LCK 2024 Spring Playoffs",
+      "path": "LCK/2024 Season/Spring Playoffs",
+      "status": "SUCCESS",
+      "sample": "Dplus KIA vs Gen.G",
+      "date": "2024-04-03 09:06:00"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "LCK 2020 Spring Season",
+      "path": "LCK/2020 Season/Spring Season",
+      "status": "SUCCESS",
+      "sample": "Afreeca Freecs vs APK Prince",
+      "date": "2020-02-12 09:06:00"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "LCK 2018 Summer Season",
+      "path": "LCK/2018 Season/Summer Season",
+      "status": "SUCCESS",
+      "sample": "Afreeca Freecs vs bbq Olivers",
+      "date": "2018-06-19 11:45:00"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "LCK 2017 Spring Season",
+      "path": "LCK/2017 Season/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "LCK 2015 Spring Season",
+      "path": "LCK/2015 Season/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "Champions 2014 Summer",
+      "path": "Champions Summer 2014",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "Champions 2014 Spring",
+      "path": "Champions Spring 2014",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "Champions 2013 Summer",
+      "path": "Champions Summer 2013",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LCK/Champions",
+      "name": "Champions 2013 Spring",
+      "path": "Champions Spring 2013",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2024 Spring Season",
+      "path": "LPL/2024 Season/Spring Season",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2024 Spring Playoffs",
+      "path": "LPL/2024 Season/Spring Playoffs",
+      "status": "SUCCESS",
+      "sample": "Bilibili Gaming vs Ninjas in Pyjamas.CN",
+      "date": "2024-04-06 10:20:00"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2020 Spring",
+      "path": "LPL/2020 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2020 Spring Playoffs",
+      "path": "LPL/2020 Season/Spring Playoffs",
+      "status": "SUCCESS",
+      "sample": "EDward Gaming vs FunPlus Phoenix",
+      "date": "2020-04-25 11:16:00"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2018 Summer",
+      "path": "LPL/2018 Season/Summer",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2017 Spring",
+      "path": "LPL/2017 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2015 Summer",
+      "path": "LPL/2015 Season/Summer",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2014 Spring",
+      "path": "LPL/2014 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LPL",
+      "name": "LPL 2013 Summer",
+      "path": "LPL/2013 Season/Summer",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "CBLOL",
+      "name": "CBLOL 2024 Split 1",
+      "path": "CBLOL/2024 Season/Split 1",
+      "status": "SUCCESS",
+      "sample": "Fluxo vs FURIA",
+      "date": "2024-01-20 18:31:00"
+    },
+    {
+      "category": "CBLOL",
+      "name": "CBLOL 2020 Split 1",
+      "path": "CBLOL/2020 Season/Split 1",
+      "status": "SUCCESS",
+      "sample": "Flamengo Esports vs FURIA Uppercut",
+      "date": "2020-03-14 16:57:00"
+    },
+    {
+      "category": "LLA",
+      "name": "LLA 2024 Opening",
+      "path": "LLA/2024 Season/Opening",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LLA",
+      "name": "LLA 2020 Opening",
+      "path": "LLA/2020 Season/Opening",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "PCS",
+      "name": "PCS 2024 Spring",
+      "path": "PCS/2024 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "PCS",
+      "name": "PCS 2020 Spring",
+      "path": "PCS/2020 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "VCS",
+      "name": "VCS 2024 Spring",
+      "path": "VCS/2024 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "VCS",
+      "name": "VCS 2020 Spring",
+      "path": "VCS/2020 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LJL",
+      "name": "LJL 2024 Spring",
+      "path": "LJL/2024 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "LJL",
+      "name": "LJL 2020 Spring",
+      "path": "LJL/2020 Season/Spring",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "TCL",
+      "name": "TCL 2024 Winter",
+      "path": "TCL/2024 Season/Winter",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "TCL",
+      "name": "TCL 2020 Winter",
+      "path": "TCL/2020 Season/Winter",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Kespa Cup",
+      "name": "Kespa Cup 2024",
+      "path": "LoL KeSPA Cup/2024",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Kespa Cup",
+      "name": "Kespa Cup 2021",
+      "path": "LoL KeSPA Cup/2021",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Kespa Cup",
+      "name": "Kespa Cup 2019",
+      "path": "LoL KeSPA Cup/2019",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Demacia Cup",
+      "name": "Demacia Cup 2024 Winter",
+      "path": "Demacia Cup/2024 Winter",
+      "status": "NO_DATA"
+    },
+    {
+      "category": "Demacia Cup",
+      "name": "Demacia Cup 2020 Winter",
+      "path": "Demacia Cup/2020 Winter",
+      "status": "NO_DATA"
+    }
+  ],
+  "summary_by_category": {
+    "Worlds": {
+      "total": 14,
+      "success": 8,
+      "no_data": 6,
+      "errors": 0,
+      "success_rate": "57.1%"
+    },
+    "MSI": {
+      "total": 7,
+      "success": 3,
+      "no_data": 4,
+      "errors": 0,
+      "success_rate": "42.9%"
+    },
+    "LEC/EU LCS": {
+      "total": 16,
+      "success": 13,
+      "no_data": 3,
+      "errors": 0,
+      "success_rate": "81.2%"
+    },
+    "LCS/NA LCS": {
+      "total": 12,
+      "success": 10,
+      "no_data": 2,
+      "errors": 0,
+      "success_rate": "83.3%"
+    },
+    "LCK/Champions": {
+      "total": 10,
+      "success": 4,
+      "no_data": 6,
+      "errors": 0,
+      "success_rate": "40.0%"
+    },
+    "LPL": {
+      "total": 9,
+      "success": 2,
+      "no_data": 7,
+      "errors": 0,
+      "success_rate": "22.2%"
+    },
+    "CBLOL": {
+      "total": 2,
+      "success": 2,
+      "no_data": 0,
+      "errors": 0,
+      "success_rate": "100.0%"
+    },
+    "LLA": {
+      "total": 2,
+      "success": 0,
+      "no_data": 2,
+      "errors": 0,
+      "success_rate": "0.0%"
+    },
+    "PCS": {
+      "total": 2,
+      "success": 0,
+      "no_data": 2,
+      "errors": 0,
+      "success_rate": "0.0%"
+    },
+    "VCS": {
+      "total": 2,
+      "success": 0,
+      "no_data": 2,
+      "errors": 0,
+      "success_rate": "0.0%"
+    },
+    "LJL": {
+      "total": 2,
+      "success": 0,
+      "no_data": 2,
+      "errors": 0,
+      "success_rate": "0.0%"
+    },
+    "TCL": {
+      "total": 2,
+      "success": 0,
+      "no_data": 2,
+      "errors": 0,
+      "success_rate": "0.0%"
+    },
+    "Kespa Cup": {
+      "total": 3,
+      "success": 0,
+      "no_data": 3,
+      "errors": 0,
+      "success_rate": "0.0%"
+    },
+    "Demacia Cup": {
+      "total": 2,
+      "success": 0,
+      "no_data": 2,
+      "errors": 0,
+      "success_rate": "0.0%"
+    }
+  }
+}
