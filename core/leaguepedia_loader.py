@@ -72,8 +72,8 @@ class LeaguepediaLoader:
     }
 
     API_ENDPOINT = "https://lol.fandom.com/api.php"
-    RATE_LIMIT_DELAY = 3.0  # seconds between requests (increased to avoid rate limiting)
-    MAX_RETRIES = 3  # number of retries for rate-limited requests
+    RATE_LIMIT_DELAY = 3.0  # seconds between requests (optimal with bot auth)
+    MAX_RETRIES = 10  # number of retries for rate-limited requests
 
     def __init__(self, db: DatabaseManager = None, bot_username: str = None, bot_password: str = None):
         """
@@ -229,11 +229,11 @@ class LeaguepediaLoader:
                         if attempt < self.MAX_RETRIES - 1:
                             # Exponential backoff: wait longer on each retry
                             wait_time = self.RATE_LIMIT_DELAY * (2 ** attempt)
-                            print(f"    [WARNING] Rate limited - waiting {wait_time}s before retry {attempt + 1}/{self.MAX_RETRIES}")
+                            print(f" [RETRY {attempt + 1}/{self.MAX_RETRIES}, waiting {int(wait_time)}s]", end="")
                             time.sleep(wait_time)
                             continue  # Retry
                         else:
-                            print(f"    [ERROR] Rate limited after {self.MAX_RETRIES} retries - giving up")
+                            print(f" [FAILED after {self.MAX_RETRIES} retries]", end="")
                             return []
                     else:
                         print(f"    [ERROR] API Error: {error_code} - {error_info}")

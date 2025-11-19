@@ -46,3 +46,29 @@ db/*.db-*
 # Import logs
 import_log.txt
 nohup.out
+
+# Temporary discovery scripts and results
+discovery_remaining.py
+remaining_discovery_results.json
+discovery_output.log
+remaining_discovery.log
+unknown_teams.txt
+import_log.json
+discovery_iem_riftrivals.py
+iem_riftrivals_results.json
+iem_riftrivals.log
+discovery_summary.md
+discovery_regional_minor.py
+regional_minor_results.json
+regional_minor.log
+test_missing_msi.py
+check_msi_exact.py
+search_msi_2018.py
+lcs_missing_summary.md
+test_lcs_2021_2022.py
+test_lcs_scoreboards.py
+test_match_history.py
+test_matchschedule.py
+test_matchschedule_raw.py
+test_matchschedule_spaces.py
+complete_discovery.log
