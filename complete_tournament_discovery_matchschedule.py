@@ -123,7 +123,9 @@ def generate_all_tournaments():
     # ========================================================================
     # LEC (EU) - 2014-2025
     # ========================================================================
-    # EU LCS (2014-2018) - EU LCS 2013 not in MatchSchedule
+    # EU LCS 2013 - NOT IN MATCHSCHEDULE (Season 3 formats don't work)
+
+    # EU LCS (2014-2018)
     for year in range(2014, 2019):
         tournaments.append((f"EU LCS {year} Spring", f"EU_LCS/{year}_Season/Spring_Season"))
         tournaments.append((f"EU LCS {year} Spring Playoffs", f"EU_LCS/{year}_Season/Spring_Playoffs"))
@@ -148,7 +150,9 @@ def generate_all_tournaments():
     # ========================================================================
     # LCS (NA) - 2014-2025
     # ========================================================================
-    # NA LCS (2014-2018) - NA LCS 2013 not in MatchSchedule
+    # NA LCS 2013 - NOT IN MATCHSCHEDULE (Season 3 formats don't work)
+
+    # NA LCS (2014-2018)
     for year in range(2014, 2019):
         tournaments.append((f"NA LCS {year} Spring", f"NA_LCS/{year}_Season/Spring_Season"))
         tournaments.append((f"NA LCS {year} Spring Playoffs", f"NA_LCS/{year}_Season/Spring_Playoffs"))
@@ -157,27 +161,40 @@ def generate_all_tournaments():
         if year >= 2015:
             tournaments.append((f"NA LCS {year} Regional Finals", f"NA_LCS/{year}_Season/Regional_Finals"))
 
-    # LCS (2019-2021) - Traditional format
-    for year in range(2019, 2022):
-        tournaments.append((f"LCS {year} Spring", f"LCS/{year}_Season/Spring_Season"))
-        tournaments.append((f"LCS {year} Spring Playoffs", f"LCS/{year}_Season/Spring_Playoffs"))
-        tournaments.append((f"LCS {year} Summer", f"LCS/{year}_Season/Summer_Season"))
-        tournaments.append((f"LCS {year} Summer Playoffs", f"LCS/{year}_Season/Summer_Playoffs"))
-        tournaments.append((f"LCS {year} Regional Finals", f"LCS/{year}_Season/Regional_Finals"))
+    # LCS 2019 - Traditional format with Regional Finals
+    tournaments.append(("LCS 2019 Spring", "LCS/2019_Season/Spring_Season"))
+    tournaments.append(("LCS 2019 Spring Playoffs", "LCS/2019_Season/Spring_Playoffs"))
+    tournaments.append(("LCS 2019 Summer", "LCS/2019_Season/Summer_Season"))
+    tournaments.append(("LCS 2019 Summer Playoffs", "LCS/2019_Season/Summer_Playoffs"))
+    tournaments.append(("LCS 2019 Regional Finals", "LCS/2019_Season/Regional_Finals"))
 
-    # LCS 2021 special formats
+    # LCS 2020 - No Regional Finals
+    tournaments.append(("LCS 2020 Spring", "LCS/2020_Season/Spring_Season"))
+    tournaments.append(("LCS 2020 Spring Playoffs", "LCS/2020_Season/Spring_Playoffs"))
+    tournaments.append(("LCS 2020 Summer", "LCS/2020_Season/Summer_Season"))
+    tournaments.append(("LCS 2020 Summer Playoffs", "LCS/2020_Season/Summer_Playoffs"))
+
+    # LCS 2021 - Special formats (Mid-Season Showdown instead of Spring Playoffs, Championship instead of Summer Playoffs)
+    tournaments.append(("LCS 2021 Spring", "LCS/2021_Season/Spring_Season"))
     tournaments.append(("LCS 2021 Mid-Season Showdown", "LCS/2021_Season/Mid-Season_Showdown"))
+    tournaments.append(("LCS 2021 Summer", "LCS/2021_Season/Summer_Season"))
     tournaments.append(("LCS 2021 Championship", "LCS/2021_Season/Championship"))
 
-    # LCS (2022+) - New format
-    for year in range(2022, 2026):
-        tournaments.append((f"LCS {year} Lock In", f"LCS/{year}_Season/Lock_In"))
+    # LCS 2022 - Lock In + Championship (no Regional Finals, no Summer Playoffs)
+    tournaments.append(("LCS 2022 Lock In", "LCS/2022_Season/Lock_In"))
+    tournaments.append(("LCS 2022 Spring", "LCS/2022_Season/Spring_Season"))
+    tournaments.append(("LCS 2022 Spring Playoffs", "LCS/2022_Season/Spring_Playoffs"))
+    tournaments.append(("LCS 2022 Summer", "LCS/2022_Season/Summer_Season"))
+    tournaments.append(("LCS 2022 Championship", "LCS/2022_Season/Championship"))
+
+    # LCS (2023-2024) - No Lock In, Championship instead of Summer Playoffs
+    for year in range(2023, 2025):
         tournaments.append((f"LCS {year} Spring", f"LCS/{year}_Season/Spring_Season"))
         tournaments.append((f"LCS {year} Spring Playoffs", f"LCS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LCS {year} Summer", f"LCS/{year}_Season/Summer_Season"))
-        tournaments.append((f"LCS {year} Summer Playoffs", f"LCS/{year}_Season/Summer_Playoffs"))
         tournaments.append((f"LCS {year} Championship", f"LCS/{year}_Season/Championship"))
-        tournaments.append((f"LCS {year} Regional Finals", f"LCS/{year}_Season/Regional_Finals"))
+
+    # LCS 2025 - Skip for now (new format with 3 splits)
 
     # ========================================================================
     # CBLOL (Brazil) - 2015-2025
