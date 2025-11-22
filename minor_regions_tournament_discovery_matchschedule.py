@@ -171,7 +171,12 @@ def generate_all_tournaments():
         tournaments.append((f"OPL {year} Split 1", f"OPL/{year}_Season/Split_1"))
         tournaments.append((f"OPL {year} Split 2", f"OPL/{year}_Season/Split_2"))
 
-    # LCL (Russia) - NOT IN MATCHSCHEDULE, REMOVED
+    # ========================================================================
+    # LCL (Russia) - 2016-2020
+    # ========================================================================
+    for year in range(2016, 2021):
+        tournaments.append((f"LCL {year} Spring", f"LCL/{year}_Season/Spring_Season"))
+        tournaments.append((f"LCL {year} Summer", f"LCL/{year}_Season/Summer_Season"))
 
     return tournaments
 
