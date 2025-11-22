@@ -117,44 +117,8 @@ def generate_all_tournaments():
     tournaments.append(("OGN 2015 Spring", "Champions/2015_Season/Spring_Season"))
     tournaments.append(("OGN 2015 Summer", "Champions/2015_Season/Summer_Season"))
 
-    # OGN Promotion (2013-2015) - Testing multiple URL formats
-    ogn_promotion_formats = [
-        # 2013
-        ("OGN 2013 Winter Promotion", "Champions/2013_Season/Winter/Promotion"),
-        ("OGN 2013 Winter Promotion (F2)", "Champions/2013_Season/Winter_Promotion"),
-        ("OGN 2013 Spring Promotion", "Champions/2013_Season/Spring/Promotion"),
-        ("OGN 2013 Spring Promotion (F2)", "Champions/2013_Season/Spring_Promotion"),
-        ("OGN 2013 Summer Promotion", "Champions/2013_Season/Summer/Promotion"),
-        ("OGN 2013 Summer Promotion (F2)", "Champions/2013_Season/Summer_Promotion"),
-        # 2014
-        ("OGN 2014 Winter Promotion", "Champions/2014_Season/Winter_Season/Promotion"),
-        ("OGN 2014 Winter Promotion (F2)", "Champions/2014_Season/Winter_Promotion"),
-        ("OGN 2014 Spring Promotion", "Champions/2014_Season/Spring_Season/Promotion"),
-        ("OGN 2014 Spring Promotion (F2)", "Champions/2014_Season/Spring_Promotion"),
-        ("OGN 2014 Summer Promotion", "Champions/2014_Season/Summer_Season/Promotion"),
-        ("OGN 2014 Summer Promotion (F2)", "Champions/2014_Season/Summer_Promotion"),
-        # 2015
-        ("OGN 2015 Spring Promotion", "Champions/2015_Season/Spring_Season/Promotion"),
-        ("OGN 2015 Spring Promotion (F2)", "Champions/2015_Season/Spring_Promotion"),
-        ("OGN 2015 Summer Promotion", "Champions/2015_Season/Summer_Season/Promotion"),
-        ("OGN 2015 Summer Promotion (F2)", "Champions/2015_Season/Summer_Promotion"),
-    ]
-    tournaments.extend(ogn_promotion_formats)
-
-    # OGN/LCK Preseason (2013-2017) - Testing multiple URL formats
-    preseason_formats = [
-        ("OGN 2013 Preseason", "Champions/2013_Season/Preseason"),
-        ("OGN 2013 Preseason (F2)", "Champions/Preseason/2013"),
-        ("OGN 2014 Preseason", "Champions/2014_Season/Preseason"),
-        ("OGN 2014 Preseason (F2)", "Champions/Preseason/2014"),
-        ("OGN 2015 Preseason", "Champions/2015_Season/Preseason"),
-        ("OGN 2015 Preseason (F2)", "Champions/Preseason/2015"),
-        ("LCK 2016 Preseason", "LCK/2016_Season/Preseason"),
-        ("LCK 2016 Preseason (F2)", "LCK/Preseason/2016"),
-        ("LCK 2017 Preseason", "LCK/2017_Season/Preseason"),
-        ("LCK 2017 Preseason (F2)", "LCK/Preseason/2017"),
-    ]
-    tournaments.extend(preseason_formats)
+    # OGN Promotion
+    tournaments.append(("OGN 2015 Summer Promotion", "champions/2015 season/summer promotion"))
 
     # LCK (2016+)
     for year in range(2016, 2026):
@@ -177,30 +141,11 @@ def generate_all_tournaments():
     # ========================================================================
     # LEC (EU) - 2013-2025
     # ========================================================================
-    # EU LCS 2013 (Season 3) - Testing multiple URL formats
-    season3_eu_formats = [
-        # Format 1: Riot League Championship Series path
-        ("EU LCS 2013 Spring", "Riot_League_Championship_Series/Europe/Season_3/Spring_Season"),
-        ("EU LCS 2013 Spring Playoffs", "Riot_League_Championship_Series/Europe/Season_3/Spring_Playoffs"),
-        ("EU LCS 2013 Summer", "Riot_League_Championship_Series/Europe/Season_3/Summer_Season"),
-        ("EU LCS 2013 Summer Playoffs", "Riot_League_Championship_Series/Europe/Season_3/Summer_Playoffs"),
-        # Format 2: Season 3 parent directory
-        ("EU LCS 2013 Spring (F2)", "Season_3/European_LCS/Spring_Season"),
-        ("EU LCS 2013 Spring Playoffs (F2)", "Season_3/European_LCS/Spring_Playoffs"),
-        ("EU LCS 2013 Summer (F2)", "Season_3/European_LCS/Summer_Season"),
-        ("EU LCS 2013 Summer Playoffs (F2)", "Season_3/European_LCS/Summer_Playoffs"),
-        # Format 3: LCS Europe path
-        ("EU LCS 2013 Spring (F3)", "LCS/Europe/Season_3/Spring_Season"),
-        ("EU LCS 2013 Spring Playoffs (F3)", "LCS/Europe/Season_3/Spring_Playoffs"),
-        ("EU LCS 2013 Summer (F3)", "LCS/Europe/Season_3/Summer_Season"),
-        ("EU LCS 2013 Summer Playoffs (F3)", "LCS/Europe/Season_3/Summer_Playoffs"),
-        # Format 4: EU LCS with Season 3
-        ("EU LCS 2013 Spring (F4)", "EU_LCS/Season_3/Spring_Season"),
-        ("EU LCS 2013 Spring Playoffs (F4)", "EU_LCS/Season_3/Spring_Playoffs"),
-        ("EU LCS 2013 Summer (F4)", "EU_LCS/Season_3/Summer_Season"),
-        ("EU LCS 2013 Summer Playoffs (F4)", "EU_LCS/Season_3/Summer_Playoffs"),
-    ]
-    tournaments.extend(season3_eu_formats)
+    # EU LCS 2013 (Season 3)
+    tournaments.append(("EU LCS 2013 Spring", "eu lcs/season 3/spring season"))
+    tournaments.append(("EU LCS 2013 Spring Playoffs", "eu lcs/season 3/spring playoffs"))
+    tournaments.append(("EU LCS 2013 Summer", "eu lcs/season 3/summer season"))
+    tournaments.append(("EU LCS 2013 Summer Playoffs", "eu lcs/season 3/summer playoffs"))
 
     # EU LCS (2014-2018)
     for year in range(2014, 2019):
@@ -227,30 +172,11 @@ def generate_all_tournaments():
     # ========================================================================
     # LCS (NA) - 2013-2025
     # ========================================================================
-    # NA LCS 2013 (Season 3) - Testing multiple URL formats
-    season3_na_formats = [
-        # Format 1: Riot League Championship Series path
-        ("NA LCS 2013 Spring", "Riot_League_Championship_Series/North_America/Season_3/Spring_Season"),
-        ("NA LCS 2013 Spring Playoffs", "Riot_League_Championship_Series/North_America/Season_3/Spring_Playoffs"),
-        ("NA LCS 2013 Summer", "Riot_League_Championship_Series/North_America/Season_3/Summer_Season"),
-        ("NA LCS 2013 Summer Playoffs", "Riot_League_Championship_Series/North_America/Season_3/Summer_Playoffs"),
-        # Format 2: Season 3 parent directory
-        ("NA LCS 2013 Spring (F2)", "Season_3/North_American_LCS/Spring_Season"),
-        ("NA LCS 2013 Spring Playoffs (F2)", "Season_3/North_American_LCS/Spring_Playoffs"),
-        ("NA LCS 2013 Summer (F2)", "Season_3/North_American_LCS/Summer_Season"),
-        ("NA LCS 2013 Summer Playoffs (F2)", "Season_3/North_American_LCS/Summer_Playoffs"),
-        # Format 3: LCS North America path
-        ("NA LCS 2013 Spring (F3)", "LCS/North_America/Season_3/Spring_Season"),
-        ("NA LCS 2013 Spring Playoffs (F3)", "LCS/North_America/Season_3/Spring_Playoffs"),
-        ("NA LCS 2013 Summer (F3)", "LCS/North_America/Season_3/Summer_Season"),
-        ("NA LCS 2013 Summer Playoffs (F3)", "LCS/North_America/Season_3/Summer_Playoffs"),
-        # Format 4: NA LCS with Season 3
-        ("NA LCS 2013 Spring (F4)", "NA_LCS/Season_3/Spring_Season"),
-        ("NA LCS 2013 Spring Playoffs (F4)", "NA_LCS/Season_3/Spring_Playoffs"),
-        ("NA LCS 2013 Summer (F4)", "NA_LCS/Season_3/Summer_Season"),
-        ("NA LCS 2013 Summer Playoffs (F4)", "NA_LCS/Season_3/Summer_Playoffs"),
-    ]
-    tournaments.extend(season3_na_formats)
+    # NA LCS 2013 (Season 3)
+    tournaments.append(("NA LCS 2013 Spring", "na lcs/season 3/spring season"))
+    tournaments.append(("NA LCS 2013 Spring Playoffs", "na lcs/season 3/spring playoffs"))
+    tournaments.append(("NA LCS 2013 Summer", "na lcs/season 3/summer season"))
+    tournaments.append(("NA LCS 2013 Summer Playoffs", "na lcs/season 3/summer playoffs"))
 
     # NA LCS (2014-2018)
     for year in range(2014, 2019):

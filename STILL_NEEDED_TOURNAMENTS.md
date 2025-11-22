@@ -1,33 +1,5 @@
 # STILL NEEDED TOURNAMENTS
 
-## EU/NA LCS 2013 (Season 3) - URL Format finden
-- EU LCS 2013 Spring
-- EU LCS 2013 Spring Playoffs
-- EU LCS 2013 Summer
-- EU LCS 2013 Summer Playoffs
-- NA LCS 2013 Spring
-- NA LCS 2013 Spring Playoffs
-- NA LCS 2013 Summer
-- NA LCS 2013 Summer Playoffs
-
-
-## OGN/LCK Promotion
-- OGN 2013 Winter Promotion
-- OGN 2013 Spring Promotion
-- OGN 2013 Summer Promotion
-- OGN 2014 Winter Promotion
-- OGN 2014 Spring Promotion
-- OGN 2014 Summer Promotion
-- OGN 2015 Spring Promotion
-- OGN 2015 Summer Promotion
-
-## OGN/LCK Preseason
-- OGN 2013 Preseason
-- OGN 2014 Preseason
-- OGN 2015 Preseason
-- LCK 2016 Preseason
-- LCK 2017 Preseason
-
 ## Regional Finals 2020-2024 (Non-EU/NA)
 - PCS 2020 Regional Finals
 - PCS 2021 Regional Finals
