@@ -85,7 +85,14 @@ def generate_all_tournaments():
         if year >= 2015:
             tournaments.append((f"LPL {year} Regional Finals", f"LPL/{year}_Season/Regional_Finals"))
 
-    # Demacia Cup (China) - NOT IN MATCHSCHEDULE, REMOVED
+    # Demacia Cup (China) - Testing multiple URL formats
+    for year in range(2013, 2025):
+        demacia_formats = [
+            (f"Demacia Cup {year}", f"Demacia_Cup/{year}_Season"),
+            (f"Demacia Cup {year} (F2)", f"LPL/{year}_Season/Demacia_Cup"),
+            (f"Demacia Cup {year} (F3)", f"Demacia_Cup_{year}"),
+        ]
+        tournaments.extend(demacia_formats)
 
     # ========================================================================
     # LCK (Korea) - 2013-2025
@@ -118,12 +125,43 @@ def generate_all_tournaments():
         tournaments.append((f"LCK {year} Summer Playoffs", f"LCK/{year}_Season/Summer_Playoffs"))
         tournaments.append((f"LCK {year} Regional Finals", f"LCK/{year}_Season/Regional_Finals"))
 
-    # KeSPA Cup - NOT IN MATCHSCHEDULE, REMOVED
+    # KeSPA Cup (Korea) - Testing multiple URL formats
+    for year in range(2013, 2020):
+        kespa_formats = [
+            (f"KeSPA Cup {year}", f"KeSPA_Cup/{year}_Season"),
+            (f"KeSPA Cup {year} (F2)", f"LCK/{year}_Season/KeSPA_Cup"),
+            (f"KeSPA Cup {year} (F3)", f"KeSPA_Cup_{year}"),
+            (f"KeSPA Cup {year} (F4)", f"LoL_KeSPA_Cup/{year}"),
+        ]
+        tournaments.extend(kespa_formats)
 
     # ========================================================================
-    # LEC (EU) - 2014-2025
+    # LEC (EU) - 2013-2025
     # ========================================================================
-    # EU LCS 2013 - NOT IN MATCHSCHEDULE (Season 3 formats don't work)
+    # EU LCS 2013 (Season 3) - Testing multiple URL formats
+    season3_eu_formats = [
+        # Format 1: Riot League Championship Series path
+        ("EU LCS 2013 Spring", "Riot_League_Championship_Series/Europe/Season_3/Spring_Season"),
+        ("EU LCS 2013 Spring Playoffs", "Riot_League_Championship_Series/Europe/Season_3/Spring_Playoffs"),
+        ("EU LCS 2013 Summer", "Riot_League_Championship_Series/Europe/Season_3/Summer_Season"),
+        ("EU LCS 2013 Summer Playoffs", "Riot_League_Championship_Series/Europe/Season_3/Summer_Playoffs"),
+        # Format 2: Season 3 parent directory
+        ("EU LCS 2013 Spring (F2)", "Season_3/European_LCS/Spring_Season"),
+        ("EU LCS 2013 Spring Playoffs (F2)", "Season_3/European_LCS/Spring_Playoffs"),
+        ("EU LCS 2013 Summer (F2)", "Season_3/European_LCS/Summer_Season"),
+        ("EU LCS 2013 Summer Playoffs (F2)", "Season_3/European_LCS/Summer_Playoffs"),
+        # Format 3: LCS Europe path
+        ("EU LCS 2013 Spring (F3)", "LCS/Europe/Season_3/Spring_Season"),
+        ("EU LCS 2013 Spring Playoffs (F3)", "LCS/Europe/Season_3/Spring_Playoffs"),
+        ("EU LCS 2013 Summer (F3)", "LCS/Europe/Season_3/Summer_Season"),
+        ("EU LCS 2013 Summer Playoffs (F3)", "LCS/Europe/Season_3/Summer_Playoffs"),
+        # Format 4: EU LCS with Season 3
+        ("EU LCS 2013 Spring (F4)", "EU_LCS/Season_3/Spring_Season"),
+        ("EU LCS 2013 Spring Playoffs (F4)", "EU_LCS/Season_3/Spring_Playoffs"),
+        ("EU LCS 2013 Summer (F4)", "EU_LCS/Season_3/Summer_Season"),
+        ("EU LCS 2013 Summer Playoffs (F4)", "EU_LCS/Season_3/Summer_Playoffs"),
+    ]
+    tournaments.extend(season3_eu_formats)
 
     # EU LCS (2014-2018)
     for year in range(2014, 2019):
@@ -148,9 +186,32 @@ def generate_all_tournaments():
             tournaments.append((f"LEC {year} Regional Finals", f"LEC/{year}_Season/Regional_Finals"))
 
     # ========================================================================
-    # LCS (NA) - 2014-2025
+    # LCS (NA) - 2013-2025
     # ========================================================================
-    # NA LCS 2013 - NOT IN MATCHSCHEDULE (Season 3 formats don't work)
+    # NA LCS 2013 (Season 3) - Testing multiple URL formats
+    season3_na_formats = [
+        # Format 1: Riot League Championship Series path
+        ("NA LCS 2013 Spring", "Riot_League_Championship_Series/North_America/Season_3/Spring_Season"),
+        ("NA LCS 2013 Spring Playoffs", "Riot_League_Championship_Series/North_America/Season_3/Spring_Playoffs"),
+        ("NA LCS 2013 Summer", "Riot_League_Championship_Series/North_America/Season_3/Summer_Season"),
+        ("NA LCS 2013 Summer Playoffs", "Riot_League_Championship_Series/North_America/Season_3/Summer_Playoffs"),
+        # Format 2: Season 3 parent directory
+        ("NA LCS 2013 Spring (F2)", "Season_3/North_American_LCS/Spring_Season"),
+        ("NA LCS 2013 Spring Playoffs (F2)", "Season_3/North_American_LCS/Spring_Playoffs"),
+        ("NA LCS 2013 Summer (F2)", "Season_3/North_American_LCS/Summer_Season"),
+        ("NA LCS 2013 Summer Playoffs (F2)", "Season_3/North_American_LCS/Summer_Playoffs"),
+        # Format 3: LCS North America path
+        ("NA LCS 2013 Spring (F3)", "LCS/North_America/Season_3/Spring_Season"),
+        ("NA LCS 2013 Spring Playoffs (F3)", "LCS/North_America/Season_3/Spring_Playoffs"),
+        ("NA LCS 2013 Summer (F3)", "LCS/North_America/Season_3/Summer_Season"),
+        ("NA LCS 2013 Summer Playoffs (F3)", "LCS/North_America/Season_3/Summer_Playoffs"),
+        # Format 4: NA LCS with Season 3
+        ("NA LCS 2013 Spring (F4)", "NA_LCS/Season_3/Spring_Season"),
+        ("NA LCS 2013 Spring Playoffs (F4)", "NA_LCS/Season_3/Spring_Playoffs"),
+        ("NA LCS 2013 Summer (F4)", "NA_LCS/Season_3/Summer_Season"),
+        ("NA LCS 2013 Summer Playoffs (F4)", "NA_LCS/Season_3/Summer_Playoffs"),
+    ]
+    tournaments.extend(season3_na_formats)
 
     # NA LCS (2014-2018)
     for year in range(2014, 2019):
