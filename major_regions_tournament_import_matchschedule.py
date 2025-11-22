@@ -116,6 +116,11 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
             except:
                 date_obj = None
 
+            # Skip matches without dates (required for database)
+            if not date_obj:
+                stats['matches_skipped'] += 1
+                continue
+
             # Create external ID
             unique_match = match.get('UniqueMatch', '')
             match_id_field = match.get('MatchId', '')
@@ -179,6 +184,12 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         if matches_failed > 0:
             print(f"⚠️  Failed: {matches_failed} matches")
 
+        # Show skipped count for this tournament
+        skipped_this_tournament = stats['matches_skipped'] - stats.get('_last_skip_count', 0)
+        if skipped_this_tournament > 0:
+            print(f"⏭️  Skipped: {skipped_this_tournament} matches (no date)")
+        stats['_last_skip_count'] = stats['matches_skipped']
+
         stats['tournaments_imported'] += 1
         return True
 
@@ -233,7 +244,8 @@ def main():
         'matches_inserted': 0,
         'matches_failed': 0,
         'matches_skipped': 0,
-        'players_inserted': 0
+        'players_inserted': 0,
+        '_last_skip_count': 0  # Internal counter for per-tournament skip tracking
     }
 
     # Import each tournament
