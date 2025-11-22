@@ -16,6 +16,23 @@
 ## KeSPA Cup (Korea) - Nicht im Script
 - KeSPA Cup 2013-2019
 
+## OGN/LCK Promotion
+- OGN 2013 Winter Promotion
+- OGN 2013 Spring Promotion
+- OGN 2013 Summer Promotion
+- OGN 2014 Winter Promotion
+- OGN 2014 Spring Promotion
+- OGN 2014 Summer Promotion
+- OGN 2015 Spring Promotion
+- OGN 2015 Summer Promotion
+
+## OGN/LCK Preseason
+- OGN 2013 Preseason
+- OGN 2014 Preseason
+- OGN 2015 Preseason
+- LCK 2016 Preseason
+- LCK 2017 Preseason
+
 ## Regional Finals 2020-2024 (Non-EU/NA)
 - PCS 2020 Regional Finals
 - PCS 2021 Regional Finals

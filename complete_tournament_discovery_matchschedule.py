@@ -112,6 +112,45 @@ def generate_all_tournaments():
     tournaments.append(("OGN 2015 Spring", "Champions/2015_Season/Spring_Season"))
     tournaments.append(("OGN 2015 Summer", "Champions/2015_Season/Summer_Season"))
 
+    # OGN Promotion (2013-2015) - Testing multiple URL formats
+    ogn_promotion_formats = [
+        # 2013
+        ("OGN 2013 Winter Promotion", "Champions/2013_Season/Winter/Promotion"),
+        ("OGN 2013 Winter Promotion (F2)", "Champions/2013_Season/Winter_Promotion"),
+        ("OGN 2013 Spring Promotion", "Champions/2013_Season/Spring/Promotion"),
+        ("OGN 2013 Spring Promotion (F2)", "Champions/2013_Season/Spring_Promotion"),
+        ("OGN 2013 Summer Promotion", "Champions/2013_Season/Summer/Promotion"),
+        ("OGN 2013 Summer Promotion (F2)", "Champions/2013_Season/Summer_Promotion"),
+        # 2014
+        ("OGN 2014 Winter Promotion", "Champions/2014_Season/Winter_Season/Promotion"),
+        ("OGN 2014 Winter Promotion (F2)", "Champions/2014_Season/Winter_Promotion"),
+        ("OGN 2014 Spring Promotion", "Champions/2014_Season/Spring_Season/Promotion"),
+        ("OGN 2014 Spring Promotion (F2)", "Champions/2014_Season/Spring_Promotion"),
+        ("OGN 2014 Summer Promotion", "Champions/2014_Season/Summer_Season/Promotion"),
+        ("OGN 2014 Summer Promotion (F2)", "Champions/2014_Season/Summer_Promotion"),
+        # 2015
+        ("OGN 2015 Spring Promotion", "Champions/2015_Season/Spring_Season/Promotion"),
+        ("OGN 2015 Spring Promotion (F2)", "Champions/2015_Season/Spring_Promotion"),
+        ("OGN 2015 Summer Promotion", "Champions/2015_Season/Summer_Season/Promotion"),
+        ("OGN 2015 Summer Promotion (F2)", "Champions/2015_Season/Summer_Promotion"),
+    ]
+    tournaments.extend(ogn_promotion_formats)
+
+    # OGN/LCK Preseason (2013-2017) - Testing multiple URL formats
+    preseason_formats = [
+        ("OGN 2013 Preseason", "Champions/2013_Season/Preseason"),
+        ("OGN 2013 Preseason (F2)", "Champions/Preseason/2013"),
+        ("OGN 2014 Preseason", "Champions/2014_Season/Preseason"),
+        ("OGN 2014 Preseason (F2)", "Champions/Preseason/2014"),
+        ("OGN 2015 Preseason", "Champions/2015_Season/Preseason"),
+        ("OGN 2015 Preseason (F2)", "Champions/Preseason/2015"),
+        ("LCK 2016 Preseason", "LCK/2016_Season/Preseason"),
+        ("LCK 2016 Preseason (F2)", "LCK/Preseason/2016"),
+        ("LCK 2017 Preseason", "LCK/2017_Season/Preseason"),
+        ("LCK 2017 Preseason (F2)", "LCK/Preseason/2017"),
+    ]
+    tournaments.extend(preseason_formats)
+
     # LCK (2016+)
     for year in range(2016, 2026):
         # Promotion tournaments (2016-2020 only)
