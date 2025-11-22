@@ -106,27 +106,23 @@ def generate_all_tournaments():
     # OGN 2012
     tournaments.append(("OGN 2012 Spring", "Champions/2012_Season/Spring"))
     tournaments.append(("OGN 2012 Summer", "Champions/2012_Season/Summer"))
-    tournaments.append(("OGN 2012 Regional Finals", "Champions/2012_Season/Regional_Finals"))
 
     # OGN Champions (2013-2015)
     # 2013: No suffix
     tournaments.append(("OGN 2013 Winter", "Champions/2013_Season/Winter"))
     tournaments.append(("OGN 2013 Spring", "Champions/2013_Season/Spring"))
     tournaments.append(("OGN 2013 Summer", "Champions/2013_Season/Summer"))
-    tournaments.append(("OGN 2013 Regional Finals", "Champions/2013_Season/Regional_Finals"))
 
     # 2014: All splits with " Season" suffix
     tournaments.append(("OGN 2014 Winter", "Champions/2014_Season/Winter_Season"))
     tournaments.append(("OGN 2014 Spring", "Champions/2014_Season/Spring_Season"))
     tournaments.append(("OGN 2014 Summer", "Champions/2014_Season/Summer_Season"))
-    tournaments.append(("OGN 2014 Regional Finals", "Champions/2014_Season/Regional_Finals"))
 
     # 2015: Spring and Summer with Playoffs
     tournaments.append(("OGN 2015 Spring", "Champions/2015_Season/Spring_Season"))
     tournaments.append(("OGN 2015 Spring Playoffs", "Champions/2015_Season/Spring_Playoffs"))
     tournaments.append(("OGN 2015 Summer", "Champions/2015_Season/Summer_Season"))
     tournaments.append(("OGN 2015 Summer Playoffs", "Champions/2015_Season/Summer_Playoffs"))
-    tournaments.append(("OGN 2015 Regional Finals", "Champions/2015_Season/Regional_Finals"))
 
     # LCK (2016+)
     for year in range(2016, 2026):
