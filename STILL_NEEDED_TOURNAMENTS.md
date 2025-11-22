@@ -27,26 +27,6 @@
 - LLA 2023 Regional Finals
 - LLA 2024 Regional Finals
 
-## CBLOL
-- CBLOL 2015 Playoffs
-- CBLOL 2016 Playoffs
-- CBLOL 2017 Playoffs
-- CBLOL 2017 Regional Finals
-- CBLOL 2018 Playoffs
-- CBLOL 2018 Regional Finals
-- CBLOL 2019 Playoffs
-- CBLOL 2019 Regional Finals
-- CBLOL 2020 Playoffs
-- CBLOL 2020 Regional Finals
-- CBLOL 2021 Playoffs
-- CBLOL 2021 Regional Finals
-- CBLOL 2022 Playoffs
-- CBLOL 2022 Regional Finals
-- CBLOL 2023 Playoffs
-- CBLOL 2023 Regional Finals
-- CBLOL 2024 Playoffs
-- CBLOL 2024 Regional Finals
-
 ## LJL
 - LJL 2014 Spring Playoffs
 - LJL 2014 Summer Playoffs
@@ -117,11 +97,3 @@
 - LCL 2020 Spring
 - LCL 2020 Summer
 
-## All-Star
-- All-Star 2013
-- All-Star 2014
-- All-Star 2015
-- All-Star 2016
-- All-Star 2017
-- All-Star 2018
-- All-Star 2019
