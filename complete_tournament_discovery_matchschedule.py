@@ -310,6 +310,11 @@ def generate_all_tournaments():
         ("IEM Season X San Jose", "IEM_Season_X_-_San_Jose"),
         ("IEM Season X Cologne", "IEM_Season_X_-_Cologne"),
         ("IEM Season X World Championship", "IEM_Season_X_-_World_Championship"),
+
+        # Season 11 (2016-2017)
+        ("IEM Season 11 Oakland", "IEM_season_11/oakland"),
+        ("IEM Season 11 Gyeonggi", "IEM_season_11/gyeonggi"),
+        ("IEM Season 11 World Championship", "IEM_season_11/world_championship"),
     ]
     tournaments.extend(iem_events)
 
