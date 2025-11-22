@@ -85,19 +85,18 @@ def generate_all_tournaments():
         if year >= 2015:
             tournaments.append((f"LPL {year} Regional Finals", f"LPL/{year}_Season/Regional_Finals"))
 
-    # Demacia Cup (China)
-    for year in range(2016, 2025):
-        tournaments.append((f"Demacia Cup {year} Spring", f"Demacia_Cup/{year}/Spring"))
-        tournaments.append((f"Demacia Cup {year} Summer", f"Demacia_Cup/{year}/Summer"))
+    # Demacia Cup (China) - NOT IN MATCHSCHEDULE, REMOVED
 
     # ========================================================================
     # LCK (Korea) - 2013-2025
     # ========================================================================
     # OGN Champions (2013-2015)
     for year in range(2013, 2016):
-        tournaments.append((f"OGN {year} Winter", f"Champions/{year}_Season/Winter"))
-        tournaments.append((f"OGN {year} Spring", f"Champions/{year}_Season/Spring"))
-        tournaments.append((f"OGN {year} Summer", f"Champions/{year}_Season/Summer"))
+        # 2013 uses just "Winter", 2014-2015 use "Winter Season"
+        suffix = "" if year == 2013 else " Season"
+        tournaments.append((f"OGN {year} Winter", f"Champions/{year}_Season/Winter{suffix}"))
+        tournaments.append((f"OGN {year} Spring", f"Champions/{year}_Season/Spring{suffix}"))
+        tournaments.append((f"OGN {year} Summer", f"Champions/{year}_Season/Summer{suffix}"))
 
     # LCK (2016+)
     for year in range(2016, 2026):
@@ -107,15 +106,13 @@ def generate_all_tournaments():
         tournaments.append((f"LCK {year} Summer Playoffs", f"LCK/{year}_Season/Summer_Playoffs"))
         tournaments.append((f"LCK {year} Regional Finals", f"LCK/{year}_Season/Regional_Finals"))
 
-    # KeSPA Cup
-    for year in [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]:
-        tournaments.append((f"KeSPA Cup {year}", f"KeSPA_Cup/{year}"))
+    # KeSPA Cup - NOT IN MATCHSCHEDULE, REMOVED
 
     # ========================================================================
-    # LEC (EU) - 2013-2025
+    # LEC (EU) - 2014-2025
     # ========================================================================
-    # EU LCS (2013-2018)
-    for year in range(2013, 2019):
+    # EU LCS (2014-2018) - EU LCS 2013 not in MatchSchedule
+    for year in range(2014, 2019):
         tournaments.append((f"EU LCS {year} Spring", f"EU_LCS/{year}_Season/Spring_Season"))
         tournaments.append((f"EU LCS {year} Spring Playoffs", f"EU_LCS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"EU LCS {year} Summer", f"EU_LCS/{year}_Season/Summer_Season"))
@@ -129,14 +126,16 @@ def generate_all_tournaments():
         tournaments.append((f"LEC {year} Spring Playoffs", f"LEC/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LEC {year} Summer", f"LEC/{year}_Season/Summer_Season"))
         tournaments.append((f"LEC {year} Summer Playoffs", f"LEC/{year}_Season/Summer_Playoffs"))
-        tournaments.append((f"LEC {year} Winter", f"LEC/{year}_Season/Winter_Season"))
-        tournaments.append((f"LEC {year} Regional Finals", f"LEC/{year}_Season/Regional_Finals"))
+        # LEC Winter - NOT IN MATCHSCHEDULE, REMOVED
+        # LEC Regional Finals only for 2019
+        if year == 2019:
+            tournaments.append((f"LEC {year} Regional Finals", f"LEC/{year}_Season/Regional_Finals"))
 
     # ========================================================================
-    # LCS (NA) - 2013-2025
+    # LCS (NA) - 2014-2025
     # ========================================================================
-    # NA LCS (2013-2018)
-    for year in range(2013, 2019):
+    # NA LCS (2014-2018) - NA LCS 2013 not in MatchSchedule
+    for year in range(2014, 2019):
         tournaments.append((f"NA LCS {year} Spring", f"NA_LCS/{year}_Season/Spring_Season"))
         tournaments.append((f"NA LCS {year} Spring Playoffs", f"NA_LCS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"NA LCS {year} Summer", f"NA_LCS/{year}_Season/Summer_Season"))
@@ -196,9 +195,9 @@ def generate_all_tournaments():
             tournaments.append((f"LMS {year} Regional Finals", f"LMS/{year}_Season/Regional_Finals"))
 
     # ========================================================================
-    # VCS (Vietnam) - 2017-2025
+    # VCS (Vietnam) - 2018-2025 (started in 2018, not 2017)
     # ========================================================================
-    for year in range(2017, 2026):
+    for year in range(2018, 2026):
         tournaments.append((f"VCS {year} Spring", f"VCS/{year}_Season/Spring_Season"))
         tournaments.append((f"VCS {year} Spring Playoffs", f"VCS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"VCS {year} Summer", f"VCS/{year}_Season/Summer_Season"))
@@ -276,10 +275,10 @@ def generate_all_tournaments():
             tournaments.append((f"Worlds {year}", f"Season_{year}_World_Championship"))
 
     # MSI - 2015-2024
+    # Note: Only Play-In and Main Event exist separately (no standalone MSI tournament)
     for year in range(2015, 2025):
         tournaments.append((f"MSI {year} Play-In", f"{year}_Mid-Season_Invitational/Play-In"))
         tournaments.append((f"MSI {year} Main Event", f"{year}_Mid-Season_Invitational/Main_Event"))
-        tournaments.append((f"MSI {year}", f"{year}_Mid-Season_Invitational"))
 
     # IEM Tournaments - 2012-2018
     iem_events = [
