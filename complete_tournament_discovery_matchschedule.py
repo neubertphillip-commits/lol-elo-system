@@ -276,14 +276,20 @@ def generate_all_tournaments():
     for year in range(2021, 2025):
         tournaments.append((f"MSI {year}", f"{year}_Mid-Season_Invitational"))
 
-    # IEM Tournaments - 2012-2018
+    # IEM Tournaments - 2011-2016
     iem_events = [
         # Season VI (2011-2012)
         ("IEM Season VI Global Challenge Cologne", "IEM_Season_VI_-_Global_Challenge_Cologne"),
+        ("IEM Season VI Global Challenge Guangzhou", "IEM_Season_VI_-_Global_Challenge_Guangzhou"),
+        ("IEM Season VI Global Challenge New York", "IEM_Season_VI_-_Global_Challenge_New_York"),
+        ("IEM Season VI Global Challenge Kiev", "IEM_Season_VI_-_Global_Challenge_Kiev"),
         ("IEM Season VI World Championship", "IEM_Season_VI_-_World_Championship"),
 
         # Season VII (2012-2013)
         ("IEM Season VII Global Challenge Cologne", "IEM_Season_VII_-_Global_Challenge_Cologne"),
+        ("IEM Season VII Global Challenge Singapore", "IEM_Season_VII_-_Global_Challenge_Singapore"),
+        ("IEM Season VII Global Challenge Katowice", "IEM_Season_VII_-_Global_Challenge_Katowice"),
+        ("IEM Season VII Global Challenge Sao Paulo", "IEM_Season_VII_-_Global_Challenge_Sao_Paulo"),
         ("IEM Season VII World Championship", "IEM_Season_VII_-_World_Championship"),
 
         # Season VIII (2013-2014)
@@ -294,14 +300,16 @@ def generate_all_tournaments():
         ("IEM Season VIII World Championship", "IEM_Season_VIII_-_World_Championship"),
 
         # Season IX (2014-2015)
-        ("IEM Season IX Cologne", "IEM_Season_IX_-_Cologne"),
+        ("IEM Season IX Shenzhen", "IEM_Season_IX_-_Shenzhen"),
         ("IEM Season IX San Jose", "IEM_Season_IX_-_San_Jose"),
+        ("IEM Season IX Cologne", "IEM_Season_IX_-_Cologne"),
+        ("IEM Season IX Taipei", "IEM_Season_IX_-_Taipei"),
         ("IEM Season IX World Championship", "IEM_Season_IX_-_World_Championship"),
 
         # Season X (2015-2016)
-        ("IEM Season X Cologne", "IEM_Season_X_-_Cologne"),
         ("IEM Season X San Jose", "IEM_Season_X_-_San_Jose"),
-        # IEM Season X-XII Katowice, Oakland, Gyeonggi - NOT IN MATCHSCHEDULE
+        ("IEM Season X Cologne", "IEM_Season_X_-_Cologne"),
+        ("IEM Season X World Championship", "IEM_Season_X_-_World_Championship"),
     ]
     tournaments.extend(iem_events)
 
