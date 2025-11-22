@@ -282,16 +282,16 @@ class DatabaseManager:
         """
         cursor = self.conn.cursor()
 
-        # Check by external ID first (most reliable)
+        # Check by external ID (most reliable for Leaguepedia data)
+        # If external_id is provided, ONLY use this for duplicate check
         if external_id:
             cursor.execute(
                 "SELECT id FROM matches WHERE external_id = ?",
                 (external_id,)
             )
-            if cursor.fetchone():
-                return True
+            return cursor.fetchone() is not None
 
-        # Check by teams + date (for Google Sheets data)
+        # Fallback: Check by teams + date (for Google Sheets data without external_id)
         if team1 and team2 and date:
             cursor.execute("""
                 SELECT m.id FROM matches m
@@ -300,8 +300,7 @@ class DatabaseManager:
                 WHERE (t1.name = ? AND t2.name = ? OR t1.name = ? AND t2.name = ?)
                   AND DATE(m.date) = DATE(?)
             """, (team1, team2, team2, team1, date))
-            if cursor.fetchone():
-                return True
+            return cursor.fetchone() is not None
 
         return False
 
