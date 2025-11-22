@@ -159,9 +159,10 @@ def generate_all_tournaments():
         tournaments.append((f"LCK {year} Summer Playoffs", f"LCK/{year}_Season/Summer_Playoffs"))
         tournaments.append((f"LCK {year} Regional Finals", f"LCK/{year}_Season/Regional_Finals"))
 
-    # KeSPA Cup (Korea) - 2015-2019 only
-    for year in range(2015, 2020):
+    # KeSPA Cup (Korea) - 2015-2021, 2024 (2022-2023 don't exist)
+    for year in range(2015, 2022):
         tournaments.append((f"KeSPA Cup {year}", f"{year}_lol_KeSPA_CUP"))
+    tournaments.append(("KeSPA Cup 2024", "2024_lol_KeSPA_CUP"))
 
     # ========================================================================
     # LEC (EU) - 2013-2025
