@@ -1,32 +1,5 @@
 # STILL NEEDED TOURNAMENTS
 
-## Regional Finals 2020-2024 (Non-EU/NA)
-- PCS 2020 Regional Finals
-- PCS 2021 Regional Finals
-- PCS 2022 Regional Finals
-- PCS 2023 Regional Finals
-- PCS 2024 Regional Finals
-- VCS 2020 Regional Finals
-- VCS 2021 Regional Finals
-- VCS 2022 Regional Finals
-- VCS 2023 Regional Finals
-- VCS 2024 Regional Finals
-- LJL 2020 Regional Finals
-- LJL 2021 Regional Finals
-- LJL 2022 Regional Finals
-- LJL 2023 Regional Finals
-- LJL 2024 Regional Finals
-- TCL 2020 Regional Finals
-- TCL 2021 Regional Finals
-- TCL 2022 Regional Finals
-- TCL 2023 Regional Finals
-- TCL 2024 Regional Finals
-- LLA 2020 Regional Finals
-- LLA 2021 Regional Finals
-- LLA 2022 Regional Finals
-- LLA 2023 Regional Finals
-- LLA 2024 Regional Finals
-
 ## LJL
 - LJL 2014 Spring Playoffs
 - LJL 2014 Summer Playoffs

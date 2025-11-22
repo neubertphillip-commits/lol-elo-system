@@ -104,7 +104,6 @@ def generate_all_tournaments():
         tournaments.append((f"PCS {year} Spring Playoffs", f"PCS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"PCS {year} Summer", f"PCS/{year}_Season/Summer_Season"))
         tournaments.append((f"PCS {year} Summer Playoffs", f"PCS/{year}_Season/Summer_Playoffs"))
-        tournaments.append((f"PCS {year} Regional Finals", f"PCS/{year}_Season/Regional_Finals"))
 
     # LMS (Taiwan, predecessor to PCS) - 2015-2019
     for year in range(2015, 2020):
@@ -112,8 +111,6 @@ def generate_all_tournaments():
         tournaments.append((f"LMS {year} Spring Playoffs", f"LMS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LMS {year} Summer", f"LMS/{year}_Season/Summer_Season"))
         tournaments.append((f"LMS {year} Summer Playoffs", f"LMS/{year}_Season/Summer_Playoffs"))
-        if year >= 2015:
-            tournaments.append((f"LMS {year} Regional Finals", f"LMS/{year}_Season/Regional_Finals"))
 
     # ========================================================================
     # VCS (Vietnam) - 2018-2025 (started in 2018, not 2017)
@@ -126,9 +123,6 @@ def generate_all_tournaments():
         if year != 2021:
             tournaments.append((f"VCS {year} Summer", f"VCS/{year}_Season/Summer_Season"))
             tournaments.append((f"VCS {year} Summer Playoffs", f"VCS/{year}_Season/Summer_Playoffs"))
-
-        if year >= 2020:
-            tournaments.append((f"VCS {year} Regional Finals", f"VCS/{year}_Season/Regional_Finals"))
 
     # ========================================================================
     # LJL (Japan) - 2014, 2016-2025 (2015 not in MatchSchedule)
@@ -143,8 +137,6 @@ def generate_all_tournaments():
         tournaments.append((f"LJL {year} Spring Playoffs", f"LJL/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LJL {year} Summer", f"LJL/{year}_Season/Summer_Season"))
         tournaments.append((f"LJL {year} Summer Playoffs", f"LJL/{year}_Season/Summer_Playoffs"))
-        if year >= 2020:
-            tournaments.append((f"LJL {year} Regional Finals", f"LJL/{year}_Season/Regional_Finals"))
 
     # ========================================================================
     # TCL (Turkey) - 2015-2025 (started in 2015, not 2013)
@@ -154,8 +146,6 @@ def generate_all_tournaments():
         tournaments.append((f"TCL {year} Winter Playoffs", f"TCL/{year}_Season/Winter_Playoffs"))
         tournaments.append((f"TCL {year} Summer", f"TCL/{year}_Season/Summer_Season"))
         tournaments.append((f"TCL {year} Summer Playoffs", f"TCL/{year}_Season/Summer_Playoffs"))
-        if year >= 2020:
-            tournaments.append((f"TCL {year} Regional Finals", f"TCL/{year}_Season/Regional_Finals"))
 
     # ========================================================================
     # LLA (Latin America) - 2019-2025
@@ -165,8 +155,6 @@ def generate_all_tournaments():
         tournaments.append((f"LLA {year} Opening Playoffs", f"LLA/{year}_Season/Opening_Playoffs"))
         tournaments.append((f"LLA {year} Closing", f"LLA/{year}_Season/Closing_Season"))
         tournaments.append((f"LLA {year} Closing Playoffs", f"LLA/{year}_Season/Closing_Playoffs"))
-        if year >= 2020:
-            tournaments.append((f"LLA {year} Regional Finals", f"LLA/{year}_Season/Regional_Finals"))
 
     # LLN (predecessor to LLA) - 2017-2018 only (2014-2016 not in MatchSchedule)
     for year in range(2017, 2019):
