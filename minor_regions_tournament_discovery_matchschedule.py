@@ -79,8 +79,10 @@ def generate_all_tournaments():
     # ========================================================================
     for year in range(2015, 2026):
         tournaments.append((f"CBLOL {year} Split 1", f"CBLOL/{year}_Season/Split_1"))
+        tournaments.append((f"CBLOL {year} Split 1 Playoffs", f"CBLOL/{year}_Season/Split_1_Playoffs"))
         tournaments.append((f"CBLOL {year} Split 2", f"CBLOL/{year}_Season/Split_2"))
-        # CBLOL Playoffs and Regional Finals - NOT IN MATCHSCHEDULE
+        tournaments.append((f"CBLOL {year} Split 2 Playoffs", f"CBLOL/{year}_Season/Split_2_Playoffs"))
+        tournaments.append((f"CBLOL {year} Post-Season", f"CBLOL/{year}_Season/Post-Season"))
 
     # ========================================================================
     # PCS (Pacific) - 2020-2025
