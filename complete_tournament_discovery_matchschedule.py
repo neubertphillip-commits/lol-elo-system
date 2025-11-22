@@ -82,7 +82,8 @@ def generate_all_tournaments():
         tournaments.append((f"LPL {year} Spring Playoffs", f"LPL/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LPL {year} Summer", f"LPL/{year}_Season/Summer_Season"))
         tournaments.append((f"LPL {year} Summer Playoffs", f"LPL/{year}_Season/Summer_Playoffs"))
-        if year >= 2015:
+        # Regional Finals only existed until 2019 (cancelled from 2020 due to COVID)
+        if 2015 <= year <= 2019:
             tournaments.append((f"LPL {year} Regional Finals", f"LPL/{year}_Season/Regional_Finals"))
 
     # Demacia Cup (China) - NOT IN MATCHSCHEDULE, REMOVED
@@ -116,7 +117,9 @@ def generate_all_tournaments():
         tournaments.append((f"LCK {year} Spring Playoffs", f"LCK/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LCK {year} Summer", f"LCK/{year}_Season/Summer_Season"))
         tournaments.append((f"LCK {year} Summer Playoffs", f"LCK/{year}_Season/Summer_Playoffs"))
-        tournaments.append((f"LCK {year} Regional Finals", f"LCK/{year}_Season/Regional_Finals"))
+        # Regional Finals only existed until 2019 (cancelled from 2020 due to COVID)
+        if year <= 2019:
+            tournaments.append((f"LCK {year} Regional Finals", f"LCK/{year}_Season/Regional_Finals"))
 
     # KeSPA Cup - NOT IN MATCHSCHEDULE, REMOVED
 
@@ -212,7 +215,7 @@ def generate_all_tournaments():
         tournaments.append((f"PCS {year} Spring Playoffs", f"PCS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"PCS {year} Summer", f"PCS/{year}_Season/Summer_Season"))
         tournaments.append((f"PCS {year} Summer Playoffs", f"PCS/{year}_Season/Summer_Playoffs"))
-        tournaments.append((f"PCS {year} Regional Finals", f"PCS/{year}_Season/Regional_Finals"))
+        # PCS started in 2020 when Regional Finals were already cancelled (COVID)
 
     # LMS (Taiwan, predecessor to PCS) - 2015-2019
     for year in range(2015, 2020):
@@ -229,9 +232,14 @@ def generate_all_tournaments():
     for year in range(2018, 2026):
         tournaments.append((f"VCS {year} Spring", f"VCS/{year}_Season/Spring_Season"))
         tournaments.append((f"VCS {year} Spring Playoffs", f"VCS/{year}_Season/Spring_Playoffs"))
-        tournaments.append((f"VCS {year} Summer", f"VCS/{year}_Season/Summer_Season"))
-        tournaments.append((f"VCS {year} Summer Playoffs", f"VCS/{year}_Season/Summer_Playoffs"))
-        if year >= 2020:
+
+        # VCS 2021 Summer was cancelled due to COVID
+        if year != 2021:
+            tournaments.append((f"VCS {year} Summer", f"VCS/{year}_Season/Summer_Season"))
+            tournaments.append((f"VCS {year} Summer Playoffs", f"VCS/{year}_Season/Summer_Playoffs"))
+
+        # Regional Finals only existed until 2019
+        if year <= 2019:
             tournaments.append((f"VCS {year} Regional Finals", f"VCS/{year}_Season/Regional_Finals"))
 
     # ========================================================================
@@ -247,7 +255,8 @@ def generate_all_tournaments():
         tournaments.append((f"LJL {year} Spring Playoffs", f"LJL/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LJL {year} Summer", f"LJL/{year}_Season/Summer_Season"))
         tournaments.append((f"LJL {year} Summer Playoffs", f"LJL/{year}_Season/Summer_Playoffs"))
-        if year >= 2020:
+        # Regional Finals only existed until 2019 (cancelled from 2020 due to COVID)
+        if year <= 2019:
             tournaments.append((f"LJL {year} Regional Finals", f"LJL/{year}_Season/Regional_Finals"))
 
     # ========================================================================
@@ -258,7 +267,8 @@ def generate_all_tournaments():
         tournaments.append((f"TCL {year} Winter Playoffs", f"TCL/{year}_Season/Winter_Playoffs"))
         tournaments.append((f"TCL {year} Summer", f"TCL/{year}_Season/Summer_Season"))
         tournaments.append((f"TCL {year} Summer Playoffs", f"TCL/{year}_Season/Summer_Playoffs"))
-        if year >= 2020:
+        # Regional Finals only existed until 2019 (cancelled from 2020 due to COVID)
+        if year <= 2019:
             tournaments.append((f"TCL {year} Regional Finals", f"TCL/{year}_Season/Regional_Finals"))
 
     # ========================================================================
@@ -269,7 +279,8 @@ def generate_all_tournaments():
         tournaments.append((f"LLA {year} Opening Playoffs", f"LLA/{year}_Season/Opening_Playoffs"))
         tournaments.append((f"LLA {year} Closing", f"LLA/{year}_Season/Closing_Season"))
         tournaments.append((f"LLA {year} Closing Playoffs", f"LLA/{year}_Season/Closing_Playoffs"))
-        if year >= 2020:
+        # Regional Finals only existed until 2019 (cancelled from 2020 due to COVID)
+        if year == 2019:
             tournaments.append((f"LLA {year} Regional Finals", f"LLA/{year}_Season/Regional_Finals"))
 
     # LLN (predecessor to LLA) - 2017-2018 only (2014-2016 not in MatchSchedule)
@@ -318,9 +329,11 @@ def generate_all_tournaments():
 
     # 2020: MSI cancelled (COVID-19)
 
-    # 2021-2024: Standalone only
+    # 2021-2024: Test both standalone AND Play-In/Main Event formats
     for year in range(2021, 2025):
         tournaments.append((f"MSI {year}", f"{year}_Mid-Season_Invitational"))
+        tournaments.append((f"MSI {year} Play-In", f"{year}_Mid-Season_Invitational/Play-In"))
+        tournaments.append((f"MSI {year} Main Event", f"{year}_Mid-Season_Invitational/Main_Event"))
 
     # IEM Tournaments - 2012-2018
     iem_events = [
