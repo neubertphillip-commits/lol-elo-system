@@ -21,17 +21,50 @@ from core.leaguepedia_loader import LeaguepediaLoader
 from core.database import DatabaseManager
 from core.team_resolver import TeamResolver
 
-def estimate_date_from_tournament(tournament_name: str) -> datetime:
+def estimate_tournament_duration(tournament_name: str) -> int:
     """
-    Estimate a date based on tournament name when actual date is missing.
+    Estimate tournament duration in days based on tournament type.
+
+    Args:
+        tournament_name: Tournament name
+
+    Returns:
+        Estimated duration in days
+    """
+    name_lower = tournament_name.lower()
+
+    # Playoffs are shorter
+    if 'playoff' in name_lower:
+        return 7  # ~1 week for playoffs
+    elif 'regional' in name_lower or 'final' in name_lower:
+        return 5  # ~5 days for regional finals
+    elif 'msi' in name_lower or 'mid-season' in name_lower:
+        return 14  # ~2 weeks for MSI
+    elif 'world' in name_lower:
+        return 30  # ~1 month for Worlds
+    elif 'iem' in name_lower:
+        return 4  # ~4 days for IEM
+    elif 'kespa' in name_lower or 'demacia' in name_lower or 'rift rival' in name_lower:
+        return 5  # ~5 days for cups
+    else:
+        # Regular season
+        return 56  # ~8 weeks for regular season
+
+def estimate_date_from_tournament(tournament_name: str, match_index: int, total_matches: int) -> datetime:
+    """
+    Estimate a date based on tournament name and match position.
+    Distributes matches realistically over tournament duration.
 
     Args:
         tournament_name: Tournament name (e.g., "LPL 2013 Spring", "LCK 2020 Summer Playoffs")
+        match_index: Index of this match (0-based)
+        total_matches: Total number of matches in tournament
 
     Returns:
         Estimated datetime object
     """
     import re
+    from datetime import timedelta
 
     # Extract year from tournament name
     year_match = re.search(r'20\d{2}|2013|2014|2015', tournament_name)
@@ -39,7 +72,7 @@ def estimate_date_from_tournament(tournament_name: str) -> datetime:
 
     name_lower = tournament_name.lower()
 
-    # Determine month and day based on split/phase
+    # Determine start month and day based on split/phase
     if 'winter' in name_lower:
         month, day = 1, 15
     elif 'spring' in name_lower:
@@ -80,7 +113,27 @@ def estimate_date_from_tournament(tournament_name: str) -> datetime:
         # Default to mid-year if can't determine
         month, day = 6, 15
 
-    return datetime(year, month, day, 12, 0, 0)  # Default to noon
+    # Base date (tournament start)
+    base_date = datetime(year, month, day, 15, 0, 0)  # Start at 3 PM
+
+    # Get tournament duration
+    duration_days = estimate_tournament_duration(tournament_name)
+
+    # Calculate which day this match falls on
+    # Distribute matches evenly across tournament duration
+    if total_matches <= 1:
+        day_offset = 0
+        match_of_day = 0
+    else:
+        # Spread matches across duration_days
+        matches_per_day = max(1, total_matches / duration_days)
+        day_offset = int(match_index / matches_per_day)
+        match_of_day = int(match_index % matches_per_day)
+
+    # Calculate match time (typically 3 PM, 6 PM, 9 PM for multiple matches per day)
+    hour_offset = match_of_day * 3  # 3 hours between matches
+
+    return base_date + timedelta(days=day_offset, hours=hour_offset)
 
 def import_tournament(loader, db, team_resolver, name, url, stats, include_players=True):
     """
@@ -181,10 +234,8 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
 
             # If no date, estimate from tournament name
             if not date_obj:
-                from datetime import timedelta
-                base_date = estimate_date_from_tournament(name)
-                # Add minutes offset to ensure unique timestamps within tournament
-                date_obj = base_date + timedelta(minutes=estimated_match_counter)
+                # Pass match index and total matches for realistic distribution
+                date_obj = estimate_date_from_tournament(name, estimated_match_counter, len(matches))
                 estimated_match_counter += 1
                 date_is_estimated = True
                 stats['matches_with_estimated_dates'] += 1
