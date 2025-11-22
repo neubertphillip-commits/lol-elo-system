@@ -207,9 +207,8 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         matches_inserted = 0
         matches_failed = 0
         players_inserted = 0
-        estimated_match_counter = 0  # Counter for estimated dates within this tournament
 
-        for match in matches:
+        for match_index, match in enumerate(matches):
             team1_orig = match.get('Team1', '').strip()
             team2_orig = match.get('Team2', '').strip()
 
@@ -229,14 +228,14 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                     date_obj = datetime.strptime(match_date, "%Y-%m-%d %H:%M:%S")
                 else:
                     date_obj = None
-            except:
+            except Exception as e:
+                # Date parsing failed - will estimate instead
                 date_obj = None
 
             # If no date, estimate from tournament name
             if not date_obj:
                 # Pass match index and total matches for realistic distribution
-                date_obj = estimate_date_from_tournament(name, estimated_match_counter, len(matches))
-                estimated_match_counter += 1
+                date_obj = estimate_date_from_tournament(name, match_index, len(matches))
                 date_is_estimated = True
                 stats['matches_with_estimated_dates'] += 1
 
