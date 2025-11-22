@@ -383,11 +383,9 @@ def generate_all_tournaments():
 
     # 2020: MSI cancelled (COVID-19)
 
-    # 2021-2024: Test both standalone AND Play-In/Main Event formats
+    # 2021-2024: Standalone only (no Play-In/Main Event split)
     for year in range(2021, 2025):
         tournaments.append((f"MSI {year}", f"{year}_Mid-Season_Invitational"))
-        tournaments.append((f"MSI {year} Play-In", f"{year}_Mid-Season_Invitational/Play-In"))
-        tournaments.append((f"MSI {year} Main Event", f"{year}_Mid-Season_Invitational/Main_Event"))
 
     # IEM Tournaments - 2012-2018
     iem_events = [

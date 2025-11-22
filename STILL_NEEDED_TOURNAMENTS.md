@@ -43,16 +43,6 @@
 - LLA 2023 Regional Finals
 - LLA 2024 Regional Finals
 
-## MSI 2021-2024 Splits
-- MSI 2021 Play-In
-- MSI 2021 Main Event
-- MSI 2022 Play-In
-- MSI 2022 Main Event
-- MSI 2023 Play-In
-- MSI 2023 Main Event
-- MSI 2024 Play-In
-- MSI 2024 Main Event
-
 ## CBLOL
 - CBLOL 2015 Playoffs
 - CBLOL 2016 Playoffs
