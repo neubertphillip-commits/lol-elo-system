@@ -75,14 +75,26 @@ def generate_all_tournaments():
     tournaments = []
 
     # ========================================================================
-    # CBLOL (Brazil) - 2015-2025
+    # CBLOL (Brazil) - 2014-2025
     # ========================================================================
-    for year in range(2015, 2026):
+    # CBLOL 2014 (different structure)
+    tournaments.append(("CBLOL 2014 Champions Series", "CBLOL/2014_Season/Champions_Series"))
+    tournaments.append(("CBLOL 2014 Champions Series Playoffs", "CBLOL/2014_Season/Champions_Series/Playoffs"))
+    tournaments.append(("CBLOL 2014 Regional Finals", "CBLOL/2014_Season/Regional_Finals"))
+
+    # CBLOL 2015 (with Post-Season)
+    tournaments.append(("CBLOL 2015 Split 1", "CBLOL/2015_Season/Split_1"))
+    tournaments.append(("CBLOL 2015 Split 1 Playoffs", "CBLOL/2015_Season/Split_1_Playoffs"))
+    tournaments.append(("CBLOL 2015 Split 2", "CBLOL/2015_Season/Split_2"))
+    tournaments.append(("CBLOL 2015 Split 2 Playoffs", "CBLOL/2015_Season/Split_2_Playoffs"))
+    tournaments.append(("CBLOL 2015 Post-Season", "CBLOL/2015_Season/Post-Season"))
+
+    # CBLOL 2016-2025 (no Post-Season)
+    for year in range(2016, 2026):
         tournaments.append((f"CBLOL {year} Split 1", f"CBLOL/{year}_Season/Split_1"))
         tournaments.append((f"CBLOL {year} Split 1 Playoffs", f"CBLOL/{year}_Season/Split_1_Playoffs"))
         tournaments.append((f"CBLOL {year} Split 2", f"CBLOL/{year}_Season/Split_2"))
         tournaments.append((f"CBLOL {year} Split 2 Playoffs", f"CBLOL/{year}_Season/Split_2_Playoffs"))
-        tournaments.append((f"CBLOL {year} Post-Season", f"CBLOL/{year}_Season/Post-Season"))
 
     # ========================================================================
     # PCS (Pacific) - 2020-2025
