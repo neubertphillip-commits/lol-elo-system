@@ -21,6 +21,67 @@ from core.leaguepedia_loader import LeaguepediaLoader
 from core.database import DatabaseManager
 from core.team_resolver import TeamResolver
 
+def estimate_date_from_tournament(tournament_name: str) -> datetime:
+    """
+    Estimate a date based on tournament name when actual date is missing.
+
+    Args:
+        tournament_name: Tournament name (e.g., "LPL 2013 Spring", "LCK 2020 Summer Playoffs")
+
+    Returns:
+        Estimated datetime object
+    """
+    import re
+
+    # Extract year from tournament name
+    year_match = re.search(r'20\d{2}|2013|2014|2015', tournament_name)
+    year = int(year_match.group()) if year_match else 2020
+
+    name_lower = tournament_name.lower()
+
+    # Determine month and day based on split/phase
+    if 'winter' in name_lower:
+        month, day = 1, 15
+    elif 'spring' in name_lower:
+        if 'playoff' in name_lower:
+            month, day = 4, 15  # Spring Playoffs
+        elif 'regional' in name_lower or 'final' in name_lower:
+            month, day = 5, 1  # Spring Regional Finals
+        else:
+            month, day = 3, 15  # Spring Regular Season
+    elif 'summer' in name_lower:
+        if 'playoff' in name_lower:
+            month, day = 8, 15  # Summer Playoffs
+        elif 'regional' in name_lower or 'final' in name_lower:
+            month, day = 9, 15  # Summer Regional Finals
+        else:
+            month, day = 7, 15  # Summer Regular Season
+    elif 'msi' in name_lower or 'mid-season' in name_lower:
+        month, day = 5, 15  # MSI
+    elif 'world' in name_lower:
+        month, day = 10, 15  # Worlds
+    elif 'iem' in name_lower:
+        # IEM tournaments vary, use tournament name hints
+        if 'katowice' in name_lower:
+            month, day = 3, 1
+        elif 'cologne' in name_lower or 'gamescom' in name_lower:
+            month, day = 8, 1
+        elif 'oakland' in name_lower or 'san jose' in name_lower:
+            month, day = 11, 15
+        else:
+            month, day = 6, 1  # Default for other IEM events
+    elif 'kespa' in name_lower or 'demacia' in name_lower or 'rift rival' in name_lower:
+        month, day = 6, 15  # Mid-year cups
+    elif 'playoff' in name_lower:
+        month, day = 8, 15  # Generic playoffs
+    elif 'regional' in name_lower:
+        month, day = 9, 15  # Generic regional finals
+    else:
+        # Default to mid-year if can't determine
+        month, day = 6, 15
+
+    return datetime(year, month, day, 12, 0, 0)  # Default to noon
+
 def import_tournament(loader, db, team_resolver, name, url, stats, include_players=True):
     """
     Import all matches for a single tournament from MatchSchedule table
@@ -108,6 +169,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
             team2_resolved = team_resolver.resolve(team2_orig, match_date)
 
             # Parse date
+            date_is_estimated = False
             try:
                 if match_date:
                     date_obj = datetime.strptime(match_date, "%Y-%m-%d %H:%M:%S")
@@ -115,6 +177,12 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                     date_obj = None
             except:
                 date_obj = None
+
+            # If no date, estimate from tournament name
+            if not date_obj:
+                date_obj = estimate_date_from_tournament(name)
+                date_is_estimated = True
+                stats['matches_with_estimated_dates'] += 1
 
             # Create external ID
             unique_match = match.get('UniqueMatch', '')
@@ -175,9 +243,21 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 matches_failed += 1
                 stats['matches_failed'] += 1
 
+        # Calculate per-tournament statistics
+        skipped_this_tournament = stats['matches_skipped'] - stats.get('_last_skip_count', 0)
+        estimated_this_tournament = stats['matches_with_estimated_dates'] - stats.get('_last_estimated_count', 0)
+
         print(f"✅ Inserted: {matches_inserted} matches, {players_inserted} players")
         if matches_failed > 0:
             print(f"⚠️  Failed: {matches_failed} matches")
+        if skipped_this_tournament > 0:
+            print(f"⏭️  Skipped: {skipped_this_tournament} matches (no date)")
+        if estimated_this_tournament > 0:
+            print(f"📅 Estimated dates: {estimated_this_tournament} matches")
+
+        # Update counters for next tournament
+        stats['_last_skip_count'] = stats['matches_skipped']
+        stats['_last_estimated_count'] = stats['matches_with_estimated_dates']
 
         stats['tournaments_imported'] += 1
         return True
@@ -233,7 +313,10 @@ def main():
         'matches_inserted': 0,
         'matches_failed': 0,
         'matches_skipped': 0,
-        'players_inserted': 0
+        'matches_with_estimated_dates': 0,
+        'players_inserted': 0,
+        '_last_skip_count': 0,  # Internal counter for per-tournament skip tracking
+        '_last_estimated_count': 0  # Internal counter for per-tournament estimated dates tracking
     }
 
     # Import each tournament
@@ -284,6 +367,7 @@ def main():
     print(f"  Inserted:    {stats['matches_inserted']}")
     print(f"  Failed:      {stats['matches_failed']}")
     print(f"  Skipped:     {stats['matches_skipped']}")
+    print(f"  Estimated dates: {stats['matches_with_estimated_dates']}")
     print(f"\nPlayers:")
     print(f"  Inserted:    {stats['players_inserted']}")
 
