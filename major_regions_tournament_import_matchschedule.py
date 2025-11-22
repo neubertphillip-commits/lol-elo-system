@@ -174,6 +174,14 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         print(f"📥 Found {len(matches)} matches")
         stats['total_matches_found'] += len(matches)
 
+        # Debug: Show sample of DateTime_UTC values to understand the data
+        if matches and len(matches) > 0:
+            sample_dates = []
+            for i, m in enumerate(matches[:5]):  # Check first 5 matches
+                dt = m.get('DateTime_UTC', '')
+                sample_dates.append(f"Match {i+1}: '{dt}'" if dt else f"Match {i+1}: EMPTY")
+            print(f"📅 Sample dates: {', '.join(sample_dates)}")
+
         # Player data lookup - convert URL to underscores for ScoreboardPlayers
         players_by_match = {}
         if include_players:
