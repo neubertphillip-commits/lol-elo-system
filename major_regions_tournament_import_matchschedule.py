@@ -154,6 +154,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         matches_inserted = 0
         matches_failed = 0
         players_inserted = 0
+        estimated_match_counter = 0  # Counter for estimated dates within this tournament
 
         for match in matches:
             team1_orig = match.get('Team1', '').strip()
@@ -180,7 +181,11 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
 
             # If no date, estimate from tournament name
             if not date_obj:
-                date_obj = estimate_date_from_tournament(name)
+                from datetime import timedelta
+                base_date = estimate_date_from_tournament(name)
+                # Add minutes offset to ensure unique timestamps within tournament
+                date_obj = base_date + timedelta(minutes=estimated_match_counter)
+                estimated_match_counter += 1
                 date_is_estimated = True
                 stats['matches_with_estimated_dates'] += 1
 
