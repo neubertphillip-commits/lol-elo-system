@@ -116,10 +116,6 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
             except:
                 date_obj = None
 
-            # Determine Bo format
-            best_of = match.get('BestOf', '')
-            bo_format = f"Bo{best_of}" if best_of else None
-
             # Create external ID
             unique_match = match.get('UniqueMatch', '')
             match_id_field = match.get('MatchId', '')
@@ -136,7 +132,6 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 tournament_name=name,
                 stage=match.get('Tab', '') or match.get('Phase', '') or match.get('Round', ''),
                 patch=match.get('Patch', ''),
-                bo_format=bo_format,
                 external_id=external_id,
                 source='leaguepedia'
             )
