@@ -387,7 +387,7 @@ def main():
         'not_found_tournaments': not_found_tournaments
     }
 
-    output_file = Path(__file__).parent / "complete_tournament_discovery_results.json"
+    output_file = Path(__file__).parent / "major_regions_discovery_results.json"
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
 
