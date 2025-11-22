@@ -72,3 +72,11 @@ test_matchschedule.py
 test_matchschedule_raw.py
 test_matchschedule_spaces.py
 complete_discovery.log
+
+# Temporary analysis scripts
+comprehensive_url_finder.py
+extract_all_tournaments.py
+all_matchschedule_tournaments.json
+test_single_url.py
+category_url_finder.py
+found_tournament_urls.json

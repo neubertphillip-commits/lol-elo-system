@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-COMPREHENSIVE TOURNAMENT DATA IMPORT - Using MatchSchedule Table
-Importiert ALLE Match-Daten für alle gefundenen Turniere
+MAJOR REGIONS TOURNAMENT DATA IMPORT - Using MatchSchedule Table
+Importiert Match-Daten für Major Region Turniere (LPL, LCK, LEC, LCS) + International
 
 WICHTIG: Nutzt MatchSchedule statt ScoreboardGames!
 - MatchSchedule hat bereits Match-level Daten (kein Game-Aggregation nötig)
 - Verwendet SPACES in OverviewPage (z.B. "LEC/2024 Season/Spring Season")
-- Enthält ALLE Turniere inkl. MSI 2017-2019, LCS 2022-2024, Regional Finals, etc.
+- Importiert nur Major Regions: LPL, LCK, LEC, LCS, Worlds, MSI, IEM, Rift Rivals
 """
 
 import json
@@ -198,10 +198,10 @@ def main():
     """Main import function"""
 
     # Check for results file
-    results_file = Path(__file__).parent / "complete_tournament_discovery_results.json"
+    results_file = Path(__file__).parent / "major_regions_discovery_results.json"
     if not results_file.exists():
         print(f"❌ Discovery results file not found: {results_file}")
-        print(f"   Please run complete_tournament_discovery_matchschedule.py first!")
+        print(f"   Please run major_regions_tournament_discovery_matchschedule.py first!")
         return 1
 
     # Load discovery results
