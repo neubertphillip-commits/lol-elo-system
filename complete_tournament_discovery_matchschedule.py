@@ -91,15 +91,27 @@ def generate_all_tournaments():
     # LCK (Korea) - 2013-2025
     # ========================================================================
     # OGN Champions (2013-2015)
-    for year in range(2013, 2016):
-        # 2013 uses just "Winter", 2014-2015 use "Winter Season"
-        suffix = "" if year == 2013 else " Season"
-        tournaments.append((f"OGN {year} Winter", f"Champions/{year}_Season/Winter{suffix}"))
-        tournaments.append((f"OGN {year} Spring", f"Champions/{year}_Season/Spring{suffix}"))
-        tournaments.append((f"OGN {year} Summer", f"Champions/{year}_Season/Summer{suffix}"))
+    # 2013: No suffix
+    tournaments.append(("OGN 2013 Winter", "Champions/2013_Season/Winter"))
+    tournaments.append(("OGN 2013 Spring", "Champions/2013_Season/Spring"))
+    tournaments.append(("OGN 2013 Summer", "Champions/2013_Season/Summer"))
+
+    # 2014: All splits with " Season" suffix
+    tournaments.append(("OGN 2014 Winter", "Champions/2014_Season/Winter_Season"))
+    tournaments.append(("OGN 2014 Spring", "Champions/2014_Season/Spring_Season"))
+    tournaments.append(("OGN 2014 Summer", "Champions/2014_Season/Summer_Season"))
+
+    # 2015: Only Spring and Summer (Winter doesn't exist)
+    tournaments.append(("OGN 2015 Spring", "Champions/2015_Season/Spring_Season"))
+    tournaments.append(("OGN 2015 Summer", "Champions/2015_Season/Summer_Season"))
 
     # LCK (2016+)
     for year in range(2016, 2026):
+        # Promotion tournaments (2016-2020 only)
+        if year <= 2020:
+            tournaments.append((f"LCK {year} Spring Promotion", f"LCK/{year}_Season/Spring_Promotion"))
+            tournaments.append((f"LCK {year} Summer Promotion", f"LCK/{year}_Season/Summer_Promotion"))
+
         tournaments.append((f"LCK {year} Spring", f"LCK/{year}_Season/Spring_Season"))
         tournaments.append((f"LCK {year} Spring Playoffs", f"LCK/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LCK {year} Summer", f"LCK/{year}_Season/Summer_Season"))
@@ -265,13 +277,17 @@ def generate_all_tournaments():
     # ========================================================================
 
     # World Championship - 2013-2024
-    for year in range(2013, 2025):
-        if year == 2013:
-            tournaments.append((f"Worlds {year}", f"Season_3_World_Championship"))
-        else:
-            tournaments.append((f"Worlds {year} Play-In", f"Season_{year}_World_Championship/Play-In"))
-            tournaments.append((f"Worlds {year} Main Event", f"Season_{year}_World_Championship/Main_Event"))
-            tournaments.append((f"Worlds {year}", f"Season_{year}_World_Championship"))
+    # 2013: Special format (Season 3)
+    tournaments.append(("Worlds 2013", "Season_3_World_Championship"))
+
+    # 2014-2016: Standalone format (no Play-In)
+    for year in range(2014, 2017):
+        tournaments.append((f"Worlds {year}", f"{year}_Season_World_Championship"))
+
+    # 2017-2024: Play-In + Main Event format
+    for year in range(2017, 2025):
+        tournaments.append((f"Worlds {year} Play-In", f"{year}_Season_World_Championship/Play-In"))
+        tournaments.append((f"Worlds {year} Main Event", f"{year}_Season_World_Championship/Main_Event"))
 
     # MSI - 2015-2024 (complex pattern)
     # 2015-2016: Standalone only
