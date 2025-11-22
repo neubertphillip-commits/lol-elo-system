@@ -174,11 +174,12 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         print(f"📥 Found {len(matches)} matches")
         stats['total_matches_found'] += len(matches)
 
-        # Debug: Show sample of DateTime_UTC values to understand the data
+        # Debug: Show sample of DateTime UTC values to understand the data
         if matches and len(matches) > 0:
             sample_dates = []
             for i, m in enumerate(matches[:5]):  # Check first 5 matches
-                dt = m.get('DateTime_UTC', '')
+                # API returns 'DateTime UTC' with space!
+                dt = m.get('DateTime UTC', '') or m.get('DateTime_UTC', '')
                 sample_dates.append(f"Match {i+1}: '{dt}'" if dt else f"Match {i+1}: EMPTY")
             print(f"📅 Sample dates: {', '.join(sample_dates)}")
 
@@ -225,7 +226,8 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 continue
 
             # Resolve team names
-            match_date = match.get('DateTime_UTC', '')
+            # Note: API returns 'DateTime UTC' with space, not 'DateTime_UTC' with underscore!
+            match_date = match.get('DateTime UTC', '') or match.get('DateTime_UTC', '')
             team1_resolved = team_resolver.resolve(team1_orig, match_date)
             team2_resolved = team_resolver.resolve(team2_orig, match_date)
 
