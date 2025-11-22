@@ -85,7 +85,17 @@ def generate_all_tournaments():
         if year >= 2015:
             tournaments.append((f"LPL {year} Regional Finals", f"LPL/{year}_Season/Regional_Finals"))
 
-    # Demacia Cup (China) - 2019-2024 only
+    # Demacia Cup (China)
+    tournaments.append(("Demacia Cup Season 1", "Demacia Cup/Season 1"))
+    tournaments.append(("Demacia Cup Season 2", "Demacia Cup/Season 2"))
+    tournaments.append(("Demacia Cup 2015 Spring", "2015 Demacia cup/spring season"))
+    tournaments.append(("Demacia Cup 2015 Summer", "2015 Demacia cup/summer season"))
+    tournaments.append(("Demacia Cup 2015 Grand Finals", "2015 Demacia cup/grand finals"))
+    tournaments.append(("Demacia Cup 2016", "demacia cup/2016 season"))
+    tournaments.append(("Demacia Cup 2017", "demacia cup/2017 season"))
+    tournaments.append(("Demacia Championship 2017", "demacia championship/2017 season"))
+    tournaments.append(("Demacia Cup 2018 Winter", "demacia cup/2018 winter"))
+    tournaments.append(("Demacia Cup 2018 Summer", "demacia cup/2018 summer"))
     for year in range(2019, 2025):
         tournaments.append((f"Demacia Cup {year}", f"Demacia_Cup_{year}"))
 

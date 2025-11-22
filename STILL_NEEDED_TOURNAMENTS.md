@@ -10,17 +10,6 @@
 - NA LCS 2013 Summer
 - NA LCS 2013 Summer Playoffs
 
-## Demacia Cup (China)
-- Demacia Cup 2013
-- Demacia Cup 2014
-- Demacia Cup 2015
-- Demacia Cup 2016
-- Demacia Cup 2017
-- Demacia Cup 2018
-
-## KeSPA Cup (Korea)
-- KeSPA Cup 2013
-- KeSPA Cup 2014
 
 ## OGN/LCK Promotion
 - OGN 2013 Winter Promotion
