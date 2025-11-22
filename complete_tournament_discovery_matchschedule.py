@@ -85,14 +85,9 @@ def generate_all_tournaments():
         if year >= 2015:
             tournaments.append((f"LPL {year} Regional Finals", f"LPL/{year}_Season/Regional_Finals"))
 
-    # Demacia Cup (China) - Testing multiple URL formats
-    for year in range(2013, 2025):
-        demacia_formats = [
-            (f"Demacia Cup {year}", f"Demacia_Cup/{year}_Season"),
-            (f"Demacia Cup {year} (F2)", f"LPL/{year}_Season/Demacia_Cup"),
-            (f"Demacia Cup {year} (F3)", f"Demacia_Cup_{year}"),
-        ]
-        tournaments.extend(demacia_formats)
+    # Demacia Cup (China) - 2019-2024 only
+    for year in range(2019, 2025):
+        tournaments.append((f"Demacia Cup {year}", f"Demacia_Cup_{year}"))
 
     # ========================================================================
     # LCK (Korea) - 2013-2025
@@ -164,15 +159,9 @@ def generate_all_tournaments():
         tournaments.append((f"LCK {year} Summer Playoffs", f"LCK/{year}_Season/Summer_Playoffs"))
         tournaments.append((f"LCK {year} Regional Finals", f"LCK/{year}_Season/Regional_Finals"))
 
-    # KeSPA Cup (Korea) - Testing multiple URL formats
-    for year in range(2013, 2020):
-        kespa_formats = [
-            (f"KeSPA Cup {year}", f"KeSPA_Cup/{year}_Season"),
-            (f"KeSPA Cup {year} (F2)", f"LCK/{year}_Season/KeSPA_Cup"),
-            (f"KeSPA Cup {year} (F3)", f"KeSPA_Cup_{year}"),
-            (f"KeSPA Cup {year} (F4)", f"LoL_KeSPA_Cup/{year}"),
-        ]
-        tournaments.extend(kespa_formats)
+    # KeSPA Cup (Korea) - 2015-2019 only
+    for year in range(2015, 2020):
+        tournaments.append((f"KeSPA Cup {year}", f"{year}_lol_KeSPA_CUP"))
 
     # ========================================================================
     # LEC (EU) - 2013-2025
