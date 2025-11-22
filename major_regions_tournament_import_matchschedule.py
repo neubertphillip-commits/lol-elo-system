@@ -385,6 +385,12 @@ def main():
         name = tournament['name']
         url = tournament['url']
 
+        # Skip 2025 tournaments
+        if '2025' in name:
+            print(f"\n[{i}/{len(tournaments)}] {name} - ⏭️  SKIPPED (2025)")
+            stats['tournaments_no_data'] += 1
+            continue
+
         print(f"\n[{i}/{len(tournaments)}] {name}")
 
         import_tournament(
@@ -394,7 +400,7 @@ def main():
             name=name,
             url=url,
             stats=stats,
-            include_players=True
+            include_players=False  # Disable player import to avoid API errors
         )
 
         # Progress update every 10 tournaments
