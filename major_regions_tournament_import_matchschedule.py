@@ -233,7 +233,12 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
             date_is_estimated = False
             try:
                 if match_date:
-                    date_obj = datetime.strptime(match_date, "%Y-%m-%d %H:%M:%S")
+                    # Try parsing with AM/PM format first (Leaguepedia format)
+                    try:
+                        date_obj = datetime.strptime(match_date, "%Y-%m-%d %I:%M:%S %p")
+                    except ValueError:
+                        # Fallback to 24-hour format
+                        date_obj = datetime.strptime(match_date, "%Y-%m-%d %H:%M:%S")
                 else:
                     date_obj = None
             except Exception as e:
