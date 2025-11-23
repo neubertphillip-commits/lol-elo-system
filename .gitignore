@@ -31,6 +31,12 @@ data/
 *.csv
 .pytest_cache/
 
+# Database files
+db/
+*.db
+*.sqlite
+*.sqlite3
+
 
 
 # Jupyter

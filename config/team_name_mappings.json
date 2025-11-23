@@ -202,6 +202,56 @@
       ],
       "region": "NA",
       "notes": "North American team"
+    },
+    {
+      "canonical_name": "Counter Logic Gaming EU",
+      "aliases": [
+        "CLG EU",
+        "CLG.EU",
+        "Counter Logic Gaming Europe",
+        "CLG Europe"
+      ],
+      "region": "EU",
+      "notes": "Historical EU team (Season 2-3), different from NA CLG"
+    },
+    {
+      "canonical_name": "ahq e-Sports Club",
+      "aliases": [
+        "ahq",
+        "AHQ",
+        "Chinese Taipei National Team",
+        "Taiwan Nationals"
+      ],
+      "region": "TW",
+      "notes": "Taiwanese team, represented Taiwan in international events"
+    },
+    {
+      "canonical_name": "CTBC Flying Oyster",
+      "aliases": [
+        "FO",
+        "Flying Oyster",
+        "CTBC FO"
+      ],
+      "region": "TW",
+      "notes": "Taiwanese PCS team"
+    },
+    {
+      "canonical_name": "Anarchy",
+      "aliases": [
+        "AC",
+        "Anarchy Gaming"
+      ],
+      "region": "BR",
+      "notes": "Brazilian team"
+    },
+    {
+      "canonical_name": "DYG",
+      "aliases": [
+        "DYU Chinese Team",
+        "Daya Gaming"
+      ],
+      "region": "CN",
+      "notes": "Chinese team"
     }
   ],
 
