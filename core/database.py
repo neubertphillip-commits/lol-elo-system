@@ -531,6 +531,66 @@ class DatabaseManager:
 
         return stats
 
+    def get_matches_by_tournament(self, tournament_name: str) -> List[Dict]:
+        """
+        Get all matches for a specific tournament
+
+        Args:
+            tournament_name: Tournament name
+
+        Returns:
+            List of match dictionaries with id and external_id
+        """
+        cursor = self.conn.cursor()
+
+        query = """
+            SELECT
+                m.id, m.external_id, m.date,
+                t1.name as team1_name, t2.name as team2_name,
+                m.team1_score, m.team2_score
+            FROM matches m
+            JOIN teams t1 ON m.team1_id = t1.id
+            JOIN teams t2 ON m.team2_id = t2.id
+            LEFT JOIN tournaments tour ON m.tournament_id = tour.id
+            WHERE tour.name = ?
+            ORDER BY m.date
+        """
+
+        cursor.execute(query, (tournament_name,))
+
+        matches = []
+        for row in cursor.fetchall():
+            matches.append({
+                'id': row[0],
+                'external_id': row[1],
+                'date': row[2],
+                'team1_name': row[3],
+                'team2_name': row[4],
+                'team1_score': row[5],
+                'team2_score': row[6]
+            })
+
+        return matches
+
+    def get_all_tournament_names(self) -> List[str]:
+        """
+        Get all unique tournament names from database
+
+        Returns:
+            List of tournament names
+        """
+        cursor = self.conn.cursor()
+
+        query = """
+            SELECT DISTINCT name
+            FROM tournaments
+            ORDER BY name
+        """
+
+        cursor.execute(query)
+
+        return [row[0] for row in cursor.fetchall()]
+
     def close(self):
         """Close database connection"""
         if self.conn:
