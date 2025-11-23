@@ -286,7 +286,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 team1_score=int(match.get('Team1Score', 0) or 0),
                 team2_score=int(match.get('Team2Score', 0) or 0),
                 date=date_obj,
-                tournament_name=name,
+                tournament_name=url,  # FIX: Use URL format (with slashes) instead of display name for ScoreboardGames compatibility
                 stage=match.get('Tab', '') or match.get('Phase', '') or match.get('Round', ''),
                 patch=match.get('Patch', ''),
                 external_id=external_id,
