@@ -31,13 +31,13 @@ data/
 *.csv
 .pytest_cache/
 
-# Database
-db/*.db
-db/*.db-*
+# Database files
+db/
 *.db
-*.db-*
 *.sqlite
 *.sqlite3
+
+
 
 # Jupyter
 .ipynb_checkpoints/
