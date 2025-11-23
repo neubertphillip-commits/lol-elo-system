@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from core.leaguepedia_loader import LeaguepediaLoader
 from core.database import DatabaseManager
+from core.team_resolver import TeamResolver
 
 
 def chunks(lst, n):
@@ -40,6 +41,9 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
     print(f"Importing player data for: {tournament_name}")
     print(f"{'='*80}")
 
+    # Initialize team resolver for normalizing team names
+    team_resolver = TeamResolver()
+
     # Step 1: Get all games from ScoreboardGames
     print("\n[1/4] Fetching games from ScoreboardGames...")
 
@@ -49,13 +53,13 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
     batch_size = 500
 
     while True:
-        # Note: Use DateTime_UTC in query, but API returns as "DateTime UTC"
+        # Note: Some fields like DateTime_UTC and UniqueGame cause internal API errors!
+        # Use MatchId instead of UniqueGame - works without errors
         games_batch = loader._query_cargo(
             tables='ScoreboardGames',
-            fields='GameId, UniqueGame, Team1, Team2, DateTime_UTC',
+            fields='GameId, MatchId, Team1, Team2',
             where=f'OverviewPage="{tournament_name}"',
-            limit=batch_size,
-            order_by='DateTime_UTC'
+            limit=batch_size
         )
 
         if not games_batch:
@@ -132,23 +136,20 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
             if not game:
                 continue
 
-            unique_game = game.get('UniqueGame', '')
+            match_id_from_game = game.get('MatchId', '')
 
             # Find match in database by external_id
-            # Note: UniqueGame is per-game, but we might need to extract match ID
-            # UniqueGame format: often includes game number at end
-            # Try exact match first, then try prefix match
+            # MatchId from ScoreboardGames should match external_id in DB
+            # (both come from MatchSchedule.UniqueMatch or MatchSchedule.MatchId)
             match_id = None
 
-            if unique_game in external_id_to_match:
-                match_id = external_id_to_match[unique_game]
+            # Try exact match first
+            if match_id_from_game in external_id_to_match:
+                match_id = external_id_to_match[match_id_from_game]
             else:
-                # Try finding match by game ID prefix (remove _1, _2, etc.)
-                # GameId format: "LEC/2024_Season/Spring_Season_Week_1_1_1"
-                # We might need to match against MatchId or construct it
-                # For now, try to find by teams + date range
+                # Try prefix match (in case external_id has additional suffix)
                 for ext_id, m_id in external_id_to_match.items():
-                    if game_id.startswith(ext_id) or ext_id.startswith(unique_game.rsplit('_', 1)[0]):
+                    if match_id_from_game == ext_id or ext_id.startswith(match_id_from_game):
                         match_id = m_id
                         break
 
@@ -159,11 +160,16 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
             # Insert player
             try:
                 player_win = player_data.get('PlayerWin', '') == 'Yes'
+                player_name = player_data.get('Link', '')
+                team_name_raw = player_data.get('Team', '')
+
+                # Normalize team name using team resolver (same as in match import)
+                team_name_normalized = team_resolver.resolve(team_name_raw, None)
 
                 inserted_id = db.insert_match_player(
                     match_id=match_id,
-                    player_name=player_data.get('Link', ''),
-                    team_name=player_data.get('Team', ''),
+                    player_name=player_name,
+                    team_name=team_name_normalized,
                     role=player_data.get('Role', ''),
                     champion=None,  # Not needed
                     kills=None,
