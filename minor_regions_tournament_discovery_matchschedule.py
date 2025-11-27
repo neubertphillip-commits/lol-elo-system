@@ -85,12 +85,21 @@ def generate_all_tournaments():
     # ========================================================================
     # PCS (Pacific) - 2020-2025
     # ========================================================================
-    for year in range(2020, 2026):
+    for year in range(2020, 2025):
         tournaments.append((f"PCS {year} Spring", f"PCS/{year}_Season/Spring_Season"))
         tournaments.append((f"PCS {year} Spring Playoffs", f"PCS/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"PCS {year} Summer", f"PCS/{year}_Season/Summer_Season"))
         tournaments.append((f"PCS {year} Summer Playoffs", f"PCS/{year}_Season/Summer_Playoffs"))
         tournaments.append((f"PCS {year} Regional Finals", f"PCS/{year}_Season/Regional_Finals"))
+
+    # PCS 2025: New 3-split structure
+    tournaments.append(("PCS 2025 Spring", "PCS/2025_Season/Spring_Season"))
+    tournaments.append(("PCS 2025 Spring Playoffs", "PCS/2025_Season/Spring_Playoffs"))
+    tournaments.append(("PCS 2025 Summer", "PCS/2025_Season/Summer_Season"))
+    tournaments.append(("PCS 2025 Summer Playoffs", "PCS/2025_Season/Summer_Playoffs"))
+    tournaments.append(("PCS 2025 Split 3", "PCS/2025_Season/Split_3"))
+    tournaments.append(("PCS 2025 Split 3 Playoffs", "PCS/2025_Season/Split_3_Playoffs"))
+    tournaments.append(("PCS 2025 Regional Finals", "PCS/2025_Season/Regional_Finals"))
 
     # LMS (Taiwan, predecessor to PCS) - 2015-2019
     for year in range(2015, 2020):
@@ -123,8 +132,8 @@ def generate_all_tournaments():
     tournaments.append(("LJL 2014 Spring", "LJL/2014_Season/Spring_Season"))
     tournaments.append(("LJL 2014 Summer", "LJL/2014_Season/Summer_Season"))
 
-    # LJL 2016+ (with playoffs)
-    for year in range(2016, 2026):
+    # LJL 2016-2024 (with playoffs)
+    for year in range(2016, 2025):
         tournaments.append((f"LJL {year} Spring", f"LJL/{year}_Season/Spring_Season"))
         tournaments.append((f"LJL {year} Spring Playoffs", f"LJL/{year}_Season/Spring_Playoffs"))
         tournaments.append((f"LJL {year} Summer", f"LJL/{year}_Season/Summer_Season"))
@@ -132,16 +141,31 @@ def generate_all_tournaments():
         if year >= 2020:
             tournaments.append((f"LJL {year} Regional Finals", f"LJL/{year}_Season/Regional_Finals"))
 
+    # LJL 2025: New structure (Forge, Storm, Ignite, Finals)
+    tournaments.append(("LJL 2025 Forge", "LJL/2025_Season/Forge"))
+    tournaments.append(("LJL 2025 Storm", "LJL/2025_Season/Storm"))
+    tournaments.append(("LJL 2025 Ignite", "LJL/2025_Season/Ignite"))
+    tournaments.append(("LJL 2025 Finals", "LJL/2025_Season/Finals"))
+
     # ========================================================================
     # TCL (Turkey) - 2015-2025 (started in 2015, not 2013)
     # ========================================================================
-    for year in range(2015, 2026):
+    for year in range(2015, 2025):
         tournaments.append((f"TCL {year} Winter", f"TCL/{year}_Season/Winter_Season"))
         tournaments.append((f"TCL {year} Winter Playoffs", f"TCL/{year}_Season/Winter_Playoffs"))
         tournaments.append((f"TCL {year} Summer", f"TCL/{year}_Season/Summer_Season"))
         tournaments.append((f"TCL {year} Summer Playoffs", f"TCL/{year}_Season/Summer_Playoffs"))
         if year >= 2020:
             tournaments.append((f"TCL {year} Regional Finals", f"TCL/{year}_Season/Regional_Finals"))
+
+    # TCL 2025: Added Spring split
+    tournaments.append(("TCL 2025 Spring", "TCL/2025_Season/Spring_Season"))
+    tournaments.append(("TCL 2025 Spring Playoffs", "TCL/2025_Season/Spring_Playoffs"))
+    tournaments.append(("TCL 2025 Winter", "TCL/2025_Season/Winter_Season"))
+    tournaments.append(("TCL 2025 Winter Playoffs", "TCL/2025_Season/Winter_Playoffs"))
+    tournaments.append(("TCL 2025 Summer", "TCL/2025_Season/Summer_Season"))
+    tournaments.append(("TCL 2025 Summer Playoffs", "TCL/2025_Season/Summer_Playoffs"))
+    tournaments.append(("TCL 2025 Regional Finals", "TCL/2025_Season/Regional_Finals"))
 
     # ========================================================================
     # LLA (Latin America) - 2019-2025
