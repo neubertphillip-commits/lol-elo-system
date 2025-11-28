@@ -235,8 +235,21 @@ def generate_all_tournaments():
     tournaments.append(("LAS 2016 Closing Cup", "Latin_America_Cup/LAS/2016_Season/Closing_Cup/Regular_Season"))
     tournaments.append(("LAS 2016 Closing Cup Playoffs", "Latin_America_Cup/LAS/2016_Season/Closing_Cup/Playoffs"))
 
-    # LAS 2017 (ESL Major)
-    tournaments.append(("LAS 2017 Closing Season", "ESL_Major_LAS/2017_Season/Closing_Season"))
+    # ========================================================================
+    # CLS (Circuit Latinoamérica Sur) - 2017-2018
+    # LAS was renamed to CLS starting in 2017
+    # ========================================================================
+    # CLS 2017
+    tournaments.append(("CLS 2017 Opening", "CLS/2017_Season/Opening_Season"))
+    tournaments.append(("CLS 2017 Opening Playoffs", "CLS/2017_Season/Opening_Playoffs"))
+    tournaments.append(("CLS 2017 Closing", "CLS/2017_Season/Closing_Season"))
+    tournaments.append(("CLS 2017 Closing Playoffs", "CLS/2017_Season/Closing_Playoffs"))
+
+    # CLS 2018
+    tournaments.append(("CLS 2018 Opening", "CLS/2018_Season/Opening_Season"))
+    tournaments.append(("CLS 2018 Opening Playoffs", "CLS/2018_Season/Opening_Playoffs"))
+    tournaments.append(("CLS 2018 Closing", "CLS/2018_Season/Closing_Season"))
+    tournaments.append(("CLS 2018 Closing Playoffs", "CLS/2018_Season/Closing_Playoffs"))
 
     # ========================================================================
     # OPL (Oceania) - 2015-2020
