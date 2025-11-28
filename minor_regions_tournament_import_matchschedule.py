@@ -201,7 +201,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 continue
 
             # Resolve team names
-            match_date = match.get('DateTime_UTC', '')
+            match_date = match.get('DateTime UTC', '') or match.get('DateTime_UTC', '')
             team1_resolved = team_resolver.resolve(team1_orig, match_date)
             team2_resolved = team_resolver.resolve(team2_orig, match_date)
 
@@ -209,10 +209,35 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
             date_is_estimated = False
             try:
                 if match_date:
-                    date_obj = datetime.strptime(match_date, "%Y-%m-%d %H:%M:%S")
+                    # Normalize single-digit hours to double-digit (8:00:00 -> 08:00:00)
+                    # Split by space to handle "YYYY-MM-DD H:MM:SS AM/PM"
+                    parts = match_date.split(' ')
+                    if len(parts) == 3:  # Date, Time, AM/PM
+                        date_part = parts[0]
+                        time_part = parts[1]
+                        ampm_part = parts[2]
+
+                        # Normalize hour part (add leading zero if needed)
+                        time_components = time_part.split(':')
+                        if len(time_components) == 3:
+                            hour, minute, second = time_components
+                            if len(hour) == 1:  # Single digit hour
+                                time_part = f"0{hour}:{minute}:{second}"
+                            match_date = f"{date_part} {time_part} {ampm_part}"
+
+                    # Try parsing with AM/PM format (Leaguepedia format)
+                    try:
+                        date_obj = datetime.strptime(match_date, "%Y-%m-%d %I:%M:%S %p")
+                    except ValueError:
+                        # Fallback to 24-hour format
+                        try:
+                            date_obj = datetime.strptime(match_date, "%Y-%m-%d %H:%M:%S")
+                        except ValueError:
+                            date_obj = None
                 else:
                     date_obj = None
-            except:
+            except Exception as e:
+                # Date parsing failed - will estimate instead
                 date_obj = None
 
             # If no date, estimate from tournament name
