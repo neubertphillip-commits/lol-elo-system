@@ -230,6 +230,16 @@ def generate_all_tournaments():
         tournaments.append((f"OPL {year} Split 2 Playoffs", f"OPL/{year}_Season/Split_2_Playoffs"))
 
     # ========================================================================
+    # LCO (League of Legends Circuit Oceania) - 2021-2024
+    # Successor to OPL
+    # ========================================================================
+    for year in range(2021, 2025):
+        tournaments.append((f"LCO {year} Split 1", f"LCO/{year}_Season/Split_1"))
+        tournaments.append((f"LCO {year} Split 1 Playoffs", f"LCO/{year}_Season/Split_1_Playoffs"))
+        tournaments.append((f"LCO {year} Split 2", f"LCO/{year}_Season/Split_2"))
+        tournaments.append((f"LCO {year} Split 2 Playoffs", f"LCO/{year}_Season/Split_2_Playoffs"))
+
+    # ========================================================================
     # LCL (Russia/CIS) - 2016-2021
     # ========================================================================
     for year in range(2016, 2022):
