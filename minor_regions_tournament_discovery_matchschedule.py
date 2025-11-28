@@ -308,6 +308,16 @@ def generate_all_tournaments():
     tournaments.append(("Rift Rivals 2018 LCL-TCL-VCS", "Rift_Rivals_2018/LCL-TCL-VCS"))
     tournaments.append(("Rift Rivals 2018 LLN-CLS-CBLOL", "Rift_Rivals_2018/LLN-CLS-CBLOL"))
 
+    # ========================================================================
+    # INTERNATIONAL WILDCARD (IWC) - 2013-2016
+    # ========================================================================
+    tournaments.append(("IWC 2013 Gamescom", "Gamescom_2013/International_Wildcard_Tournament"))
+    tournaments.append(("IWC 2015 Invitational", "2015_International_Wildcard_Invitational"))
+    tournaments.append(("IWC 2015 Turkey", "2015_International_Wildcard_Tournament/Turkey"))
+    tournaments.append(("IWC 2015 Chile", "2015_International_Wildcard_Tournament/Chile"))
+    tournaments.append(("IWC 2016 Invitational", "2016_International_Wildcard_Invitational"))
+    tournaments.append(("IWC 2016 Qualifier", "2016_International_Wildcard_Qualifier"))
+
     return tournaments
 
 def main():
