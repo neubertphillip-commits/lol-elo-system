@@ -1,0 +1,468 @@
+{
+  "found": [
+    {
+      "name": "LCO 2021 Split 1",
+      "url": "LCO/2021 Season/Split 1",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2021 Split 1 Playoffs",
+      "url": "LCO/2021 Season/Split 1 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2021 Split 2",
+      "url": "LCO/2021 Season/Split 2",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2021 Split 2 Playoffs",
+      "url": "LCO/2021 Season/Split 2 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2022 Split 1",
+      "url": "LCO/2022 Season/Split 1",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2022 Split 1 Playoffs",
+      "url": "LCO/2022 Season/Split 1 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2022 Split 2",
+      "url": "LCO/2022 Season/Split 2",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2022 Split 2 Playoffs",
+      "url": "LCO/2022 Season/Split 2 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2023 Split 1",
+      "url": "LCO/2023 Season/Split 1",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2023 Split 1 Playoffs",
+      "url": "LCO/2023 Season/Split 1 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2023 Split 2",
+      "url": "LCO/2023 Season/Split 2",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2023 Split 2 Playoffs",
+      "url": "LCO/2023 Season/Split 2 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2024 Split 1",
+      "url": "LCO/2024 Season/Split 1",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2024 Split 1 Playoffs",
+      "url": "LCO/2024 Season/Split 1 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2024 Split 2",
+      "url": "LCO/2024 Season/Split 2",
+      "found": true,
+      "sample_matches": 5
+    },
+    {
+      "name": "LCO 2024 Split 2 Playoffs",
+      "url": "LCO/2024 Season/Split 2 Playoffs",
+      "found": true,
+      "sample_matches": 5
+    }
+  ],
+  "not_found": [
+    {
+      "name": "CBLOL 2025 Split 1",
+      "url": "CBLOL/2025 Season/Split 1",
+      "found": false
+    },
+    {
+      "name": "CBLOL 2025 Split 1 Playoffs",
+      "url": "CBLOL/2025 Season/Split 1 Playoffs",
+      "found": false
+    },
+    {
+      "name": "CBLOL 2025 Split 2",
+      "url": "CBLOL/2025 Season/Split 2",
+      "found": false
+    },
+    {
+      "name": "CBLOL 2025 Split 2 Playoffs",
+      "url": "CBLOL/2025 Season/Split 2 Playoffs",
+      "found": false
+    },
+    {
+      "name": "LLA 2025 Opening",
+      "url": "LLA/2025 Season/Opening Season",
+      "found": false
+    },
+    {
+      "name": "LLA 2025 Opening Playoffs",
+      "url": "LLA/2025 Season/Opening Playoffs",
+      "found": false
+    },
+    {
+      "name": "LLA 2025 Closing",
+      "url": "LLA/2025 Season/Closing Season",
+      "found": false
+    },
+    {
+      "name": "LLA 2025 Closing Playoffs",
+      "url": "LLA/2025 Season/Closing Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2014 Opening",
+      "url": "LAS/2014 Season/Opening Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2014 Opening Playoffs",
+      "url": "LAS/2014 Season/Opening Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2014 Closing",
+      "url": "LAS/2014 Season/Closing Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2014 Closing Playoffs",
+      "url": "LAS/2014 Season/Closing Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2015 Opening",
+      "url": "LAS/2015 Season/Opening Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2015 Opening Playoffs",
+      "url": "LAS/2015 Season/Opening Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2015 Closing",
+      "url": "LAS/2015 Season/Closing Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2015 Closing Playoffs",
+      "url": "LAS/2015 Season/Closing Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2016 Opening",
+      "url": "LAS/2016 Season/Opening Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2016 Opening Playoffs",
+      "url": "LAS/2016 Season/Opening Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2016 Closing",
+      "url": "LAS/2016 Season/Closing Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2016 Closing Playoffs",
+      "url": "LAS/2016 Season/Closing Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2017 Opening",
+      "url": "LAS/2017 Season/Opening Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2017 Opening Playoffs",
+      "url": "LAS/2017 Season/Opening Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2017 Closing",
+      "url": "LAS/2017 Season/Closing Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2017 Closing Playoffs",
+      "url": "LAS/2017 Season/Closing Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2018 Opening",
+      "url": "LAS/2018 Season/Opening Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2018 Opening Playoffs",
+      "url": "LAS/2018 Season/Opening Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2018 Closing",
+      "url": "LAS/2018 Season/Closing Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2018 Closing Playoffs",
+      "url": "LAS/2018 Season/Closing Playoffs",
+      "found": false
+    },
+    {
+      "name": "LAS 2013 Opening",
+      "url": "LAS/2013 Season/Opening Season",
+      "found": false
+    },
+    {
+      "name": "LAS 2013 Closing",
+      "url": "LAS/2013 Season/Closing Season",
+      "found": false
+    },
+    {
+      "name": "LCO 2025 Split 1",
+      "url": "LCO/2025 Season/Split 1",
+      "found": false
+    },
+    {
+      "name": "LCO 2025 Split 1 Playoffs",
+      "url": "LCO/2025 Season/Split 1 Playoffs",
+      "found": false
+    },
+    {
+      "name": "LCO 2025 Split 2",
+      "url": "LCO/2025 Season/Split 2",
+      "found": false
+    },
+    {
+      "name": "LCO 2025 Split 2 Playoffs",
+      "url": "LCO/2025 Season/Split 2 Playoffs",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2017 LAN-LAS-BR",
+      "url": "Rift Rivals/2017 Season/LAN-LAS-BR",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2018 LAN-LAS-BR",
+      "url": "Rift Rivals/2018 Season/LAN-LAS-BR",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2019 LAN-LAS-BR",
+      "url": "Rift Rivals/2019 Season/LAN-LAS-BR",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2017 SEA",
+      "url": "Rift Rivals/2017 Season/SEA",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2018 SEA",
+      "url": "Rift Rivals/2018 Season/SEA",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2019 SEA",
+      "url": "Rift Rivals/2019 Season/SEA",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2017 TCL-CIS",
+      "url": "Rift Rivals/2017 Season/TCL-CIS",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2018 TCL-CIS",
+      "url": "Rift Rivals/2018 Season/TCL-CIS",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2019 TCL-CIS",
+      "url": "Rift Rivals/2019 Season/TCL-CIS",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2017 OCE-SEA",
+      "url": "Rift Rivals/2017 Season/OCE-SEA",
+      "found": false
+    },
+    {
+      "name": "Rift Rivals 2018 OCE-SEA",
+      "url": "Rift Rivals/2018 Season/OCE-SEA",
+      "found": false
+    },
+    {
+      "name": "IWC 2013",
+      "url": "IWC/2013 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWCI 2013",
+      "url": "IWCI/2013 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWC 2014",
+      "url": "IWC/2014 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWCI 2014",
+      "url": "IWCI/2014 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWC 2015",
+      "url": "IWC/2015 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWCI 2015",
+      "url": "IWCI/2015 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWCQ 2014",
+      "url": "IWCQ/2014 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWCQ 2015",
+      "url": "IWCQ/2015 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "IWCQ 2016",
+      "url": "IWCQ/2016 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "Copa Latinoamérica 2013",
+      "url": "Copa Latinoamérica/2013 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "Copa Latinoamérica 2014",
+      "url": "Copa Latinoamérica/2014 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "Copa Latinoamérica 2015",
+      "url": "Copa Latinoamérica/2015 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "GPL Finals 2013",
+      "url": "GPL/2013 Season/Finals",
+      "found": false
+    },
+    {
+      "name": "GPL Playoffs 2013",
+      "url": "GPL/2013 Season/Playoffs",
+      "found": false
+    },
+    {
+      "name": "GPL Finals 2014",
+      "url": "GPL/2014 Season/Finals",
+      "found": false
+    },
+    {
+      "name": "GPL Playoffs 2014",
+      "url": "GPL/2014 Season/Playoffs",
+      "found": false
+    },
+    {
+      "name": "GPL Finals 2015",
+      "url": "GPL/2015 Season/Finals",
+      "found": false
+    },
+    {
+      "name": "GPL Playoffs 2015",
+      "url": "GPL/2015 Season/Playoffs",
+      "found": false
+    },
+    {
+      "name": "GPL Finals 2016",
+      "url": "GPL/2016 Season/Finals",
+      "found": false
+    },
+    {
+      "name": "GPL Playoffs 2016",
+      "url": "GPL/2016 Season/Playoffs",
+      "found": false
+    },
+    {
+      "name": "GPL Finals 2017",
+      "url": "GPL/2017 Season/Finals",
+      "found": false
+    },
+    {
+      "name": "GPL Playoffs 2017",
+      "url": "GPL/2017 Season/Playoffs",
+      "found": false
+    },
+    {
+      "name": "TCL vs VCS 2015",
+      "url": "TCL vs VCS/2015 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "TCL vs VCS 2016",
+      "url": "TCL vs VCS/2016 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "TCL vs VCS 2017",
+      "url": "TCL vs VCS/2017 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "TCL vs VCS 2018",
+      "url": "TCL vs VCS/2018 Season/Main Event",
+      "found": false
+    },
+    {
+      "name": "TCL vs VCS 2019",
+      "url": "TCL vs VCS/2019 Season/Main Event",
+      "found": false
+    }
+  ],
+  "summary": {
+    "total": 88,
+    "found": 16,
+    "not_found": 72,
+    "success_rate": 18.181818181818183
+  }
+}
