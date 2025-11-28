@@ -47,6 +47,9 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
     # Step 1: Get all games from ScoreboardGames
     print("\n[1/4] Fetching games from ScoreboardGames...")
 
+    # ScoreboardGames uses UNDERSCORES in OverviewPage (like ScoreboardPlayers)
+    tournament_name_underscores = tournament_name.replace(' ', '_')
+
     # Query with pagination support for large tournaments
     all_games = []
     offset = 0
@@ -58,7 +61,7 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
         games_batch = loader._query_cargo(
             tables='ScoreboardGames',
             fields='GameId, MatchId, Team1, Team2',
-            where=f'OverviewPage="{tournament_name}"',
+            where=f'OverviewPage="{tournament_name_underscores}"',
             limit=batch_size
         )
 
