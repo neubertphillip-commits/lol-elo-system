@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
 MINOR REGIONS TOURNAMENT DATA IMPORT - Using MatchSchedule Table
-Importiert Match-Daten für Minor Region Turniere
+Importiert Match-Daten für Minor Region Turniere (CBLOL, LLA, LJL, PCS, VCS, etc.)
 
 WICHTIG: Nutzt MatchSchedule statt ScoreboardGames!
 - MatchSchedule hat bereits Match-level Daten (kein Game-Aggregation nötig)
-- Verwendet SPACES in OverviewPage (z.B. "PCS/2024 Season/Spring Season")
-- Importiert nur Minor Regions: CBLOL, PCS, LMS, VCS, LJL, TCL, LLA, LLN, OPL
+- Verwendet SPACES in OverviewPage (z.B. "CBLOL/2024 Season/Split 1")
+- Importiert nur Minor Regions: CBLOL, LLA, LJL, PCS, VCS, TCL, LCL, OPL, etc.
 """
 
 import json
@@ -56,7 +56,7 @@ def estimate_date_from_tournament(tournament_name: str, match_index: int, total_
     Distributes matches realistically over tournament duration.
 
     Args:
-        tournament_name: Tournament name (e.g., "CBLOL 2014", "PCS 2020 Summer Playoffs")
+        tournament_name: Tournament name (e.g., "LPL 2013 Spring", "LCK 2020 Summer Playoffs")
         match_index: Index of this match (0-based)
         total_matches: Total number of matches in tournament
 
@@ -75,20 +75,36 @@ def estimate_date_from_tournament(tournament_name: str, match_index: int, total_
     # Determine start month and day based on split/phase
     if 'winter' in name_lower:
         month, day = 1, 15
-    elif 'spring' in name_lower or 'split 1' in name_lower:
+    elif 'spring' in name_lower:
         if 'playoff' in name_lower:
             month, day = 4, 15  # Spring Playoffs
         elif 'regional' in name_lower or 'final' in name_lower:
             month, day = 5, 1  # Spring Regional Finals
         else:
-            month, day = 3, 15  # Spring Regular Season / Split 1
-    elif 'summer' in name_lower or 'split 2' in name_lower:
+            month, day = 3, 15  # Spring Regular Season
+    elif 'summer' in name_lower:
         if 'playoff' in name_lower:
             month, day = 8, 15  # Summer Playoffs
         elif 'regional' in name_lower or 'final' in name_lower:
             month, day = 9, 15  # Summer Regional Finals
         else:
-            month, day = 7, 15  # Summer Regular Season / Split 2
+            month, day = 7, 15  # Summer Regular Season
+    elif 'msi' in name_lower or 'mid-season' in name_lower:
+        month, day = 5, 15  # MSI
+    elif 'world' in name_lower:
+        month, day = 10, 15  # Worlds
+    elif 'iem' in name_lower:
+        # IEM tournaments vary, use tournament name hints
+        if 'katowice' in name_lower:
+            month, day = 3, 1
+        elif 'cologne' in name_lower or 'gamescom' in name_lower:
+            month, day = 8, 1
+        elif 'oakland' in name_lower or 'san jose' in name_lower:
+            month, day = 11, 15
+        else:
+            month, day = 6, 1  # Default for other IEM events
+    elif 'kespa' in name_lower or 'demacia' in name_lower or 'rift rival' in name_lower:
+        month, day = 6, 15  # Mid-year cups
     elif 'playoff' in name_lower:
         month, day = 8, 15  # Generic playoffs
     elif 'regional' in name_lower:
@@ -158,6 +174,15 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         print(f"📥 Found {len(matches)} matches")
         stats['total_matches_found'] += len(matches)
 
+        # Debug: Show sample of DateTime UTC values to understand the data
+        if matches and len(matches) > 0:
+            sample_dates = []
+            for i, m in enumerate(matches[:5]):  # Check first 5 matches
+                # API returns 'DateTime UTC' with space!
+                dt = m.get('DateTime UTC', '') or m.get('DateTime_UTC', '')
+                sample_dates.append(f"Match {i+1}: '{dt}'" if dt else f"Match {i+1}: EMPTY")
+            print(f"📅 Sample dates: {', '.join(sample_dates)}")
+
         # Player data lookup - convert URL to underscores for ScoreboardPlayers
         players_by_match = {}
         if include_players:
@@ -192,7 +217,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
         matches_failed = 0
         players_inserted = 0
 
-        for match in matches:
+        for match_index, match in enumerate(matches):
             team1_orig = match.get('Team1', '').strip()
             team2_orig = match.get('Team2', '').strip()
 
@@ -201,6 +226,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 continue
 
             # Resolve team names
+            # Note: API returns 'DateTime UTC' with space, not 'DateTime_UTC' with underscore!
             match_date = match.get('DateTime UTC', '') or match.get('DateTime_UTC', '')
             team1_resolved = team_resolver.resolve(team1_orig, match_date)
             team2_resolved = team_resolver.resolve(team2_orig, match_date)
@@ -245,13 +271,7 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 # Pass match index and total matches for realistic distribution
                 date_obj = estimate_date_from_tournament(name, match_index, len(matches))
                 date_is_estimated = True
-                if 'matches_with_estimated_dates' not in stats:
-                    stats['matches_with_estimated_dates'] = 0
                 stats['matches_with_estimated_dates'] += 1
-
-            # Determine Bo format
-            best_of = match.get('BestOf', '')
-            bo_format = f"Bo{best_of}" if best_of else None
 
             # Create external ID
             unique_match = match.get('UniqueMatch', '')
@@ -269,7 +289,6 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 tournament_name=name,
                 stage=match.get('Tab', '') or match.get('Phase', '') or match.get('Round', ''),
                 patch=match.get('Patch', ''),
-                bo_format=bo_format,
                 external_id=external_id,
                 source='leaguepedia'
             )
@@ -313,9 +332,21 @@ def import_tournament(loader, db, team_resolver, name, url, stats, include_playe
                 matches_failed += 1
                 stats['matches_failed'] += 1
 
+        # Calculate per-tournament statistics
+        skipped_this_tournament = stats['matches_skipped'] - stats.get('_last_skip_count', 0)
+        estimated_this_tournament = stats['matches_with_estimated_dates'] - stats.get('_last_estimated_count', 0)
+
         print(f"✅ Inserted: {matches_inserted} matches, {players_inserted} players")
         if matches_failed > 0:
             print(f"⚠️  Failed: {matches_failed} matches")
+        if skipped_this_tournament > 0:
+            print(f"⏭️  Skipped: {skipped_this_tournament} matches (no date)")
+        if estimated_this_tournament > 0:
+            print(f"📅 Estimated dates: {estimated_this_tournament} matches")
+
+        # Update counters for next tournament
+        stats['_last_skip_count'] = stats['matches_skipped']
+        stats['_last_estimated_count'] = stats['matches_with_estimated_dates']
 
         stats['tournaments_imported'] += 1
         return True
@@ -371,7 +402,10 @@ def main():
         'matches_inserted': 0,
         'matches_failed': 0,
         'matches_skipped': 0,
-        'players_inserted': 0
+        'matches_with_estimated_dates': 0,
+        'players_inserted': 0,
+        '_last_skip_count': 0,  # Internal counter for per-tournament skip tracking
+        '_last_estimated_count': 0  # Internal counter for per-tournament estimated dates tracking
     }
 
     # Import each tournament
@@ -385,6 +419,12 @@ def main():
         name = tournament['name']
         url = tournament['url']
 
+        # Skip 2025 tournaments
+        if '2025' in name:
+            print(f"\n[{i}/{len(tournaments)}] {name} - ⏭️  SKIPPED (2025)")
+            stats['tournaments_no_data'] += 1
+            continue
+
         print(f"\n[{i}/{len(tournaments)}] {name}")
 
         import_tournament(
@@ -394,7 +434,7 @@ def main():
             name=name,
             url=url,
             stats=stats,
-            include_players=True
+            include_players=False  # Disable player import to avoid API errors
         )
 
         # Progress update every 10 tournaments
@@ -422,6 +462,7 @@ def main():
     print(f"  Inserted:    {stats['matches_inserted']}")
     print(f"  Failed:      {stats['matches_failed']}")
     print(f"  Skipped:     {stats['matches_skipped']}")
+    print(f"  Estimated dates: {stats['matches_with_estimated_dates']}")
     print(f"\nPlayers:")
     print(f"  Inserted:    {stats['players_inserted']}")
 
