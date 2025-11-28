@@ -221,6 +221,24 @@ def generate_all_tournaments():
         tournaments.append((f"LAN {year} Closing Cup Playoffs", f"LAN/{year}_Season/Closing_Cup_Playoffs"))
 
     # ========================================================================
+    # LAS (Latin America South) - 2015-2017
+    # ========================================================================
+    # LAS 2015
+    tournaments.append(("LAS 2015 Opening Cup", "Latin_America_Cup_2015/LAS/Opening_Cup/Regular_Season"))
+    tournaments.append(("LAS 2015 Opening Cup Playoffs", "Latin_America_Cup_2015/LAS/Opening_Cup/Playoffs"))
+    tournaments.append(("LAS 2015 Closing Cup", "Latin_America_Cup_2015/LAS/Closing_Cup/Regular_Season"))
+    tournaments.append(("LAS 2015 Closing Cup Playoffs", "Latin_America_Cup_2015/LAS/Closing_Cup/Playoffs"))
+
+    # LAS 2016
+    tournaments.append(("LAS 2016 Opening Cup", "Latin_America_Cup/LAS/2016_Season/Opening_Cup/Regular_Season"))
+    tournaments.append(("LAS 2016 Opening Cup Playoffs", "Latin_America_Cup/LAS/2016_Season/Opening_Cup/Playoffs"))
+    tournaments.append(("LAS 2016 Closing Cup", "Latin_America_Cup/LAS/2016_Season/Closing_Cup/Regular_Season"))
+    tournaments.append(("LAS 2016 Closing Cup Playoffs", "Latin_America_Cup/LAS/2016_Season/Closing_Cup/Playoffs"))
+
+    # LAS 2017 (ESL Major)
+    tournaments.append(("LAS 2017 Closing Season", "ESL_Major_LAS/2017_Season/Closing_Season"))
+
+    # ========================================================================
     # OPL (Oceania) - 2015-2020
     # ========================================================================
     for year in range(2015, 2021):
@@ -253,28 +271,42 @@ def generate_all_tournaments():
     # ========================================================================
     tournaments.append(("GPL 2018 Spring", "GPL/2018_Season/Spring_Season"))
 
-    tournaments.append(("GPL 2017 Spring", "GPL/2017_Season/Spring_Season"))
-    tournaments.append(("GPL 2017 Summer", "GPL/2017_Season/Summer_Season"))
+    tournaments.append(("GPL 2017 Spring", "GPL/2017_Season/Spring"))
+    tournaments.append(("GPL 2017 Summer", "GPL/2017_Season/Summer"))
 
-    tournaments.append(("GPL 2016 Spring", "GPL/2016_Season/Spring_Season"))
-    tournaments.append(("GPL 2016 Summer", "GPL/2016_Season/Summer_Season"))
+    tournaments.append(("GPL 2016 Spring", "GPL/2016_Season/Spring"))
+    tournaments.append(("GPL 2016 Summer", "GPL/2016_Season/Summer"))
 
-    tournaments.append(("GPL 2015 Spring", "GPL/2015_Season/Spring_Season"))
-    tournaments.append(("GPL 2015 Spring Playoffs", "GPL/2015_Season/Spring_Playoffs"))
-    tournaments.append(("GPL 2015 Summer", "GPL/2015_Season/Summer_Season"))
-    tournaments.append(("GPL 2015 Summer Playoffs", "GPL/2015_Season/Summer_Playoffs"))
+    tournaments.append(("GPL 2015 Spring", "2015_GPL_Spring"))
+    tournaments.append(("GPL 2015 Spring Playoffs", "2015_GPL_Spring_Playoffs"))
+    tournaments.append(("GPL 2015 Summer", "2015_GPL_Summer"))
+    tournaments.append(("GPL 2015 Summer Playoffs", "2015_GPL_Summer_Playoffs"))
 
-    tournaments.append(("GPL 2014 Winter", "GPL/2014_Season/Winter_Season"))
-    tournaments.append(("GPL 2014 Spring", "GPL/2014_Season/Spring_Season"))
-    tournaments.append(("GPL 2014 Summer", "GPL/2014_Season/Summer_Season"))
+    tournaments.append(("GPL 2014 Winter", "2014_GPL_Winter"))
+    tournaments.append(("GPL 2014 Spring", "2014_GPL_Spring"))
+    tournaments.append(("GPL 2014 Summer", "2014_GPL_Summer"))
+    tournaments.append(("GPL 2014 Summer Taiwan Warm Up Tournament", "2014_GPL_Summer_Taiwan_Warm_Up_Tournament"))
 
-    tournaments.append(("GPL 2013 Spring", "GPL/2013_Season/Spring_Season"))
-    tournaments.append(("GPL 2013 Summer", "GPL/2013_Season/Summer_Season"))
-    tournaments.append(("GPL 2013 Championship", "GPL/2013_Season/Championship"))
+    tournaments.append(("GPL 2013 Spring", "2013_GPL_Spring"))
+    tournaments.append(("GPL 2013 Summer", "2013_GPL_Summer"))
+    tournaments.append(("GPL 2013 Championship", "2013_GPL_Championship"))
 
     tournaments.append(("GPL 2012 Season 1", "GPL/2012_Season/Season_1"))
     tournaments.append(("GPL 2012 Season 1 Playoffs", "GPL/2012_Season/Season_1_Playoffs"))
     tournaments.append(("GPL 2012 Opening Event", "GPL/2012_Season/Opening_Event"))
+
+    # ========================================================================
+    # RIFT RIVALS (Minor Regions Only) - 2017-2018
+    # ========================================================================
+    # Rift Rivals 2017
+    tournaments.append(("Rift Rivals 2017 GPL-LJL-OPL", "Rift_Rivals_2017/GPL-LJL-OPL"))
+    tournaments.append(("Rift Rivals 2017 LCL-TCL", "Rift_Rivals_2017/LCL-TCL"))
+    tournaments.append(("Rift Rivals 2017 LLN-CLS-CBLOL", "Rift_Rivals_2017/LLN-CLS-CBLOL"))
+
+    # Rift Rivals 2018
+    tournaments.append(("Rift Rivals 2018 SEA-LJL-OPL", "Rift_Rivals_2018/SEA-LJL-OPL"))
+    tournaments.append(("Rift Rivals 2018 LCL-TCL-VCS", "Rift_Rivals_2018/LCL-TCL-VCS"))
+    tournaments.append(("Rift Rivals 2018 LLN-CLS-CBLOL", "Rift_Rivals_2018/LLN-CLS-CBLOL"))
 
     return tournaments
 
