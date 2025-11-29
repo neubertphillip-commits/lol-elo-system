@@ -313,6 +313,7 @@ class DatabaseManager:
                      tournament_name: str = None,
                      stage: str = None,
                      patch: str = None,
+                     bo_format: str = None,
                      external_id: str = None,
                      source: str = "leaguepedia",
                      region: str = None,
@@ -329,6 +330,7 @@ class DatabaseManager:
             tournament_name: Tournament name
             stage: Stage (Regular Season, Playoffs, etc.)
             patch: Patch version
+            bo_format: Best-of format (Bo1, Bo3, Bo5) - auto-detected if not provided
             external_id: External match ID
             source: Data source (leaguepedia, google_sheets)
             region: Region
@@ -363,14 +365,15 @@ class DatabaseManager:
                 tournament_type=tournament_type
             )
 
-        # Determine Bo format
-        max_score = max(team1_score, team2_score)
-        if max_score == 1:
-            bo_format = "Bo1"
-        elif max_score <= 2:
-            bo_format = "Bo3"
-        else:
-            bo_format = "Bo5"
+        # Determine Bo format if not provided
+        if bo_format is None:
+            max_score = max(team1_score, team2_score)
+            if max_score == 1:
+                bo_format = "Bo1"
+            elif max_score <= 2:
+                bo_format = "Bo3"
+            else:
+                bo_format = "Bo5"
 
         # Insert match
         cursor.execute("""
