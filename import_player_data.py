@@ -10,7 +10,9 @@ Usage:
 import sys
 import os
 import argparse
+import json
 from datetime import datetime
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,13 +21,53 @@ from core.database import DatabaseManager
 from core.team_resolver import TeamResolver
 
 
+def load_tournament_name_mapping():
+    """
+    Load tournament name to URL mapping from discovery results.
+
+    Returns:
+        dict: Mapping of tournament name -> URL (with spaces)
+    """
+    mapping = {}
+
+    # Load major regions discovery results
+    major_file = Path(__file__).parent / "major_regions_discovery_results.json"
+    if major_file.exists():
+        try:
+            with open(major_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for tournament in data.get('found_tournaments', []):
+                    name = tournament.get('name')
+                    url = tournament.get('url')
+                    if name and url:
+                        mapping[name] = url
+        except Exception as e:
+            print(f"⚠️  Could not load major_regions_discovery_results.json: {e}")
+
+    # Load minor regions discovery results
+    minor_file = Path(__file__).parent / "minor_regions_discovery_results.json"
+    if minor_file.exists():
+        try:
+            with open(minor_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for tournament in data.get('found_tournaments', []):
+                    name = tournament.get('name')
+                    url = tournament.get('url')
+                    if name and url:
+                        mapping[name] = url
+        except Exception as e:
+            print(f"⚠️  Could not load minor_regions_discovery_results.json: {e}")
+
+    return mapping
+
+
 def chunks(lst, n):
     """Yield successive n-sized chunks from list."""
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
 
-def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loader: LeaguepediaLoader):
+def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loader: LeaguepediaLoader, name_to_url_mapping: dict = None):
     """
     Import player data for a tournament using efficient batch queries.
 
@@ -33,6 +75,7 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
         tournament_name: Tournament name (e.g., "LEC/2024 Season/Spring Season")
         db: DatabaseManager instance
         loader: LeaguepediaLoader instance
+        name_to_url_mapping: Optional mapping of tournament name -> URL
 
     Returns:
         Number of players imported
@@ -47,8 +90,14 @@ def import_players_for_tournament(tournament_name: str, db: DatabaseManager, loa
     # Step 1: Get all games from ScoreboardGames
     print("\n[1/4] Fetching games from ScoreboardGames...")
 
+    # Try to get URL from mapping first (for tournaments with slashes)
+    tournament_url = tournament_name
+    if name_to_url_mapping and tournament_name in name_to_url_mapping:
+        tournament_url = name_to_url_mapping[tournament_name]
+        print(f"📍 Mapped '{tournament_name}' -> '{tournament_url}'")
+
     # ScoreboardGames uses UNDERSCORES in OverviewPage (like ScoreboardPlayers)
-    tournament_name_underscores = tournament_name.replace(' ', '_')
+    tournament_name_underscores = tournament_url.replace(' ', '_')
 
     # Query with pagination support for large tournaments
     all_games = []
@@ -228,9 +277,17 @@ def main():
     try:
         total_imported = 0
 
+        # Load tournament name -> URL mapping from discovery results
+        print("Loading tournament name mappings...")
+        name_to_url_mapping = load_tournament_name_mapping()
+        if name_to_url_mapping:
+            print(f"✓ Loaded {len(name_to_url_mapping)} tournament URL mappings")
+        else:
+            print("⚠️  No tournament mappings found (discovery results not available)")
+
         if args.all:
             # Get all unique tournaments from database
-            print("Fetching all tournaments from database...")
+            print("\nFetching all tournaments from database...")
             tournaments = db.get_all_tournament_names()
 
             if not tournaments:
@@ -241,7 +298,7 @@ def main():
 
             for i, tournament_name in enumerate(tournaments, 1):
                 print(f"\n[{i}/{len(tournaments)}] Processing: {tournament_name}")
-                imported = import_players_for_tournament(tournament_name, db, loader)
+                imported = import_players_for_tournament(tournament_name, db, loader, name_to_url_mapping)
                 total_imported += imported
 
             print(f"\n{'='*80}")
@@ -249,7 +306,7 @@ def main():
             print(f"{'='*80}")
         else:
             # Import single tournament
-            total_imported = import_players_for_tournament(args.tournament, db, loader)
+            total_imported = import_players_for_tournament(args.tournament, db, loader, name_to_url_mapping)
 
         return 0
 
